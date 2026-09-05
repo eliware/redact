@@ -1,6 +1,6 @@
 # Release Notes
 
-## 5.0.0
+## 6.0.0
 
 - Bootstrapped the `@eliware/redact` package.
 - Established the intended decomposed architecture and behavioral

@@ -1,6 +1,6 @@
 {
   "name": "@eliware/redact",
-  "version": "5.0.0",
+  "version": "6.0.0",
   "description": "Reusable secret redaction and safe serialization utilities for Eliware packages",
   "author": "Eliware",
   "license": "MIT",
@@ -50,7 +50,7 @@
     "node": ">=26"
   },
   "devDependencies": {
-    "@eliware/test": "^5.0.0",
+    "@eliware/test": "^6.0.0",
     "typescript": "^7.0.2"
   }
 }

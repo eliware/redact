@@ -18,7 +18,7 @@ Node.js 26 or newer with native ESM support is required.
 
 ## Status
 
-The repository is at version `5.0.0`. The public API includes
+The repository is at version `6.0.0`. The public API includes
 policy creation, structured redaction, header redaction, best-effort text
 redaction, literal-secret replacement, safe serialization, and error helpers.
 
