@@ -93,3 +93,8 @@ test('retains special object keys safely', () => {
   expect(output['__proto__']).toBe('value');
   expect(Object.hasOwn(output, '__proto__')).toBe(true);
 });
+
+test('returns a safe fallback for hostile proxy bookkeeping', () => {
+  const value = new Proxy({}, { getPrototypeOf() { throw new Error('blocked'); } });
+  expect(() => safeSerialize(value)).not.toThrow();
+});

@@ -19,19 +19,20 @@ export function safeSerialize(value, options = {}) {
 }
 
 function serialize(value, policy, limits, seen, depth) {
-  const primitive = serializeValue(value, limits);
-  if (primitive.handled) return primitive.value;
-  if (enforceDepthLimit(depth, limits.maxDepth)) return '[TRUNCATED]';
-  if (seen.has(value)) return circularValue(policy.circularMarker);
-  seen.add(value);
   try {
+    const primitive = serializeValue(value, limits);
+    if (primitive.handled) return primitive.value;
+    if (enforceDepthLimit(depth, limits.maxDepth)) return '[TRUNCATED]';
+    if (seen.has(value)) return circularValue(policy.circularMarker);
+    seen.add(value);
+    try {
     if (isBuffer(value)) return serializeBuffer(value);
     if (isError(value)) return serializeError(value, policy, (child, childDepth) => serialize(child, policy, limits, seen, childDepth), depth);
     if (Array.isArray(value)) return serializeArray(value, limits.maxArray, item => serialize(item, policy, limits, seen, depth + 1));
     const source = boundedObject(value, limits.maxKeys);
     return serializeObject(source.value, limits.maxKeys, (key, child) => policy.keys.has(key.toLowerCase()) ? policy.marker : serialize(child, policy, limits, seen, depth + 1));
+    } finally { seen.delete(value); }
   } catch { return unserializableValue(); }
-  finally { seen.delete(value); }
 }
 
 function boundedObject(value, maxKeys) {
