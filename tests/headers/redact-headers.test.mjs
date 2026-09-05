@@ -9,6 +9,11 @@ test('supports Headers and entry arrays', () => {
   expect(redactHeaders([['password', 'secret'], ['x-id', '7']])).toEqual([['password', '[REDACTED]'], ['x-id', '7']]);
 });
 
+test('normalizes Headers-style entries to an object shape', () => {
+  const headers = { entries: () => [['token', 'secret']] };
+  expect(redactHeaders(headers)).toEqual({ token: '[REDACTED]' });
+});
+
 test('handles null input', () => {
   expect(redactHeaders(null)).toEqual({});
 });

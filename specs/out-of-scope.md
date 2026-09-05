@@ -17,3 +17,7 @@ semantics as observations. In particular, path-local cycle tracking and
 depth-truncated Error metadata are intentional contracts covered by the
 serialization specification and tests; they are not defects unless the
 implementation contradicts those contracts.
+Header redaction does not preserve the representation of every possible
+iterable. Its supported representation contract is limited to plain objects,
+`Headers`-style `entries()` objects, and entry arrays; treating arbitrary
+iterables as a required API would be a false-positive review finding.
