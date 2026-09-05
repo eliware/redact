@@ -26,7 +26,8 @@ milestone:
 - [x] Safe serialization with defensive handling for complex, circular, and
   hostile values.
 - [x] Initial limits module and bounded serialization behavior.
-- [ ] Error-specific public helpers.
+- [x] Error-specific public helpers for messages, structured details, and safe
+  error values.
 - [x] Type declarations and TypeScript configuration; direct declaration
   validation passes with the locally installed compiler. A package `typecheck`
   script remains deferred because the current global `eliware-test` Windows

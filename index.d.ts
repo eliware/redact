@@ -27,3 +27,6 @@ export declare function redactHeaders(headers: unknown, options?: RedactionPolic
 export declare function redactText(value: unknown, options?: RedactionPolicy & { secrets?: Iterable<string> }): string;
 export declare function replaceLiteralSecret(value: unknown, secret: unknown, marker?: string): string;
 export declare function safeSerialize(value: unknown, options?: SerializationOptions): unknown;
+export declare function redactErrorMessage(error: unknown, options?: RedactionPolicy & { secrets?: Iterable<string> }): string;
+export declare function redactErrorDetails(error: unknown, options?: RedactionPolicy): unknown;
+export declare function safeErrorValue(error: unknown, options?: RedactionPolicy): { name?: string; message: string; details?: unknown };
