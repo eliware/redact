@@ -3,7 +3,7 @@
   "version": "4.0.0",
   "description": "Reusable secret redaction and safe serialization utilities for Eliware packages",
   "author": "Eliware",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "exports": {
     ".": {
       "types": "./index.d.ts",

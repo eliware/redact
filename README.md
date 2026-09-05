@@ -1,6 +1,6 @@
 # [![eliware.org](https://eliware.org/logos/brand.png)](https://discord.gg/M6aTR9eTwN)
 
-## @eliware/redact [![npm](https://img.shields.io/npm/v/%40eliware%2Fredact)](https://www.npmjs.com/package/@eliware/redact) [![license](https://img.shields.io/badge/license-Eliware-blue)](LICENSE) [![CI](https://github.com/eliware/redact/actions/workflows/ci.yml/badge.svg)](https://github.com/eliware/redact/actions/workflows/ci.yml)
+## @eliware/redact [![npm](https://img.shields.io/npm/v/%40eliware%2Fredact)](https://www.npmjs.com/package/@eliware/redact) [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE) [![CI](https://github.com/eliware/redact/actions/workflows/ci.yml/badge.svg)](https://github.com/eliware/redact/actions/workflows/ci.yml)
 
 Reusable secret-redaction and safe-serialization utilities for Node.js 26+.
 This library helps protect observability and boundary data; it is not
@@ -115,7 +115,4 @@ Report reproducible issues at [github.com/eliware/redact/issues](https://github.
 
 ## License
 
-This internal Eliware package is distributed under the terms in [LICENSE](LICENSE).
-
-Report issues at [github.com/eliware/redact/issues](https://github.com/eliware/redact/issues).
 This package is distributed under the terms in [LICENSE](LICENSE).

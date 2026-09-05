@@ -1,5 +1,7 @@
 # @eliware/redact
 
+Applies to: the entire repository.
+
 Reusable secret-redaction and safe-serialization library for Eliware packages.
 
 ## Development
