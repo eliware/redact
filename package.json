@@ -1,0 +1,33 @@
+{
+  "name": "@eliware/redact",
+  "version": "4.0.0",
+  "description": "Reusable secret redaction and safe serialization utilities for Eliware packages",
+  "exports": {
+    ".": "./src/index.mjs"
+  },
+  "files": [
+    "src",
+    "index.d.ts",
+    "README.md",
+    "LICENSE",
+    "RELEASE_NOTES.md"
+  ],
+  "scripts": {
+    "test": "eliware-test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eliware/redact.git"
+  },
+  "keywords": [
+    "eliware",
+    "redaction",
+    "secrets",
+    "serialization"
+  ],
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/eliware/redact/issues"
+  },
+  "homepage": "https://github.com/eliware/redact#readme"
+}
