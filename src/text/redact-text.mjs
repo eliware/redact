@@ -17,7 +17,9 @@ export function redactText(value, options = {}) {
   const input = String(value ?? '');
   const inputTruncated = input.length > maxString;
   let output = input.slice(0, maxString);
-  const secrets = [...(options.secrets ?? [])].slice(0, 100);
+  const configuredSecrets = options.secrets;
+  if (configuredSecrets != null && (typeof configuredSecrets === 'string' || typeof configuredSecrets[Symbol.iterator] !== 'function')) throw new TypeError('secrets must be iterable');
+  const secrets = [...(configuredSecrets ?? [])].slice(0, 100);
   for (const secret of secrets) {
     if (typeof secret === 'string' && secret.length > 0) output = replaceLiteralSecret(output, secret, options.marker ?? '[REDACTED]');
   }

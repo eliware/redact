@@ -9,3 +9,6 @@ not claim to detect arbitrary unknown secrets.
 The returned text never exceeds that limit. If input or redaction expansion
 requires truncation, `[TRUNCATED]` is appended whenever the limit can fit it;
 this marker is distinct from `[REDACTED]`.
+
+The optional `secrets` value must be iterable; its non-empty string entries are
+replaced literally, while non-string entries are ignored.

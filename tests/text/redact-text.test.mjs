@@ -38,4 +38,5 @@ test('bounds text output with a distinguishable truncation marker', () => {
 
 test('rejects invalid text size limits', () => {
   expect(() => redactText('value', { maxString: -1 })).toThrow('maxString must be a non-negative integer');
+  expect(() => redactText('value', { secrets: 42 })).toThrow('secrets must be iterable');
 });

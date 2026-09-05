@@ -1,5 +1,6 @@
 import { defaultPolicy } from './default-policy.mjs';
 import { readonlySet } from './readonly-set.mjs';
+import { normalizeHeaderNames } from '../headers/header-name-normalizer.mjs';
 
 export function normalizePolicy(options = {}) {
   const keys = options.keys ?? options.redactKeys ?? defaultPolicy.keys;
@@ -17,6 +18,6 @@ export function normalizePolicy(options = {}) {
     maxDepth: options.maxDepth ?? defaultPolicy.maxDepth,
     maxKeys: options.maxKeys ?? defaultPolicy.maxKeys,
     matchHeuristics: options.matchHeuristics ?? defaultPolicy.matchHeuristics,
-    headerNames: options.headerNames ?? defaultPolicy.headerNames,
+    headerNames: normalizeHeaderNames(options.headerNames),
   };
 }

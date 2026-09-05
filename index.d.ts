@@ -16,11 +16,12 @@ export interface SerializationOptions extends RedactionPolicy {
   maxString?: number;
 }
 
-  export interface TextRedactionOptions {
-    marker?: string;
-    secrets?: Iterable<string>;
-    maxString?: number;
-  }
+export interface TextRedactionOptions {
+  marker?: string;
+  /** An iterable of non-empty literal strings; non-iterable input throws TypeError. */
+  secrets?: Iterable<string>;
+  maxString?: number;
+}
 
 export declare const defaultPolicy: Readonly<{
   keys: ReadonlySet<string>;
