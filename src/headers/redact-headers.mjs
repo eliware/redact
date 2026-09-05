@@ -2,8 +2,10 @@ import { readHeaderEntries } from './header-entry-reader.mjs';
 import { redactHeaderValue } from './header-value-redactor.mjs';
 
 function normalizeHeaderNames(options) {
-  const names = options.headerNames ?? ['authorization', 'cookie', 'set-cookie', 'proxy-authorization', 'x-api-key'];
-  if (typeof names === 'string' || names == null || typeof names[Symbol.iterator] !== 'function') throw new TypeError('headerNames must be iterable');
+  const defaults = ['authorization', 'cookie', 'set-cookie', 'proxy-authorization', 'x-api-key'];
+  const custom = options.headerNames;
+  if (custom != null && (typeof custom === 'string' || typeof custom[Symbol.iterator] !== 'function')) throw new TypeError('headerNames must be iterable');
+  const names = custom == null ? defaults : [...defaults, ...custom];
   return new Set([...names].map(value => String(value).toLowerCase()));
 }
 
