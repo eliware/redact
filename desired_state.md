@@ -32,8 +32,10 @@ milestone:
   validation passes with the locally installed compiler. A package `typecheck`
   script remains deferred because the current global `eliware-test` Windows
   runner cannot spawn npm for that lifecycle hook.
-- [ ] Complete README API documentation and runnable examples.
-- [ ] CI workflow and final package-file review.
+- [x] README API documentation and runnable examples for the current public
+  surface.
+- [x] CI workflow and package-file review; local `npm test`, direct TypeScript
+  declaration validation, package dry-run, and diff checks pass.
 
 ```text
 .
