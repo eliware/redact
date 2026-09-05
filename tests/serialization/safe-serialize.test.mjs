@@ -113,3 +113,8 @@ test('redacts fields on the represented depth boundary', () => {
   expect(output.token).toBe('[REDACTED]');
   expect(output.nested).toBe('[TRUNCATED]');
 });
+
+test('retains sibling fields when one child serialization fails', () => {
+  const value = { safe: 1, broken: new Proxy({}, { getPrototypeOf() { throw new Error('blocked'); } }) };
+  expect(safeSerialize(value)).toMatchObject({ safe: 1, broken: '[UNSERIALIZABLE]' });
+});

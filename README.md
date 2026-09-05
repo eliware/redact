@@ -58,7 +58,8 @@ safeSerialize({ token: 'secret', nested: { value: 1 } });
 Structured redaction is key-based and does not mutate its input. Text
 redaction is best-effort and cannot guarantee detection of unknown secrets.
 Configure `keys`, `marker`, `circularMarker`, and serialization limits
-(`maxDepth`, `maxKeys`, and `maxString`) for package-specific contracts.
+(`maxDepth`, `maxKeys`, `maxArray`, and `maxString`) for package-specific
+contracts.
 Serialization limits must be non-negative integers.
 Structured redaction also accepts non-negative integer `maxDepth`, `maxKeys`,
 and `maxArray` limits; exceeding a limit emits `[TRUNCATED]`.
