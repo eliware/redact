@@ -78,3 +78,10 @@ test('redacts Error stack when configured as sensitive', () => {
   const error = new Error('failed');
   expect(safeSerialize(error, { keys: ['stack'] }).stack).toBe('[REDACTED]');
 });
+
+test('retains special object keys safely', () => {
+  const value = JSON.parse('{"__proto__":"value","safe":true}');
+  const output = safeSerialize(value);
+  expect(output['__proto__']).toBe('value');
+  expect(Object.hasOwn(output, '__proto__')).toBe(true);
+});

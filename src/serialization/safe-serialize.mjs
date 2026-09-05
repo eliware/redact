@@ -35,7 +35,7 @@ function serialize(value, policy, limits, seen, depth) {
 }
 
 function boundedObject(value, maxKeys) {
-  const output = {};
+  const output = Object.create(null);
   let keys;
   try { keys = Object.keys(value); } catch { return { value: output, truncated: false }; }
   for (const [index, key] of keys.entries()) {

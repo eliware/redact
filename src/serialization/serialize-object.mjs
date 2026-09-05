@@ -2,7 +2,7 @@ import { enforceKeyLimit } from '../limits/enforce-key-limit.mjs';
 import { readSafeEntries } from '../inspection/read-safe-entries.mjs';
 
 export function serializeObject(value, maxKeys, serializeProperty, truncatedMarker = '[TRUNCATED]') {
-  const output = {};
+  const output = Object.create(null);
   for (const [index, [key, child]] of readSafeEntries(value).entries()) {
     if (enforceKeyLimit(index, maxKeys)) {
       let key = '__truncated';

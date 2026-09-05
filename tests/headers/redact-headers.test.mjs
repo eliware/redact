@@ -25,6 +25,10 @@ test('can disable heuristic header matching', () => {
   expect(redactHeaders({ token: 'value' }, { matchHeuristics: false })).toEqual({ token: 'value' });
 });
 
+test('custom header names remain additive to heuristics', () => {
+  expect(redactHeaders({ token: 'secret', 'x-custom': 'secret' }, { headerNames: ['x-custom'] })).toEqual({ token: '[REDACTED]', 'x-custom': '[REDACTED]' });
+});
+
 test('rejects non-iterable custom header names', () => {
   expect(() => redactHeaders({}, { headerNames: 42 })).toThrow('headerNames must be iterable');
 });
