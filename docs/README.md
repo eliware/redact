@@ -1,5 +1,7 @@
 # Documentation
 
+[Back to the project README](../README.md)
+
 `@eliware/redact` is a reusable boundary-safety library for protecting values
 before logging, persistence, or transport. Install it with `npm install
 @eliware/redact`, then use the public functions from the package entrypoint.
@@ -16,3 +18,5 @@ For troubleshooting, run `npm test`, `npm run lint`, `npm run typecheck`, and
 - [Specifications](../specs/README.md)
 - [Release notes](../RELEASE_NOTES.md)
 - [Examples](../examples/README.md)
+- [Usage](usage.md)
+- [Troubleshooting](troubleshooting.md)

@@ -46,7 +46,7 @@
     "access": "public"
   },
   "devDependencies": {
-    "@eliware/test": "^4.0.0",
+    "@eliware/test": "^5.0.0",
     "typescript": "^7.0.2"
   }
 }
