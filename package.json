@@ -1,6 +1,6 @@
 {
   "name": "@eliware/redact",
-  "version": "4.0.0",
+  "version": "5.0.0",
   "description": "Reusable secret redaction and safe serialization utilities for Eliware packages",
   "author": "Eliware",
   "license": "MIT",
