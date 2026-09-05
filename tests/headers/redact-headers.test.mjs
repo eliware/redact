@@ -33,6 +33,13 @@ test('custom names retain built-in sensitive names when heuristics are disabled'
   expect(redactHeaders({ authorization: 'secret', 'x-custom': 'secret' }, { headerNames: ['x-custom'], matchHeuristics: false })).toEqual({ authorization: '[REDACTED]', 'x-custom': '[REDACTED]' });
 });
 
+test('preserves special object-form header names safely', () => {
+  const output = redactHeaders(JSON.parse('{"__proto__":"secret"}'));
+  expect(Object.hasOwn(output, '__proto__')).toBe(true);
+  expect(output['__proto__']).toBe('secret');
+  expect(Object.getPrototypeOf(output)).toBe(null);
+});
+
 test('rejects non-iterable custom header names', () => {
   expect(() => redactHeaders({}, { headerNames: 42 })).toThrow('headerNames must be iterable');
   expect(() => redactHeaders({}, { headerNames: 'authorization' })).toThrow('headerNames must be iterable');
