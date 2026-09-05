@@ -9,5 +9,14 @@ export function normalizePolicy(options = {}) {
   for (const name of ['maxArray', 'maxDepth', 'maxKeys']) {
     if (!Number.isInteger(options[name] ?? defaultPolicy[name]) || (options[name] ?? defaultPolicy[name]) < 0) throw new TypeError(`${name} must be a non-negative integer`);
   }
-  return { ...defaultPolicy, ...options, keys: readonlySet(normalizedKeys), marker: options.marker ?? defaultPolicy.marker };
+  return {
+    keys: readonlySet(normalizedKeys),
+    marker: options.marker ?? defaultPolicy.marker,
+    circularMarker: options.circularMarker ?? defaultPolicy.circularMarker,
+    maxArray: options.maxArray ?? defaultPolicy.maxArray,
+    maxDepth: options.maxDepth ?? defaultPolicy.maxDepth,
+    maxKeys: options.maxKeys ?? defaultPolicy.maxKeys,
+    matchHeuristics: options.matchHeuristics ?? defaultPolicy.matchHeuristics,
+    headerNames: options.headerNames ?? defaultPolicy.headerNames,
+  };
 }

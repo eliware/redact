@@ -83,6 +83,8 @@ Text redaction and error-message redaction accept only `marker` and `secrets`;
 structured/header policy fields do not apply to those helpers. Header
 enumeration failures are intentionally loss-tolerant and produce an empty safe
 result, as hostile input cannot be represented reliably.
+When both `keys` and the legacy `redactKeys` alias are supplied, `keys` takes
+precedence; unknown policy fields are ignored by normalized policies.
 
 ## Development
 

@@ -1,4 +1,4 @@
-import { createPolicy, defaultPolicy, redactHeaders, redactValue, safeSerialize } from '../../index.js';
+import { createPolicy, defaultPolicy, redactHeaders, redactValue, safeSerialize } from '@eliware/redact';
 
 const policy = createPolicy({
   keys: ['token'],
