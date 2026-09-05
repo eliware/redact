@@ -42,8 +42,12 @@ milestone:
   bearer, query-secret, named-assignment, provider-token, and JWT rule modules.
 - [x] Extracted serializer composition modules for arrays, objects, circular
   values, and unserializable values, with mirrored tests.
-- [ ] Finish the remaining deep atomic decomposition listed in the source tree,
-  including dedicated primitive and Error serialization modules.
+- [x] Extracted dedicated primitive and Error serialization modules with
+  mirrored tests.
+- [x] Extracted marker creation/formatting and primitive serializers for
+  functions, symbols, BigInts, and undefined values.
+- [ ] Complete final API and architecture audit against every desired-state
+  file and specification.
 
 ```text
 .
