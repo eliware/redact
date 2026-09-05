@@ -49,7 +49,8 @@ Configure `keys`, `marker`, `circularMarker`, and serialization limits
 (`maxDepth`, `maxKeys`, and `maxString`) for package-specific contracts.
 Serialization limits must be non-negative integers.
 Header-name heuristics can be disabled with `matchHeuristics: false` when
-custom header policy must be exact.
+custom header policy must be exact. Custom `headerNames` are additive to the
+default heuristic matching unless heuristics are disabled.
 The supported runtime is Node.js 26 or newer; browser use does not provide
 Node `Buffer` serialization behavior.
 

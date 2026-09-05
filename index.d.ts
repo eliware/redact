@@ -23,6 +23,8 @@ export declare const defaultPolicy: Readonly<{
   maxArray: number;
   maxDepth: number;
   maxKeys: number;
+  matchHeuristics?: boolean;
+  headerNames?: Iterable<string>;
 }>;
 
 export declare function createPolicy(options?: RedactionPolicy): Readonly<RedactionPolicy & {
