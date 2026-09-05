@@ -71,6 +71,7 @@ test('bounds large plain objects and records truncation', () => {
   expect(output.__truncated).toBe('[TRUNCATED]');
   expect(output.key1000).toBeUndefined();
   expect(Object.values(output).filter(value => value === '[TRUNCATED]')).toHaveLength(1);
+  expect(Object.keys(output)).toHaveLength(1001);
 });
 
 test('redacts Error stack when configured as sensitive', () => {
