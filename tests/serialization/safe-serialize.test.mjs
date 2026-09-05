@@ -79,6 +79,14 @@ test('redacts Error stack when configured as sensitive', () => {
   expect(safeSerialize(error, { keys: ['stack'] }).stack).toBe('[REDACTED]');
 });
 
+test('retains only configured source keys before truncation metadata', () => {
+  const output = safeSerialize({ a: 1, b: 2, c: 3 }, { maxKeys: 2 });
+  expect(output.a).toBe(1);
+  expect(output.b).toBe(2);
+  expect(output.c).toBeUndefined();
+  expect(output.__truncated).toBe('[TRUNCATED]');
+});
+
 test('retains special object keys safely', () => {
   const value = JSON.parse('{"__proto__":"value","safe":true}');
   const output = safeSerialize(value);
