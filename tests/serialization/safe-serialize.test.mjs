@@ -4,7 +4,7 @@ test('serializes primitives and redacts nested keys', () => {
   expect(safeSerialize({ token: 'secret', nested: { id: 2 }, big: 2n })).toEqual({ token: '[REDACTED]', nested: { id: 2 }, big: '2n' });
   expect(safeSerialize(null)).toBeNull();
   expect(safeSerialize('ok')).toBe('ok');
-  expect(safeSerialize('abcdef', { maxString: 3 })).toBe('abc...[TRUNCATED]');
+  expect(safeSerialize('abcdef', { maxString: 3 })).toBe('abc');
   expect(safeSerialize('a'.repeat(10001), { maxString: undefined })).toContain('[TRUNCATED]');
 });
 

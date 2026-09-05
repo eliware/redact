@@ -90,8 +90,8 @@ safeErrorValue(new Error('failed'));
 The same helpers are exported from the package entrypoint; serialization-only
 limits are options to `safeSerialize`, not properties of `defaultPolicy`.
 
-Configured literal secrets must be non-empty strings and are replaced using
-substring semantics. Buffer handling is intentionally Node.js-specific.
+Configured literal secrets are replaced using substring semantics; empty and
+non-string entries are ignored. Buffer handling is intentionally Node.js-specific.
 Text redaction and error-message redaction accept only `marker` and `secrets`;
 structured/header policy fields do not apply to those helpers. Header
 enumeration failures are intentionally loss-tolerant and produce an empty safe
