@@ -25,6 +25,10 @@ test('can disable heuristic header matching', () => {
   expect(redactHeaders({ token: 'value' }, { matchHeuristics: false })).toEqual({ token: 'value' });
 });
 
+test('rejects non-iterable custom header names', () => {
+  expect(() => redactHeaders({}, { headerNames: 42 })).toThrow('headerNames must be iterable');
+});
+
 test('omits non-string header names', () => {
   expect(redactHeaders([[Symbol('header'), 'value'], ['accept', 'json']])).toEqual([['accept', 'json']]);
   expect(redactHeaders({ [Symbol('header')]: 'value', accept: 'json' })).toEqual({ accept: 'json' });
