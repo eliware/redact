@@ -28,3 +28,14 @@ test('does not rewrite generated markers with later secrets', () => {
 test('uses a custom marker for built-in text rules', () => {
   expect(redactText('token=secret', { marker: '<hidden>' })).toBe('token=<hidden>');
 });
+
+test('bounds text output with a distinguishable truncation marker', () => {
+  const output = redactText('token=secret and more text', { maxString: 20 });
+  expect(output.length).toBe(20);
+  expect(output).toContain('[TRUNCATED]');
+  expect(redactText('long value', { maxString: 5 })).toBe('long ');
+});
+
+test('rejects invalid text size limits', () => {
+  expect(() => redactText('value', { maxString: -1 })).toThrow('maxString must be a non-negative integer');
+});
