@@ -7,4 +7,6 @@ export const defaultPolicy = Object.freeze({
   marker: DEFAULT_REDACTION_MARKER,
   circularMarker: '[CIRCULAR]',
   maxArray: 1000,
+  maxDepth: 20,
+  maxKeys: 1000,
 });

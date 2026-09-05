@@ -2,7 +2,6 @@ import { DEFAULT_LIMITS } from '../limits/default-limits.mjs';
 import { enforceDepthLimit } from '../limits/enforce-depth-limit.mjs';
 import { isBuffer } from '../inspection/is-buffer.mjs';
 import { isError } from '../inspection/is-error.mjs';
-import { isPlainObject } from '../inspection/is-plain-object.mjs';
 import { normalizePolicy } from '../policy/normalize-policy.mjs';
 import { circularValue } from './circular-value.mjs';
 import { serializeArray } from './serialize-array.mjs';
@@ -29,21 +28,22 @@ function serialize(value, policy, limits, seen, depth) {
     if (isBuffer(value)) return serializeBuffer(value);
     if (isError(value)) return serializeError(value, policy, (child, childDepth) => serialize(child, policy, limits, seen, childDepth), depth);
     if (Array.isArray(value)) return serializeArray(value, limits.maxArray, item => serialize(item, policy, limits, seen, depth + 1));
-    const source = boundedObject(value, limits.maxKeys, !isPlainObject(value));
-    return serializeObject(source, limits.maxKeys, (key, child) => policy.keys.has(key.toLowerCase()) ? policy.marker : serialize(child, policy, limits, seen, depth + 1));
+    const source = boundedObject(value, limits.maxKeys);
+    return serializeObject(source.value, limits.maxKeys, (key, child) => policy.keys.has(key.toLowerCase()) ? policy.marker : serialize(child, policy, limits, seen, depth + 1), '[TRUNCATED]', source.truncated);
   } catch { return unserializableValue(); }
   finally { seen.delete(value); }
 }
 
-function boundedObject(value, maxKeys, bounded) {
+function boundedObject(value, maxKeys) {
   const output = {};
   let keys;
-  try { keys = Object.keys(value); } catch { return output; }
-  for (const key of (bounded ? keys.slice(0, maxKeys) : keys)) {
+  try { keys = Object.keys(value); } catch { return { value: output, truncated: false }; }
+  for (const [index, key] of keys.entries()) {
+    if (index >= maxKeys) return { value: output, truncated: true };
     try {
       const descriptor = Object.getOwnPropertyDescriptor(value, key);
       if (descriptor && 'value' in descriptor) output[key] = descriptor.value;
     } catch { /* omit hostile property */ }
   }
-  return output;
+  return { value: output, truncated: false };
 }

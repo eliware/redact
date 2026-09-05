@@ -4,6 +4,8 @@ export interface RedactionPolicy {
   marker?: string;
   circularMarker?: string;
   maxArray?: number;
+  maxDepth?: number;
+  maxKeys?: number;
   matchHeuristics?: boolean;
   headerNames?: Iterable<string>;
 }
@@ -19,6 +21,8 @@ export declare const defaultPolicy: Readonly<{
   marker: '[REDACTED]';
   circularMarker: '[CIRCULAR]';
   maxArray: number;
+  maxDepth: number;
+  maxKeys: number;
 }>;
 
 export declare function createPolicy(options?: RedactionPolicy): Readonly<RedactionPolicy & {

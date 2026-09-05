@@ -4,6 +4,17 @@ import { redactProperty } from './redact-property.mjs';
 
 export function redactObject(value, policy, redactChild) {
   const output = Object.create(null);
-  for (const [key, child] of readObjectEntries(value)) copyPropertyDescriptor(output, key, redactProperty(key, child, policy, redactChild));
+  const entries = readObjectEntries(value);
+  const limit = policy.maxKeys ?? entries.length;
+  for (const [index, [key, child]] of entries.entries()) {
+    if (index >= limit) { addTruncationMarker(output); break; }
+    copyPropertyDescriptor(output, key, redactProperty(key, child, policy, redactChild));
+  }
   return output;
+}
+
+function addTruncationMarker(output) {
+  let key = '__truncated';
+  while (Object.hasOwn(output, key)) key = `_${key}`;
+  output[key] = '[TRUNCATED]';
 }

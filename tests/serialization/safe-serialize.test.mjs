@@ -62,3 +62,12 @@ test('does not invoke enumerable getters on plain objects', () => {
   expect(safeSerialize(value)).toEqual({});
   expect(invoked).toBe(false);
 });
+
+test('bounds large plain objects and records truncation', () => {
+  const value = Object.fromEntries(Array.from({ length: 1001 }, (_, index) => [`key${index}`, index]));
+  const output = safeSerialize(value);
+  expect(output.key0).toBe(0);
+  expect(output.key999).toBe(999);
+  expect(output.__truncated).toBe('[TRUNCATED]');
+  expect(output.key1000).toBeUndefined();
+});

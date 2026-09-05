@@ -7,16 +7,17 @@ import { redactObject } from './redact-object.mjs';
 
 export function redactValue(value, options = {}) {
   const policy = normalizePolicy(options);
-  return redact(value, policy, new WeakMap());
+  return redact(value, policy, new WeakMap(), 0);
 }
 
-function redact(value, policy, seen) {
+function redact(value, policy, seen, depth) {
   if (value === null || typeof value !== 'object') return value;
+  if (depth > policy.maxDepth) return '[TRUNCATED]';
   if (seen.has(value)) return circularReferenceValue(policy);
   seen.set(value, true);
   try {
-    if (isError(value)) return redactError(value, policy, child => redact(child, policy, seen));
-    return Array.isArray(value) ? redactArray(value, policy, child => redact(child, policy, seen)) : redactObject(value, policy, child => redact(child, policy, seen));
+    if (isError(value)) return redactError(value, policy, child => redact(child, policy, seen, depth + 1));
+    return Array.isArray(value) ? redactArray(value, policy, child => redact(child, policy, seen, depth + 1)) : redactObject(value, policy, child => redact(child, policy, seen, depth + 1));
   }
   finally { seen.delete(value); }
 }

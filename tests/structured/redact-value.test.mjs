@@ -58,3 +58,16 @@ test('handles an error without a stack and extra fields', () => {
   expect(redactValue(error)).toMatchObject({ name: 'CustomError', message: 'updated', detail: 'safe' });
   expect(redactValue({ error })).toBeTruthy();
 });
+
+test('bounds structured object keys', () => {
+  const value = Object.fromEntries(Array.from({ length: 3 }, (_, index) => [`key${index}`, index]));
+  const output = redactValue(value, { maxKeys: 2 });
+  expect(output.key0).toBe(0);
+  expect(output.key1).toBe(1);
+  expect(output.__truncated).toBe('[TRUNCATED]');
+});
+
+test('bounds structured recursion depth', () => {
+  const value = { child: { value: 1 } };
+  expect(redactValue(value, { maxDepth: 0 }).child).toBe('[TRUNCATED]');
+});
