@@ -48,6 +48,8 @@ redaction is best-effort and cannot guarantee detection of unknown secrets.
 Configure `keys`, `marker`, `circularMarker`, and serialization limits
 (`maxDepth`, `maxKeys`, and `maxString`) for package-specific contracts.
 Serialization limits must be non-negative integers.
+Structured redaction also accepts non-negative integer `maxDepth`, `maxKeys`,
+and `maxArray` limits; exceeding a limit emits `[TRUNCATED]`.
 Header-name heuristics can be disabled with `matchHeuristics: false` when
 custom header policy must be exact. Custom `headerNames` are additive to the
 default heuristic matching unless heuristics are disabled.

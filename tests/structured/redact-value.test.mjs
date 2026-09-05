@@ -71,3 +71,8 @@ test('bounds structured recursion depth', () => {
   const value = { child: { value: 1 } };
   expect(redactValue(value, { maxDepth: 0 }).child).toBe('[TRUNCATED]');
 });
+
+test('rejects invalid structured traversal limits', () => {
+  expect(() => redactValue({}, { maxDepth: -1 })).toThrow('maxDepth must be a non-negative integer');
+  expect(() => redactValue({}, { maxKeys: 1.5 })).toThrow('maxKeys must be a non-negative integer');
+});

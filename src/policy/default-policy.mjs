@@ -9,4 +9,6 @@ export const defaultPolicy = Object.freeze({
   maxArray: 1000,
   maxDepth: 20,
   maxKeys: 1000,
+  matchHeuristics: true,
+  headerNames: Object.freeze(['authorization', 'cookie', 'set-cookie', 'proxy-authorization', 'x-api-key']),
 });

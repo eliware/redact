@@ -11,5 +11,8 @@ export function redactHeaders(headers, options = {}) {
   const entries = readHeaderEntries(headers);
   const normalizedOptions = { ...options, normalizedHeaderNames: normalizeHeaderNames(options) };
   const redacted = entries.filter(([key]) => typeof key === 'string').map(([key, value]) => [key, redactHeaderValue(key, value, normalizedOptions)]);
-  return Array.isArray(headers) ? redacted : Object.fromEntries(redacted);
+  if (Array.isArray(headers)) return redacted;
+  const output = Object.create(null);
+  for (const [key, value] of redacted) output[key] = value;
+  return output;
 }
