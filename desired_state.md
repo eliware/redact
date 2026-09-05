@@ -5,6 +5,31 @@
 The library should be fully decomposed into atomic, single-responsibility
 modules with a deep responsibility-oriented hierarchy:
 
+## Implementation status
+
+Updated 2026-09-04 after commit `ccafb59` and the first implementation
+milestone:
+
+- [x] Repository bootstrap, package metadata, README, license, release notes,
+  instructions, and ignore rules.
+- [x] Native ESM public entrypoint and explicit package export.
+- [x] Policy creation, normalization, default sensitive-key policy, and
+  redaction marker.
+- [x] Recursive structured-value redaction with non-mutation, nested values,
+  arrays, Errors, cycles, and defensive enumeration handling.
+- [x] HTTP header redaction for objects, `Headers`, and entry arrays.
+- [x] Best-effort text redaction for common credential formats and configured
+  literal secrets.
+- [x] Mirrored focused tests for every implemented production module.
+- [x] `npm test` passes with 100×4 coverage and zero lint warnings.
+- [x] `npm pack --dry-run` and `git diff --check` pass.
+- [ ] Safe serialization and its atomic submodules.
+- [ ] Explicit limits modules and bounded serialization behavior.
+- [ ] Error-specific public helpers.
+- [ ] Type declarations and `typecheck` script.
+- [ ] Complete README API documentation and runnable examples.
+- [ ] CI workflow and final package-file review.
+
 ```text
 .
 ├── AGENTS.md

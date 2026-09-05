@@ -1,0 +1,1 @@
+export const DEFAULT_REDACTION_MARKER = '[REDACTED]';
