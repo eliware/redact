@@ -47,7 +47,9 @@ test('serializes Errors and bounded objects', () => {
 
 test('propagates child depth when serializing Error metadata', () => {
   const error = Object.assign(new Error('failed'), { detail: { value: 1 } });
-  expect(safeSerialize({ error }, { maxDepth: 1 }).error.message).toBe('failed');
+  const output = safeSerialize({ error }, { maxDepth: 1 });
+  expect(output.error.message).toBe('failed');
+  expect(output.error.detail).toBe('[TRUNCATED]');
 });
 
 test('omits non-plain proxy state when key enumeration fails', () => {

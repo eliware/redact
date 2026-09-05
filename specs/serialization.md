@@ -22,3 +22,6 @@ Depth truncation replaces an object once its depth exceeds `maxDepth`; keys
 of an object still being represented are redacted before child traversal is
 truncated. Thus sensitive fields at the represented boundary remain markers,
 while deeper object shape is intentionally omitted.
+Error fields use the same child-depth contract as ordinary object fields:
+`name`, `message`, `stack`, and enumerable data-property metadata are serialized
+at the Error's child depth. Error metadata does not bypass `maxDepth`.
