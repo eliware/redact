@@ -5,10 +5,14 @@ export function redactArray(value, policy, redactChild) {
   try { limit = policy.maxArray ?? value.length; }
   catch { return []; }
   if (!Number.isInteger(limit) || limit < 0) throw new TypeError('maxArray must be a non-negative integer');
-  let output;
+  let items;
   let truncated;
-  try { output = value.slice(0, limit).map(item => redactProperty('', item, policy, () => redactChild(item))); truncated = value.length > limit; }
+  try { items = value.slice(0, limit); truncated = value.length > limit; }
   catch { return []; }
+  const output = items.map(item => {
+    try { return redactProperty('', item, policy, () => redactChild(item)); }
+    catch { return '[UNSERIALIZABLE]'; }
+  });
   if (truncated) output.push('[TRUNCATED]');
   return output;
 }

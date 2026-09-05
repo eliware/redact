@@ -15,3 +15,6 @@ that metadata slot is intentional and is not counted as source data.
 Cycle detection is path-local: repeated non-cyclic references are serialized
 independently, while references encountered on the active recursion path emit
 the circular marker.
+The serializer is deliberately non-throwing at its public boundary; unexpected
+errors during hostile-value inspection are reduced to `[UNSERIALIZABLE]` so a
+logging path cannot fail because of diagnostic serialization.
