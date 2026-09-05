@@ -98,3 +98,10 @@ test('returns a safe fallback for hostile proxy bookkeeping', () => {
   const value = new Proxy({}, { getPrototypeOf() { throw new Error('blocked'); } });
   expect(() => safeSerialize(value)).not.toThrow();
 });
+
+test('copies repeated non-cyclic references independently', () => {
+  const shared = { value: 1 };
+  const output = safeSerialize({ first: shared, second: shared });
+  expect(output.first).toEqual({ value: 1 });
+  expect(output.second).toEqual({ value: 1 });
+});

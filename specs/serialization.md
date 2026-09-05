@@ -12,3 +12,6 @@ safe serializer's supported execution boundary.
 `maxKeys` limits retained source data properties. An over-limit object may
 therefore contain one additional collision-safe `[TRUNCATED]` metadata property;
 that metadata slot is intentional and is not counted as source data.
+Cycle detection is path-local: repeated non-cyclic references are serialized
+independently, while references encountered on the active recursion path emit
+the circular marker.
