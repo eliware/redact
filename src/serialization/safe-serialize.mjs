@@ -29,7 +29,7 @@ function serialize(value, policy, limits, seen, depth) {
     if (isError(value)) return serializeError(value, policy, (child, childDepth) => serialize(child, policy, limits, seen, childDepth), depth);
     if (Array.isArray(value)) return serializeArray(value, limits.maxArray, item => serialize(item, policy, limits, seen, depth + 1));
     const source = boundedObject(value, limits.maxKeys);
-    return serializeObject(source.value, limits.maxKeys + 1, (key, child) => policy.keys.has(key.toLowerCase()) ? policy.marker : serialize(child, policy, limits, seen, depth + 1), '[TRUNCATED]', source.truncated);
+    return serializeObject(source.value, limits.maxKeys + 1, (key, child) => policy.keys.has(key.toLowerCase()) ? policy.marker : serialize(child, policy, limits, seen, depth + 1));
   } catch { return unserializableValue(); }
   finally { seen.delete(value); }
 }
@@ -39,7 +39,12 @@ function boundedObject(value, maxKeys) {
   let keys;
   try { keys = Object.keys(value); } catch { return { value: output, truncated: false }; }
   for (const [index, key] of keys.entries()) {
-    if (index >= maxKeys) return { value: output, truncated: true };
+    if (index >= maxKeys) {
+      let marker = '__truncated';
+      while (Object.hasOwn(output, marker)) marker = `_${marker}`;
+      output[marker] = '[TRUNCATED]';
+      return { value: output, truncated: true };
+    }
     try {
       const descriptor = Object.getOwnPropertyDescriptor(value, key);
       if (descriptor && 'value' in descriptor) output[key] = descriptor.value;
