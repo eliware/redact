@@ -40,9 +40,10 @@ milestone:
   safe serialization with mirrored tests.
 - [x] Decomposed the text redactor into dedicated private-key, authorization,
   bearer, query-secret, named-assignment, provider-token, and JWT rule modules.
+- [x] Extracted serializer composition modules for arrays, objects, circular
+  values, and unserializable values, with mirrored tests.
 - [ ] Finish the remaining deep atomic decomposition listed in the source tree,
-  including dedicated serialization modules where current implementations
-  still combine responsibilities.
+  including dedicated primitive and Error serialization modules.
 
 ```text
 .
