@@ -54,3 +54,11 @@ test('omits non-plain proxy state when key enumeration fails', () => {
   const value = new Proxy(new (class Record {})(), { ownKeys() { throw new Error('blocked'); } });
   expect(safeSerialize(value)).toEqual({});
 });
+
+test('does not invoke enumerable getters on plain objects', () => {
+  let invoked = false;
+  const value = {};
+  Object.defineProperty(value, 'token', { enumerable: true, get() { invoked = true; return 'secret'; } });
+  expect(safeSerialize(value)).toEqual({});
+  expect(invoked).toBe(false);
+});
