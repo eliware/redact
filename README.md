@@ -6,6 +6,18 @@ Reusable secret-redaction and safe-serialization utilities for Node.js 26+.
 This library helps protect observability and boundary data; it is not
 encryption, secret storage, or a guarantee that unknown secrets are detected.
 
+## Contents
+
+- [Installation](#installation)
+- [Requirements](#requirements)
+- [API](#api)
+- [Configuration](#configuration)
+- [Development](#development)
+- [Security](#security)
+- [Design](#design)
+- [Support](#support)
+- [License](#license)
+
 ## Installation
 
 ```sh
