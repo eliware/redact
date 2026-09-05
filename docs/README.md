@@ -15,4 +15,4 @@ For troubleshooting, run `npm test`, `npm run lint`, `npm run typecheck`, and
 
 - [Specifications](../specs/README.md)
 - [Release notes](../RELEASE_NOTES.md)
-- [Examples](../examples/basic.mjs)
+- [Examples](../examples/README.md)
