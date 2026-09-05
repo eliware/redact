@@ -46,6 +46,13 @@ milestone:
   mirrored tests.
 - [x] Extracted marker creation/formatting and primitive serializers for
   functions, symbols, BigInts, and undefined values.
+- [x] Decomposed structured redaction into dedicated object, array, property,
+  key, Error, entry-reader, copy, and cycle-handling modules with mirrored
+  tests.
+- [x] Decomposed header redaction into entry-reading, header-name policy, and
+  header-value modules with mirrored tests.
+- [x] Added the remaining policy metadata, serialization-limit, plain-object,
+  own-value, and buffer modules with mirrored tests.
 - [ ] Complete final API and architecture audit against every desired-state
   file and specification.
 

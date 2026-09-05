@@ -30,4 +30,7 @@ test('serializes Errors and bounded objects', () => {
   expect(safeSerialize(new Proxy({}, { ownKeys() { throw new Error('blocked'); } }))).toEqual({});
   const hostileError = new Proxy(new Error('blocked'), { get(target, key) { if (key === 'name') throw new Error('blocked'); return Reflect.get(target, key); } });
   expect(safeSerialize(hostileError)).toBe('[UNSERIALIZABLE]');
+  expect(safeSerialize(new Date())).toEqual({});
+  class Record { constructor() { this.value = 2; } }
+  expect(safeSerialize(new Record())).toEqual({ value: 2 });
 });

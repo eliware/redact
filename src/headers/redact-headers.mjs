@@ -1,7 +1,8 @@
-import { redactValue } from '../structured/redact-value.mjs';
+import { readHeaderEntries } from './header-entry-reader.mjs';
+import { redactHeaderValue } from './header-value-redactor.mjs';
 
 export function redactHeaders(headers, options = {}) {
-  if (headers && !Array.isArray(headers) && typeof headers.entries === 'function') return Object.fromEntries([...headers.entries()].map(([key, value]) => [key, redactValue({ [key]: value }, options)[key]]));
-  if (Array.isArray(headers)) return headers.map(([key, value]) => [key, redactValue({ [key]: value }, options)[key]]);
-  return redactValue(headers ?? {}, options);
+  const entries = readHeaderEntries(headers);
+  const redacted = entries.map(([key, value]) => [key, redactHeaderValue(key, value, options)]);
+  return Array.isArray(headers) ? redacted : Object.fromEntries(redacted);
 }
