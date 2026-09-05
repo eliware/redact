@@ -6,8 +6,33 @@ packages.
 ## Status
 
 The repository is bootstrapped at version `4.0.0`. The public redaction API is
-not implemented yet; the intended architecture and behavioral contracts are
-being established before implementation.
+implemented APIs include policy creation, structured redaction, header
+redaction, best-effort text redaction, literal-secret replacement, and safe
+serialization.
+
+## API
+
+```js
+import {
+  redactText,
+  redactValue,
+  safeSerialize,
+} from '@eliware/redact';
+
+redactText('Authorization: Bearer secret');
+// 'Authorization: Bearer [REDACTED]'
+
+redactValue({ token: 'secret', safe: true });
+// { token: '[REDACTED]', safe: true }
+
+safeSerialize({ token: 'secret', nested: { value: 1 } });
+// { token: '[REDACTED]', nested: { value: 1 } }
+```
+
+Structured redaction is key-based and does not mutate its input. Text
+redaction is best-effort and cannot guarantee detection of unknown secrets.
+Configure `keys`, `marker`, and serialization limits for package-specific
+contracts.
 
 ## Development
 

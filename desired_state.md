@@ -27,7 +27,10 @@ milestone:
   hostile values.
 - [x] Initial limits module and bounded serialization behavior.
 - [ ] Error-specific public helpers.
-- [ ] Type declarations and `typecheck` script.
+- [x] Type declarations and TypeScript configuration; direct declaration
+  validation passes with the locally installed compiler. A package `typecheck`
+  script remains deferred because the current global `eliware-test` Windows
+  runner cannot spawn npm for that lifecycle hook.
 - [ ] Complete README API documentation and runnable examples.
 - [ ] CI workflow and final package-file review.
 
