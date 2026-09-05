@@ -71,3 +71,8 @@ test('bounds large plain objects and records truncation', () => {
   expect(output.__truncated).toBe('[TRUNCATED]');
   expect(output.key1000).toBeUndefined();
 });
+
+test('redacts Error stack when configured as sensitive', () => {
+  const error = new Error('failed');
+  expect(safeSerialize(error, { keys: ['stack'] }).stack).toBe('[REDACTED]');
+});

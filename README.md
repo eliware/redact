@@ -45,8 +45,9 @@ safeSerialize({ token: 'secret', nested: { value: 1 } });
 
 Structured redaction is key-based and does not mutate its input. Text
 redaction is best-effort and cannot guarantee detection of unknown secrets.
-Configure `keys`, `marker`, `circularMarker`, and serialization limits for
-package-specific contracts. Serialization limits must be non-negative integers.
+Configure `keys`, `marker`, `circularMarker`, and serialization limits
+(`maxDepth`, `maxKeys`, and `maxString`) for package-specific contracts.
+Serialization limits must be non-negative integers.
 Header-name heuristics can be disabled with `matchHeuristics: false` when
 custom header policy must be exact.
 The supported runtime is Node.js 26 or newer; browser use does not provide

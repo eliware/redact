@@ -29,6 +29,9 @@ export declare function createPolicy(options?: RedactionPolicy): Readonly<Redact
   keys: ReadonlySet<string>;
   marker: string;
   maxArray: number;
+  circularMarker: string;
+  maxDepth: number;
+  maxKeys: number;
 }>;
 
 export declare function redactValue<T>(value: T, options?: RedactionPolicy): unknown;

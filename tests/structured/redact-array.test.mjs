@@ -14,3 +14,8 @@ test('returns a safe result for hostile array proxies', () => {
   const value = new Proxy([], { get(target, key) { if (key === 'slice') throw new Error('blocked'); return Reflect.get(target, key); } });
   expect(redactArray(value, { keys: new Set() }, item => item)).toEqual([]);
 });
+
+test('returns a safe result when hostile array length access throws', () => {
+  const value = new Proxy([1], { get(target, key, receiver) { if (key === 'length') throw new Error('blocked'); return Reflect.get(target, key, receiver); } });
+  expect(redactArray(value, { keys: new Set() }, item => item)).toEqual([]);
+});

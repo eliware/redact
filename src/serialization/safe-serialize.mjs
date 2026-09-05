@@ -29,7 +29,7 @@ function serialize(value, policy, limits, seen, depth) {
     if (isError(value)) return serializeError(value, policy, (child, childDepth) => serialize(child, policy, limits, seen, childDepth), depth);
     if (Array.isArray(value)) return serializeArray(value, limits.maxArray, item => serialize(item, policy, limits, seen, depth + 1));
     const source = boundedObject(value, limits.maxKeys);
-    return serializeObject(source.value, limits.maxKeys, (key, child) => policy.keys.has(key.toLowerCase()) ? policy.marker : serialize(child, policy, limits, seen, depth + 1), '[TRUNCATED]', source.truncated);
+    return serializeObject(source.value, limits.maxKeys + 1, (key, child) => policy.keys.has(key.toLowerCase()) ? policy.marker : serialize(child, policy, limits, seen, depth + 1), '[TRUNCATED]', source.truncated);
   } catch { return unserializableValue(); }
   finally { seen.delete(value); }
 }

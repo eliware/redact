@@ -4,8 +4,8 @@ import { redactProperty } from './redact-property.mjs';
 
 export function redactObject(value, policy, redactChild) {
   const output = Object.create(null);
-  const entries = readObjectEntries(value);
-  const limit = policy.maxKeys ?? entries.length;
+  const limit = policy.maxKeys ?? Number.POSITIVE_INFINITY;
+  const entries = readObjectEntries(value, limit + 1);
   for (const [index, [key, child]] of entries.entries()) {
     if (index >= limit) { addTruncationMarker(output); break; }
     copyPropertyDescriptor(output, key, redactProperty(key, child, policy, redactChild));
