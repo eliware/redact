@@ -36,6 +36,9 @@ milestone:
   surface.
 - [x] CI workflow and package-file review; local `npm test`, direct TypeScript
   declaration validation, package dry-run, and diff checks pass.
+- [ ] Complete the remaining deep atomic decomposition listed in the source
+  tree, including dedicated inspection, serialization, limit, and text-rule
+  modules where current implementations still combine responsibilities.
 
 ```text
 .
