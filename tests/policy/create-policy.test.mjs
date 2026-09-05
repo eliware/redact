@@ -5,3 +5,4 @@ test('creates a normalized immutable policy', () => {
   expect(policy.keys.has('token')).toBe(true);
   expect(Object.isFrozen(policy)).toBe(true);
 });
+test('creates the default policy when options are omitted', () => expect(createPolicy().marker).toBe('[REDACTED]'));

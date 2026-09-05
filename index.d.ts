@@ -3,23 +3,28 @@ export interface RedactionPolicy {
   redactKeys?: Iterable<string>;
   marker?: string;
   circularMarker?: string;
+  maxArray?: number;
+  matchHeuristics?: boolean;
+  headerNames?: Iterable<string>;
 }
 
 export interface SerializationOptions extends RedactionPolicy {
   maxDepth?: number;
   maxKeys?: number;
-  maxArray?: number;
   maxString?: number;
 }
 
 export declare const defaultPolicy: Readonly<{
   keys: ReadonlySet<string>;
   marker: '[REDACTED]';
+  circularMarker: '[CIRCULAR]';
+  maxArray: number;
 }>;
 
 export declare function createPolicy(options?: RedactionPolicy): Readonly<RedactionPolicy & {
-  keys: Set<string>;
+  keys: ReadonlySet<string>;
   marker: string;
+  maxArray: number;
 }>;
 
 export declare function redactValue<T>(value: T, options?: RedactionPolicy): unknown;

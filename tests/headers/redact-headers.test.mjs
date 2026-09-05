@@ -12,3 +12,25 @@ test('supports Headers and entry arrays', () => {
 test('handles null input', () => {
   expect(redactHeaders(null)).toEqual({});
 });
+
+test('handles a Headers-like object whose iterator throws', () => {
+  expect(redactHeaders({ entries() { throw new Error('blocked'); } })).toEqual({});
+});
+
+test('skips malformed entry arrays', () => {
+  expect(redactHeaders([['accept', 'json'], ['broken']])).toEqual([['accept', 'json']]);
+});
+
+test('can disable heuristic header matching', () => {
+  expect(redactHeaders({ token: 'value' }, { matchHeuristics: false })).toEqual({ token: 'value' });
+});
+
+test('omits non-string header names', () => {
+  expect(redactHeaders([[Symbol('header'), 'value'], ['accept', 'json']])).toEqual([['accept', 'json']]);
+  expect(redactHeaders({ [Symbol('header')]: 'value', accept: 'json' })).toEqual({ accept: 'json' });
+});
+
+test('handles hostile object-form headers', () => {
+  const value = new Proxy({}, { ownKeys() { throw new Error('blocked'); } });
+  expect(redactHeaders(value)).toEqual({});
+});

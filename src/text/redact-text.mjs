@@ -11,7 +11,10 @@ import { redactQuerySecretRule } from './rules/redact-query-secret.mjs';
 const rules = [redactPrivateKeyRule, redactAuthorizationRule, redactBearerTokenRule, redactQuerySecretRule, redactNamedAssignmentRule, redactProviderTokenRule, redactJwtRule];
 
 export function redactText(value, options = {}) {
-  let output = applyTextRules(value, rules);
-  for (const secret of options.secrets ?? []) output = replaceLiteralSecret(output, secret, options.marker ?? '[REDACTED]');
-  return output;
+  let output = String(value ?? '');
+  const secrets = [...(options.secrets ?? [])].slice(0, 100);
+  for (const secret of secrets) {
+    if (typeof secret === 'string' && secret.length > 0) output = replaceLiteralSecret(output, secret, options.marker ?? '[REDACTED]');
+  }
+  return applyTextRules(output, rules, options.marker ?? '[REDACTED]');
 }

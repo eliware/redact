@@ -5,6 +5,7 @@ test('serializes primitives and redacts nested keys', () => {
   expect(safeSerialize(null)).toBeNull();
   expect(safeSerialize('ok')).toBe('ok');
   expect(safeSerialize('abcdef', { maxString: 3 })).toBe('abc...[TRUNCATED]');
+  expect(safeSerialize('a'.repeat(10001), { maxString: undefined })).toContain('[TRUNCATED]');
 });
 
 test('handles complex values and limits', () => {
@@ -13,8 +14,16 @@ test('handles complex values and limits', () => {
   expect(safeSerialize(value, { maxString: 3 })).toMatchObject({ fn: '[Function: fn]', symbol: '[Symbol: x]', undefined: '[Undefined]', buffer: '[Buffer length=3]', self: '[CIRCULAR]' });
   expect(safeSerialize({ deep: { value: 1 } }, { maxDepth: 0 }).deep).toBe('[TRUNCATED]');
   expect(safeSerialize([1, { token: 'secret' }])).toEqual([1, { token: '[REDACTED]' }]);
+  expect(safeSerialize([1, 2, 3], { maxArray: 2 })).toEqual([1, 2, '[TRUNCATED]']);
   expect(safeSerialize(function () {})).toBe('[Function: anonymous]');
   expect(safeSerialize(Symbol())).toBe('[Symbol: ]');
+});
+
+test('uses the configured circular marker and validates limits', () => {
+  const value = {};
+  value.self = value;
+  expect(safeSerialize(value, { circularMarker: '<cycle>' }).self).toBe('<cycle>');
+  expect(() => safeSerialize({}, { maxDepth: -1 })).toThrow('maxDepth must be a non-negative integer');
 });
 
 test('serializes Errors and bounded objects', () => {
@@ -22,6 +31,7 @@ test('serializes Errors and bounded objects', () => {
   expect(safeSerialize(error)).toMatchObject({ name: 'Error', message: 'failed', token: '[REDACTED]', extra: true });
   expect(safeSerialize(error, { keys: ['message'] }).message).toBe('[REDACTED]');
   expect(safeSerialize({ a: 1, b: 2 }, { maxKeys: 1 }).__truncated).toBe('[TRUNCATED]');
+  expect(safeSerialize({ __truncated: 'keep', a: 1 }, { maxKeys: 1 }).___truncated).toBe('[TRUNCATED]');
   const noStack = Object.assign(new Error('plain'), { stack: '' });
   expect(safeSerialize(noStack)).toMatchObject({ message: 'plain' });
   const named = Object.assign(new Error('plain'), { name: 'Named', message: 'changed' });
@@ -33,4 +43,14 @@ test('serializes Errors and bounded objects', () => {
   expect(safeSerialize(new Date())).toEqual({});
   class Record { constructor() { this.value = 2; } }
   expect(safeSerialize(new Record())).toEqual({ value: 2 });
+});
+
+test('propagates child depth when serializing Error metadata', () => {
+  const error = Object.assign(new Error('failed'), { detail: { value: 1 } });
+  expect(safeSerialize({ error }, { maxDepth: 1 }).error.message).toBe('failed');
+});
+
+test('omits non-plain proxy state when key enumeration fails', () => {
+  const value = new Proxy(new (class Record {})(), { ownKeys() { throw new Error('blocked'); } });
+  expect(safeSerialize(value)).toEqual({});
 });

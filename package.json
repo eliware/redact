@@ -2,6 +2,8 @@
   "name": "@eliware/redact",
   "version": "4.0.0",
   "description": "Reusable secret redaction and safe serialization utilities for Eliware packages",
+  "author": "Eliware",
+  "license": "UNLICENSED",
   "exports": {
     ".": {
       "types": "./index.d.ts",
@@ -13,15 +15,21 @@
     "src",
     "index.d.ts",
     "README.md",
+    "docs",
+    "examples",
+    "specs",
     "LICENSE",
     "RELEASE_NOTES.md"
   ],
   "scripts": {
-    "test": "eliware-test"
+    "test": "eliware-test",
+    "lint": "eliware-test --lint",
+    "typecheck": "tsc --noEmit",
+    "pack": "npm pack --dry-run"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/eliware/redact.git"
+    "url": "https://github.com/eliware/redact"
   },
   "keywords": [
     "eliware",
@@ -34,7 +42,11 @@
     "url": "https://github.com/eliware/redact/issues"
   },
   "homepage": "https://github.com/eliware/redact#readme",
+  "publishConfig": {
+    "access": "public"
+  },
   "devDependencies": {
+    "@eliware/test": "^4.0.0",
     "typescript": "^7.0.2"
   }
 }

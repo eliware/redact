@@ -28,14 +28,14 @@ milestone:
 - [x] Initial limits module and bounded serialization behavior.
 - [x] Error-specific public helpers for messages, structured details, and safe
   error values.
-- [x] Type declarations and TypeScript configuration; direct declaration
-  validation passes with the locally installed compiler. A package `typecheck`
-  script remains deferred because the current global `eliware-test` Windows
-  runner cannot spawn npm for that lifecycle hook.
+- [x] Type declarations, TypeScript configuration, and the package
+  `typecheck` validation script.
 - [x] README API documentation and runnable examples for the current public
   surface.
-- [x] CI workflow and package-file review; local `npm test`, direct TypeScript
-  declaration validation, package dry-run, and diff checks pass.
+- [x] CI workflow and package-file review; direct lint, typecheck, package
+  dry-run, and diff checks pass. The local Windows `@eliware/test` pack
+  lifecycle remains recorded in `known_drifts.md` because it cannot spawn npm
+  from the wrapper, while direct `npm run pack` succeeds.
 - [x] Extracted dedicated inspection and limit modules and integrated them into
   safe serialization with mirrored tests.
 - [x] Decomposed the text redactor into dedicated private-key, authorization,

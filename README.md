@@ -1,14 +1,26 @@
-# @eliware/redact
+# [![eliware.org](https://eliware.org/logos/brand.png)](https://discord.gg/M6aTR9eTwN)
 
-Reusable secret-redaction and safe-serialization utilities for Eliware
-packages.
+## @eliware/redact [![npm](https://img.shields.io/npm/v/%40eliware%2Fredact)](https://www.npmjs.com/package/@eliware/redact) [![license](https://img.shields.io/badge/license-Eliware-blue)](LICENSE) [![CI](https://github.com/eliware/redact/actions/workflows/ci.yml/badge.svg)](https://github.com/eliware/redact/actions/workflows/ci.yml)
+
+Reusable secret-redaction and safe-serialization utilities for Node.js 26+.
+This library helps protect observability and boundary data; it is not
+encryption, secret storage, or a guarantee that unknown secrets are detected.
+
+## Installation
+
+```sh
+npm install @eliware/redact
+```
+
+## Requirements
+
+Node.js 26 or newer with native ESM support is required.
 
 ## Status
 
-The repository is bootstrapped at version `4.0.0`. The public redaction API is
-implemented APIs include policy creation, structured redaction, header
-redaction, best-effort text redaction, literal-secret replacement, and safe
-serialization.
+The repository is bootstrapped at version `4.0.0`. The public API includes
+policy creation, structured redaction, header redaction, best-effort text
+redaction, literal-secret replacement, safe serialization, and error helpers.
 
 ## API
 
@@ -29,21 +41,71 @@ safeSerialize({ token: 'secret', nested: { value: 1 } });
 // { token: '[REDACTED]', nested: { value: 1 } }
 ```
 
+## Configuration
+
 Structured redaction is key-based and does not mutate its input. Text
 redaction is best-effort and cannot guarantee detection of unknown secrets.
-Configure `keys`, `marker`, and serialization limits for package-specific
-contracts.
+Configure `keys`, `marker`, `circularMarker`, and serialization limits for
+package-specific contracts. Serialization limits must be non-negative integers.
+Header-name heuristics can be disabled with `matchHeuristics: false` when
+custom header policy must be exact.
+The supported runtime is Node.js 26 or newer; browser use does not provide
+Node `Buffer` serialization behavior.
+
+Structured redaction is intentionally loss-tolerant for hostile objects: if
+property enumeration fails, unavailable fields are omitted from the safe result.
+Safe serialization similarly reduces unsupported class instances and built-in
+objects to safely readable enumerable own properties; hostile state may be
+omitted by design.
+Literal-secret replacement processes at most 100 configured secrets per call.
+When bounded serialization omits array items, it appends `[TRUNCATED]`; object
+truncation uses a collision-safe metadata key.
+
+Additional boundary helpers are available for common logging paths:
+
+```js
+redactHeaders({ authorization: 'Bearer secret', accept: 'json' });
+redactErrorMessage(new Error('request token=secret'));
+redactErrorDetails(Object.assign(new Error('failed'), { token: 'secret' }));
+safeErrorValue(new Error('failed'));
+```
+
+The same helpers are exported from the package entrypoint; serialization-only
+limits are options to `safeSerialize`, not properties of `defaultPolicy`.
+
+Configured literal secrets must be non-empty strings and are replaced using
+substring semantics. Buffer handling is intentionally Node.js-specific.
 
 ## Development
 
 ```text
 npm test
+npm run lint
+npm run typecheck
+npm run pack
 ```
 
-The project uses the globally available `eliware-test` command and does not yet
-declare `@eliware/test` as a development dependency.
+The project uses `@eliware/test` for its test and lint gates.
+
+## Security
+
+Redaction is an observability and boundary-safety aid, not encryption, secret
+storage, access control, or a guarantee that unknown secrets are detected.
+Redact values before logging, persistence, transport, or browser delivery.
 
 ## Design
 
-See [desired_state.md](desired_state.md) for the planned module hierarchy and
-the individual files under [specs/](specs/) for intended behavior and scope.
+See [documentation](docs/README.md), [specifications](specs/README.md),
+[examples](examples/README.md), [desired state](desired_state.md), and
+[release notes](RELEASE_NOTES.md).
+
+## Support
+
+Report reproducible issues at [github.com/eliware/redact/issues](https://github.com/eliware/redact/issues).
+
+## License
+
+This internal Eliware package is distributed under the terms in [LICENSE](LICENSE).
+
+Report issues at [github.com/eliware/redact/issues](https://github.com/eliware/redact/issues).
+This package is distributed under the terms in [LICENSE](LICENSE).

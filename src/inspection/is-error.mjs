@@ -1,3 +1,3 @@
 export function isError(value) {
-  return value instanceof Error;
+  try { return value instanceof Error || Object.prototype.toString.call(value) === '[object Error]'; } catch { return false; }
 }
