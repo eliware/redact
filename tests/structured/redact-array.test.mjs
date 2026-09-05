@@ -23,3 +23,8 @@ test('returns a safe result when hostile array length access throws', () => {
 test('preserves safe array items when one child fails', () => {
   expect(redactArray([1, 2], { keys: new Set() }, value => { if (value === 2) throw new Error('blocked'); return value; })).toEqual([1, '[UNSERIALIZABLE]']);
 });
+
+test('returns a safe result when a hostile slice returns a non-array', () => {
+  const value = new Proxy([1], { get(target, key, receiver) { if (key === 'slice') return () => ({}); return Reflect.get(target, key, receiver); } });
+  expect(redactArray(value, { keys: new Set() }, item => item)).toEqual([]);
+});

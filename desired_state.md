@@ -89,7 +89,7 @@ milestone:
 │   └── ...
 └── .github/
     └── workflows/
-        └── ci.yml
+        └── nodejs.yml
 ```
 
 The following files and directories are part of the desired project shape:
@@ -101,7 +101,6 @@ src/
 ├── policy/
 │   ├── default-policy.mjs
 │   ├── default-key-names.mjs
-│   ├── default-text-rules.mjs
 │   ├── create-policy.mjs
 │   ├── normalize-policy.mjs
 │   └── policy-types.mjs
@@ -138,20 +137,13 @@ src/
 │   │   ├── redact-authorization.mjs
 │   │   ├── redact-bearer-token.mjs
 │   │   ├── redact-named-assignment.mjs
-│   │   ├── redact-json-secret.mjs
 │   │   ├── redact-query-secret.mjs
 │   │   ├── redact-provider-token.mjs
 │   │   ├── redact-private-key.mjs
-│   │   ├── redact-public-key.mjs
-│   │   ├── redact-jwt.mjs
-│   │   ├── redact-opaque-secret.mjs
-│   │   └── redact-hex-secret.mjs
+│   │   └── redact-jwt.mjs
 │   │
 │   └── patterns/
-│       ├── secret-key-patterns.mjs
-│       ├── authorization-patterns.mjs
-│       ├── provider-token-patterns.mjs
-│       └── key-material-patterns.mjs
+│       └── secret-key-patterns.mjs
 │
 ├── serialization/
 │   ├── safe-serialize.mjs

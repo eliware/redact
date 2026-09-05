@@ -21,3 +21,7 @@ Header redaction does not preserve the representation of every possible
 iterable. Its supported representation contract is limited to plain objects,
 `Headers`-style `entries()` objects, and entry arrays; treating arbitrary
 iterables as a required API would be a false-positive review finding.
+The desired-state inventory is descriptive, not a requirement to implement
+unreleased speculative text rules. Review findings must compare it with the
+current documented release scope rather than treating absent future modules as
+defects.
