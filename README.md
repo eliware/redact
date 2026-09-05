@@ -79,6 +79,10 @@ limits are options to `safeSerialize`, not properties of `defaultPolicy`.
 
 Configured literal secrets must be non-empty strings and are replaced using
 substring semantics. Buffer handling is intentionally Node.js-specific.
+Text redaction and error-message redaction accept only `marker` and `secrets`;
+structured/header policy fields do not apply to those helpers. Header
+enumeration failures are intentionally loss-tolerant and produce an empty safe
+result, as hostile input cannot be represented reliably.
 
 ## Development
 
