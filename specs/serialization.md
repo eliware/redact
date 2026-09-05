@@ -18,3 +18,7 @@ the circular marker.
 The serializer is deliberately non-throwing at its public boundary; unexpected
 errors during hostile-value inspection are reduced to `[UNSERIALIZABLE]` so a
 logging path cannot fail because of diagnostic serialization.
+Depth truncation replaces an object once its depth exceeds `maxDepth`; keys
+of an object still being represented are redacted before child traversal is
+truncated. Thus sensitive fields at the represented boundary remain markers,
+while deeper object shape is intentionally omitted.

@@ -105,3 +105,9 @@ test('copies repeated non-cyclic references independently', () => {
   expect(output.first).toEqual({ value: 1 });
   expect(output.second).toEqual({ value: 1 });
 });
+
+test('redacts fields on the represented depth boundary', () => {
+  const output = safeSerialize({ token: 'secret', nested: { value: 1 } }, { maxDepth: 0 });
+  expect(output.token).toBe('[REDACTED]');
+  expect(output.nested).toBe('[TRUNCATED]');
+});
