@@ -10,8 +10,8 @@ import { serializeArray } from './serialize-array.mjs';
 import { serializeError } from './serialize-error.mjs';
 import { serializeBuffer } from './serialize-buffer.mjs';
 import { serializeObject } from './serialize-object.mjs';
-import { serializePrimitive } from './serialize-primitive.mjs';
 import { unserializableValue } from './unserializable-value.mjs';
+import { serializeValue } from './serialize-value.mjs';
 
 export function safeSerialize(value, options = {}) {
   const policy = normalizePolicy(options);
@@ -20,7 +20,7 @@ export function safeSerialize(value, options = {}) {
 }
 
 function serialize(value, policy, limits, seen, depth) {
-  const primitive = serializePrimitive(value, limits.maxString);
+  const primitive = serializeValue(value, limits);
   if (primitive.handled) return primitive.value;
   if (enforceDepthLimit(depth, limits.maxDepth)) return '[TRUNCATED]';
   if (seen.has(value)) return circularValue();

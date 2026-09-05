@@ -53,8 +53,12 @@ milestone:
   header-value modules with mirrored tests.
 - [x] Added the remaining policy metadata, serialization-limit, plain-object,
   own-value, and buffer modules with mirrored tests.
-- [ ] Complete final API and architecture audit against every desired-state
-  file and specification.
+- [x] Added and consumed the final `serialize-value` dispatch module; the
+  desired source tree now has a mirrored test module for every production
+  module.
+- [x] Final API and architecture audit: all desired source files are present,
+  all source modules have mirrored tests, and the public entrypoint remains
+  thin and explicit.
 
 ```text
 .
