@@ -23,8 +23,9 @@ milestone:
 - [x] Mirrored focused tests for every implemented production module.
 - [x] `npm test` passes with 100×4 coverage and zero lint warnings.
 - [x] `npm pack --dry-run` and `git diff --check` pass.
-- [ ] Safe serialization and its atomic submodules.
-- [ ] Explicit limits modules and bounded serialization behavior.
+- [x] Safe serialization with defensive handling for complex, circular, and
+  hostile values.
+- [x] Initial limits module and bounded serialization behavior.
 - [ ] Error-specific public helpers.
 - [ ] Type declarations and `typecheck` script.
 - [ ] Complete README API documentation and runnable examples.

@@ -4,3 +4,4 @@ export { redactValue } from './structured/redact-value.mjs';
 export { redactHeaders } from './headers/redact-headers.mjs';
 export { redactText } from './text/redact-text.mjs';
 export { replaceLiteralSecret } from './text/replace-literal-secret.mjs';
+export { safeSerialize } from './serialization/safe-serialize.mjs';
