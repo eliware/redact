@@ -38,9 +38,11 @@ milestone:
   declaration validation, package dry-run, and diff checks pass.
 - [x] Extracted dedicated inspection and limit modules and integrated them into
   safe serialization with mirrored tests.
+- [x] Decomposed the text redactor into dedicated private-key, authorization,
+  bearer, query-secret, named-assignment, provider-token, and JWT rule modules.
 - [ ] Finish the remaining deep atomic decomposition listed in the source tree,
-  including dedicated serialization and text-rule modules where current
-  implementations still combine responsibilities.
+  including dedicated serialization modules where current implementations
+  still combine responsibilities.
 
 ```text
 .
