@@ -16,6 +16,6 @@ Reusable secret-redaction and safe-serialization library for Eliware packages.
 - Do not commit secrets, credentials, environment files, or runtime state.
 - Do not publish, tag, push, or release without explicit authorization.
 
-The desired architecture and specification inventory are recorded in
-`desired_state.md` and `specs/`. These instructions apply to the whole
-repository; there are no subtree-specific instruction files.
+The desired architecture and specification inventory are recorded in `specs/`.
+These instructions apply to the whole repository; there are no subtree-specific
+instruction files.

@@ -106,8 +106,7 @@ Redact values before logging, persistence, transport, or browser delivery.
 ## Design
 
 See [documentation](docs/README.md), [specifications](specs/README.md),
-[examples](examples/README.md), [desired state](desired_state.md), and
-[release notes](RELEASE_NOTES.md).
+[examples](examples/README.md), and [release notes](RELEASE_NOTES.md).
 
 ## Support
 
