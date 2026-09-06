@@ -20,3 +20,7 @@ For troubleshooting, run `npm test`, `npm run lint`, `npm run typecheck`, and
 - [Examples](../examples/README.md)
 - [Usage](usage.md)
 - [Troubleshooting](troubleshooting.md)
+
+Audience: package users. Prerequisites: a supported runtime and values that
+must be handled safely. Expected result: documented redaction workflows remove
+configured sensitive values without treating redaction as encryption.
