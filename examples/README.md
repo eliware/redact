@@ -26,3 +26,4 @@ All values are safe placeholders and contain no credentials.
 
 - [Basic](basic/README.md)
 - [Basic example directory](basic/)
+- [Basic example source](basic/index.mjs)
