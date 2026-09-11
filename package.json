@@ -2,7 +2,7 @@
   "name": "@eliware/redact",
   "version": "8.0.0",
   "description": "Reusable secret-redaction and safe-serialization utilities for Node.js 26+.",
-  "author": "Eliware",
+  "author": "Eliware <eliware@eliware.org>",
   "license": "MIT",
   "exports": {
     ".": {
@@ -53,13 +53,35 @@
     "node": ">=26"
   },
   "devDependencies": {
-    "@eliware/test": "^6.0.1",
+    "@eliware/test": "file:../test",
     "prettier": "^3.9.6",
     "typescript": "^7.0.2"
   },
   "eliware": {
-    "conventions": { "version": "8.0", "apply": ["general", "node", "library", "npm-published"], "exemptions": [] },
-    "authority": { "authoritativeFor": ["Redaction and safe-serialization library behavior."], "notAuthoritativeFor": ["Shared platform conventions, operations, publication, or deployment."] },
-    "crosslinks": [{ "path": "specs/README.md", "relation": "relatedAuthority", "authoritativeFor": "Project-specific behavior specifications." }]
+    "conventions": {
+      "version": "8.0",
+      "apply": [
+        "general",
+        "node",
+        "library",
+        "npm-published"
+      ],
+      "exemptions": []
+    },
+    "authority": {
+      "authoritativeFor": [
+        "Redaction and safe-serialization library behavior."
+      ],
+      "notAuthoritativeFor": [
+        "Shared platform conventions, operations, publication, or deployment."
+      ]
+    },
+    "crosslinks": [
+      {
+        "path": "specs/README.md",
+        "relation": "relatedAuthority",
+        "authoritativeFor": "Project-specific behavior specifications."
+      }
+    ]
   }
 }
