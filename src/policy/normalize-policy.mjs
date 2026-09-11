@@ -1,6 +1,7 @@
 import { defaultPolicy } from "./default-policy.mjs";
-import { readonlySet } from "./readonly-set.mjs";
-import { normalizeHeaderNames } from "../headers/header-name-normalizer.mjs";
+import { normalizeSensitiveKeys } from "./normalize-sensitive-keys.mjs";
+import { validatePolicyLimits } from "./validate-policy-limits.mjs";
+import { buildNormalizedPolicy } from "./build-normalized-policy.mjs";
 
 export function normalizePolicy(options = {}) {
   if (
@@ -8,26 +9,9 @@ export function normalizePolicy(options = {}) {
     typeof options.matchHeuristics !== "boolean"
   )
     throw new TypeError("matchHeuristics must be boolean");
-  const keys = options.keys ?? defaultPolicy.keys;
-  if (keys == null || typeof keys[Symbol.iterator] !== "function")
-    throw new TypeError("Redaction policy keys must be iterable");
-  const normalizedKeys = new Set();
-  for (const key of keys) normalizedKeys.add(String(key).toLowerCase());
-  for (const name of ["maxArray", "maxDepth", "maxKeys"]) {
-    if (
-      !Number.isInteger(options[name] ?? defaultPolicy[name]) ||
-      (options[name] ?? defaultPolicy[name]) < 0
-    )
-      throw new TypeError(`${name} must be a non-negative integer`);
-  }
-  return {
-    keys: readonlySet(normalizedKeys),
-    marker: defaultPolicy.marker,
-    circularMarker: defaultPolicy.circularMarker,
-    maxArray: options.maxArray ?? defaultPolicy.maxArray,
-    maxDepth: options.maxDepth ?? defaultPolicy.maxDepth,
-    maxKeys: options.maxKeys ?? defaultPolicy.maxKeys,
-    matchHeuristics: options.matchHeuristics ?? defaultPolicy.matchHeuristics,
-    headerNames: normalizeHeaderNames(options.headerNames),
-  };
+  validatePolicyLimits(options, defaultPolicy);
+  return buildNormalizedPolicy(
+    options,
+    normalizeSensitiveKeys(options.keys ?? defaultPolicy.keys),
+  );
 }
