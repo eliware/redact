@@ -1,3 +1,3 @@
 export function serializeSymbol(value) {
-  return `[Symbol: ${value.description ?? ''}]`;
+  return `[Symbol: ${value.description ?? ""}]`;
 }

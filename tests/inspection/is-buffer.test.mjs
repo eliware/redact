@@ -1,6 +1,6 @@
-import { isBuffer } from '../../src/inspection/is-buffer.mjs';
+import { isBuffer } from "../../src/inspection/is-buffer.mjs";
 
-test('identifies buffers', () => {
-  expect(isBuffer(Buffer.from('x'))).toBe(true);
-  expect(isBuffer('x')).toBe(false);
+test("identifies buffers", () => {
+  expect(isBuffer(Buffer.from("x"))).toBe(true);
+  expect(isBuffer("x")).toBe(false);
 });

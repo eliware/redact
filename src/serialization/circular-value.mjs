@@ -1,3 +1,3 @@
-export function circularValue(marker = '[CIRCULAR]') {
+export function circularValue(marker = "[CIRCULAR]") {
   return marker;
 }

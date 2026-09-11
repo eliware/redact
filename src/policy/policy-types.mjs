@@ -1,1 +1,1 @@
-export const POLICY_TYPE = 'redaction-policy';
+export const POLICY_TYPE = "redaction-policy";

@@ -1,3 +1,3 @@
 export function circularReferenceValue(policy) {
-  return policy.circularMarker ?? '[CIRCULAR]';
+  return policy.circularMarker ?? "[CIRCULAR]";
 }

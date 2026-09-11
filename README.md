@@ -37,21 +37,17 @@ redaction, literal-secret replacement, safe serialization, and error helpers.
 ## API
 
 ```js
-import {
-  redactText,
-  redactValue,
-  safeSerialize,
-} from '@eliware/redact';
+import { redactText, redactValue, safeSerialize } from "@eliware/redact";
 
-redactText('Authorization: Bearer secret');
+redactText("Authorization: Bearer secret");
 // 'Authorization: Bearer [REDACTED]'
 
-redactValue({ token: 'secret', safe: true });
+redactValue({ token: "secret", safe: true });
 // { token: '[REDACTED]', safe: true }
 
-safeSerialize({ token: 'secret', nested: { value: 1 } });
+safeSerialize({ token: "secret", nested: { value: 1 } });
 // { token: '[REDACTED]', nested: { value: 1 } }
-safeSerialize('token=secret');
+safeSerialize("token=secret");
 // 'token=[REDACTED]'
 ```
 
@@ -91,10 +87,10 @@ truncation uses a collision-safe metadata key.
 Additional boundary helpers are available for common logging paths:
 
 ```js
-redactHeaders({ authorization: 'Bearer secret', accept: 'json' });
-redactErrorMessage(new Error('request token=secret'));
-redactErrorDetails(Object.assign(new Error('failed'), { token: 'secret' }));
-safeErrorValue(new Error('failed'));
+redactHeaders({ authorization: "Bearer secret", accept: "json" });
+redactErrorMessage(new Error("request token=secret"));
+redactErrorDetails(Object.assign(new Error("failed"), { token: "secret" }));
+safeErrorValue(new Error("failed"));
 ```
 
 The same helpers are exported from the package entrypoint; serialization-only
@@ -115,9 +111,16 @@ npm test
 npm run lint
 npm run typecheck
 npm run pack
+npm run audit
+npm run format:check
 ```
 
 The project uses `@eliware/test` for its test and lint gates.
+
+## Operations
+
+This library has no runtime deployment or operational state. Publication and
+release actions are performed through the approved CI and release process.
 
 ## Security
 
@@ -132,7 +135,9 @@ See [documentation](docs/README.md), [specifications](specs/README.md),
 
 ## Support
 
-Report reproducible issues at [github.com/eliware/redact/issues](https://github.com/eliware/redact/issues).
+Report reproducible issues at [github.com/eliware/redact/issues](https://github.com/eliware/redact/issues),
+the [Eliware Discord community](https://discord.gg/M6aTR9eTwN), or
+[eliware@eliware.org](mailto:eliware@eliware.org).
 
 ## License
 

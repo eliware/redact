@@ -9,12 +9,12 @@ import {
   replaceLiteralSecret,
   safeErrorValue,
   safeSerialize,
-} from '@eliware/redact';
+} from "@eliware/redact";
 
 const policy = createPolicy({
-  keys: ['token'],
+  keys: ["token"],
   matchHeuristics: false,
-  headerNames: ['authorization'],
+  headerNames: ["authorization"],
   maxArray: 10,
   maxDepth: 5,
   maxKeys: 10,
@@ -26,11 +26,11 @@ void defaultPolicy.maxKeys;
 void defaultPolicy.matchHeuristics;
 void defaultPolicy.headerNames;
 void policy.maxDepth;
-redactValue({ token: 'secret' }, policy);
-redactHeaders({ authorization: 'secret' }, policy);
-safeSerialize({ token: 'secret' }, { ...policy, maxString: 20 });
-redactText('token=secret', { secrets: ['secret'], maxString: 20 });
-replaceLiteralSecret('secret', 'secret');
-redactErrorMessage(new Error('secret'), { secrets: ['secret'] });
-redactErrorDetails(new Error('secret'), policy);
-safeErrorValue(new Error('secret'), policy);
+redactValue({ token: "secret" }, policy);
+redactHeaders({ authorization: "secret" }, policy);
+safeSerialize({ token: "secret" }, { ...policy, maxString: 20 });
+redactText("token=secret", { secrets: ["secret"], maxString: 20 });
+replaceLiteralSecret("secret", "secret");
+redactErrorMessage(new Error("secret"), { secrets: ["secret"] });
+redactErrorDetails(new Error("secret"), policy);
+safeErrorValue(new Error("secret"), policy);

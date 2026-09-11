@@ -25,6 +25,7 @@ The desired-state inventory is descriptive, not a requirement to implement
 unreleased speculative text rules. Review findings must compare it with the
 current documented release scope rather than treating absent future modules as
 defects.
+
 # Out of scope
 
 - `normalizeHeaderNames` is an internal additive-normalization helper, not a

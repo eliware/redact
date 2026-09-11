@@ -1,3 +1,4 @@
-import { serializeBuffer } from '../../src/serialization/serialize-buffer.mjs';
+import { serializeBuffer } from "../../src/serialization/serialize-buffer.mjs";
 
-test('serializes buffer metadata', () => expect(serializeBuffer(Buffer.from('abc'))).toBe('[Buffer length=3]'));
+test("serializes buffer metadata", () =>
+  expect(serializeBuffer(Buffer.from("abc"))).toBe("[Buffer length=3]"));

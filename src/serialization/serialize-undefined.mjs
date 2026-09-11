@@ -1,3 +1,3 @@
 export function serializeUndefined() {
-  return '[Undefined]';
+  return "[Undefined]";
 }

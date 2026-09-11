@@ -1,3 +1,3 @@
 export function serializeFunction(value) {
-  return `[Function: ${value.name || 'anonymous'}]`;
+  return `[Function: ${value.name || "anonymous"}]`;
 }

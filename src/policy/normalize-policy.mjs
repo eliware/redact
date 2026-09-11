@@ -1,15 +1,24 @@
-import { defaultPolicy } from './default-policy.mjs';
-import { readonlySet } from './readonly-set.mjs';
-import { normalizeHeaderNames } from '../headers/header-name-normalizer.mjs';
+import { defaultPolicy } from "./default-policy.mjs";
+import { readonlySet } from "./readonly-set.mjs";
+import { normalizeHeaderNames } from "../headers/header-name-normalizer.mjs";
 
 export function normalizePolicy(options = {}) {
-  if (options.matchHeuristics != null && typeof options.matchHeuristics !== 'boolean') throw new TypeError('matchHeuristics must be boolean');
+  if (
+    options.matchHeuristics != null &&
+    typeof options.matchHeuristics !== "boolean"
+  )
+    throw new TypeError("matchHeuristics must be boolean");
   const keys = options.keys ?? defaultPolicy.keys;
-  if (keys == null || typeof keys[Symbol.iterator] !== 'function') throw new TypeError('Redaction policy keys must be iterable');
+  if (keys == null || typeof keys[Symbol.iterator] !== "function")
+    throw new TypeError("Redaction policy keys must be iterable");
   const normalizedKeys = new Set();
   for (const key of keys) normalizedKeys.add(String(key).toLowerCase());
-  for (const name of ['maxArray', 'maxDepth', 'maxKeys']) {
-    if (!Number.isInteger(options[name] ?? defaultPolicy[name]) || (options[name] ?? defaultPolicy[name]) < 0) throw new TypeError(`${name} must be a non-negative integer`);
+  for (const name of ["maxArray", "maxDepth", "maxKeys"]) {
+    if (
+      !Number.isInteger(options[name] ?? defaultPolicy[name]) ||
+      (options[name] ?? defaultPolicy[name]) < 0
+    )
+      throw new TypeError(`${name} must be a non-negative integer`);
   }
   return {
     keys: readonlySet(normalizedKeys),

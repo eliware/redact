@@ -25,7 +25,10 @@
     "test": "eliware-test",
     "lint": "eliware-test --lint",
     "typecheck": "tsc --noEmit",
-    "pack": "npm pack --dry-run"
+    "pack": "npm pack --dry-run",
+    "audit": "npm audit --ignore-scripts --omit=dev --audit-level=moderate",
+    "format": "prettier --write src tests typecheck examples README.md AGENTS.md RELEASE_NOTES.md docs specs *.md",
+    "format:check": "prettier --check src tests typecheck examples README.md AGENTS.md RELEASE_NOTES.md docs specs *.md"
   },
   "repository": {
     "type": "git",
@@ -51,6 +54,12 @@
   },
   "devDependencies": {
     "@eliware/test": "^6.0.1",
+    "prettier": "^3.9.6",
     "typescript": "^7.0.2"
+  },
+  "eliware": {
+    "conventions": { "version": "8.0", "apply": ["general", "node", "library", "npm-published"], "exemptions": [] },
+    "authority": { "authoritativeFor": ["Redaction and safe-serialization library behavior."], "notAuthoritativeFor": ["Shared platform conventions, operations, publication, or deployment."] },
+    "crosslinks": [{ "path": "specs/README.md", "relation": "relatedAuthority", "authoritativeFor": "Project-specific behavior specifications." }]
   }
 }

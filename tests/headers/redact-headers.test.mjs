@@ -1,72 +1,139 @@
-import { redactHeaders } from '../../src/index.mjs';
+import { redactHeaders } from "../../src/index.mjs";
 
-test('redacts sensitive headers and preserves safe headers', () => {
-  expect(redactHeaders({ Authorization: 'Bearer secret', Accept: 'application/json' })).toEqual({ Authorization: '[REDACTED]', Accept: 'application/json' });
+test("redacts sensitive headers and preserves safe headers", () => {
+  expect(
+    redactHeaders({
+      Authorization: "Bearer secret",
+      Accept: "application/json",
+    }),
+  ).toEqual({ Authorization: "[REDACTED]", Accept: "application/json" });
 });
 
-test('supports Headers and entry arrays', () => {
-  expect(redactHeaders(new Headers({ token: 'secret', accept: 'json' }))).toEqual({ token: '[REDACTED]', accept: 'json' });
-  expect(redactHeaders([['password', 'secret'], ['x-id', '7']])).toEqual([['password', '[REDACTED]'], ['x-id', '7']]);
+test("supports Headers and entry arrays", () => {
+  expect(
+    redactHeaders(new Headers({ token: "secret", accept: "json" })),
+  ).toEqual({ token: "[REDACTED]", accept: "json" });
+  expect(
+    redactHeaders([
+      ["password", "secret"],
+      ["x-id", "7"],
+    ]),
+  ).toEqual([
+    ["password", "[REDACTED]"],
+    ["x-id", "7"],
+  ]);
 });
 
-test('bounds Headers-style iterators', () => {
-  const headers = { *entries() { yield ['token', 'secret']; } };
-  expect(redactHeaders(headers)).toEqual({ token: '[REDACTED]' });
-  const large = { *entries() { for (let index = 0; index < 1001; index += 1) yield [`x-${index}`, 'value']; } };
+test("bounds Headers-style iterators", () => {
+  const headers = {
+    *entries() {
+      yield ["token", "secret"];
+    },
+  };
+  expect(redactHeaders(headers)).toEqual({ token: "[REDACTED]" });
+  const large = {
+    *entries() {
+      for (let index = 0; index < 1001; index += 1)
+        yield [`x-${index}`, "value"];
+    },
+  };
   expect(Object.keys(redactHeaders(large))).toHaveLength(1000);
 });
 
-test('normalizes Headers-style entries to an object shape', () => {
-  const headers = { entries: () => [['token', 'secret']] };
-  expect(redactHeaders(headers)).toEqual({ token: '[REDACTED]' });
+test("normalizes Headers-style entries to an object shape", () => {
+  const headers = { entries: () => [["token", "secret"]] };
+  expect(redactHeaders(headers)).toEqual({ token: "[REDACTED]" });
 });
 
-test('handles null input', () => {
+test("handles null input", () => {
   expect(redactHeaders(null)).toEqual({});
 });
 
-test('handles a Headers-like object whose iterator throws', () => {
-  expect(redactHeaders({ entries() { throw new Error('blocked'); } })).toEqual({});
+test("handles a Headers-like object whose iterator throws", () => {
+  expect(
+    redactHeaders({
+      entries() {
+        throw new Error("blocked");
+      },
+    }),
+  ).toEqual({});
 });
 
-test('skips malformed entry arrays', () => {
-  expect(redactHeaders([['accept', 'json'], ['broken']])).toEqual([['accept', 'json']]);
+test("skips malformed entry arrays", () => {
+  expect(redactHeaders([["accept", "json"], ["broken"]])).toEqual([
+    ["accept", "json"],
+  ]);
 });
 
-test('can disable heuristic header matching', () => {
-  expect(redactHeaders({ token: 'value' }, { matchHeuristics: false })).toEqual({ token: 'value' });
+test("can disable heuristic header matching", () => {
+  expect(redactHeaders({ token: "value" }, { matchHeuristics: false })).toEqual(
+    { token: "value" },
+  );
 });
 
-test('custom header names remain additive to heuristics', () => {
-  expect(redactHeaders({ token: 'secret', 'x-custom': 'secret' }, { headerNames: ['x-custom'] })).toEqual({ token: '[REDACTED]', 'x-custom': '[REDACTED]' });
+test("custom header names remain additive to heuristics", () => {
+  expect(
+    redactHeaders(
+      { token: "secret", "x-custom": "secret" },
+      { headerNames: ["x-custom"] },
+    ),
+  ).toEqual({ token: "[REDACTED]", "x-custom": "[REDACTED]" });
 });
 
-test('custom names retain built-in sensitive names when heuristics are disabled', () => {
-  expect(redactHeaders({ authorization: 'secret', 'x-custom': 'secret' }, { headerNames: ['x-custom'], matchHeuristics: false })).toEqual({ authorization: '[REDACTED]', 'x-custom': '[REDACTED]' });
+test("custom names retain built-in sensitive names when heuristics are disabled", () => {
+  expect(
+    redactHeaders(
+      { authorization: "secret", "x-custom": "secret" },
+      { headerNames: ["x-custom"], matchHeuristics: false },
+    ),
+  ).toEqual({ authorization: "[REDACTED]", "x-custom": "[REDACTED]" });
 });
 
-test('normalizes custom header names case-insensitively', () => {
-  expect(redactHeaders({ 'X-CUSTOM': 'secret' }, { headerNames: ['x-custom'], matchHeuristics: false })).toEqual({ 'X-CUSTOM': '[REDACTED]' });
+test("normalizes custom header names case-insensitively", () => {
+  expect(
+    redactHeaders(
+      { "X-CUSTOM": "secret" },
+      { headerNames: ["x-custom"], matchHeuristics: false },
+    ),
+  ).toEqual({ "X-CUSTOM": "[REDACTED]" });
 });
 
-test('preserves special object-form header names safely', () => {
+test("preserves special object-form header names safely", () => {
   const output = redactHeaders(JSON.parse('{"__proto__":"secret"}'));
-  expect(Object.hasOwn(output, '__proto__')).toBe(true);
-  expect(output['__proto__']).toBe('secret');
+  expect(Object.hasOwn(output, "__proto__")).toBe(true);
+  expect(output["__proto__"]).toBe("secret");
   expect(Object.getPrototypeOf(output)).toBe(null);
 });
 
-test('rejects non-iterable custom header names', () => {
-  expect(() => redactHeaders({}, { headerNames: 42 })).toThrow('headerNames must be iterable');
-  expect(() => redactHeaders({}, { headerNames: 'authorization' })).toThrow('headerNames must be iterable');
+test("rejects non-iterable custom header names", () => {
+  expect(() => redactHeaders({}, { headerNames: 42 })).toThrow(
+    "headerNames must be iterable",
+  );
+  expect(() => redactHeaders({}, { headerNames: "authorization" })).toThrow(
+    "headerNames must be iterable",
+  );
 });
 
-test('omits non-string header names', () => {
-  expect(redactHeaders([[Symbol('header'), 'value'], ['accept', 'json']])).toEqual([['accept', 'json']]);
-  expect(redactHeaders({ [Symbol('header')]: 'value', accept: 'json' })).toEqual({ accept: 'json' });
+test("omits non-string header names", () => {
+  expect(
+    redactHeaders([
+      [Symbol("header"), "value"],
+      ["accept", "json"],
+    ]),
+  ).toEqual([["accept", "json"]]);
+  expect(
+    redactHeaders({ [Symbol("header")]: "value", accept: "json" }),
+  ).toEqual({ accept: "json" });
 });
 
-test('handles hostile object-form headers', () => {
-  const value = new Proxy({}, { ownKeys() { throw new Error('blocked'); } });
+test("handles hostile object-form headers", () => {
+  const value = new Proxy(
+    {},
+    {
+      ownKeys() {
+        throw new Error("blocked");
+      },
+    },
+  );
   expect(redactHeaders(value)).toEqual({});
 });

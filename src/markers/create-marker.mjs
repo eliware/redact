@@ -1,3 +1,3 @@
-export function createMarker(value = '[REDACTED]') {
+export function createMarker(value = "[REDACTED]") {
   return String(value);
 }
