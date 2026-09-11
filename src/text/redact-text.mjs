@@ -9,21 +9,22 @@ import { redactNamedAssignmentRule } from './rules/redact-named-assignment.mjs';
 import { redactPrivateKeyRule } from './rules/redact-private-key.mjs';
 import { redactProviderTokenRule } from './rules/redact-provider-token.mjs';
 import { redactQuerySecretRule } from './rules/redact-query-secret.mjs';
+import { redactGenericSecretRule, redactOpaqueBase64Rule, redactOpaqueSecretRule, redactProviderKeyRule, redactPublicKeyRule } from './rules/redact-generic-secret-rule.mjs';
 
-const rules = [redactPrivateKeyRule, redactAuthorizationRule, redactBearerTokenRule, redactQuerySecretRule, redactNamedAssignmentRule, redactProviderTokenRule, redactJwtRule];
+const rules = [redactPrivateKeyRule, redactAuthorizationRule, redactBearerTokenRule, redactQuerySecretRule, redactNamedAssignmentRule, redactGenericSecretRule, redactProviderTokenRule, redactProviderKeyRule, redactPublicKeyRule, redactOpaqueSecretRule, redactOpaqueBase64Rule, redactJwtRule];
 
 export function redactText(value, options = {}) {
   const { maxString } = normalizeSerializationLimits(options, DEFAULT_LIMITS);
   const input = String(value ?? '');
   const inputTruncated = input.length > maxString;
-  let output = input.slice(0, maxString);
+  let output = input;
   const configuredSecrets = options.secrets;
   if (configuredSecrets != null && (typeof configuredSecrets === 'string' || typeof configuredSecrets[Symbol.iterator] !== 'function')) throw new TypeError('secrets must be iterable');
   const secrets = [...(configuredSecrets ?? [])].slice(0, 100);
   for (const secret of secrets) {
-    if (typeof secret === 'string' && secret.length > 0) output = replaceLiteralSecret(output, secret, options.marker ?? '[REDACTED]');
+    if (typeof secret === 'string' && secret.length > 0) output = replaceLiteralSecret(output, secret);
   }
-  output = applyTextRules(output, rules, options.marker ?? '[REDACTED]');
+  output = applyTextRules(output, rules);
   if (inputTruncated || output.length > maxString) {
     const marker = '[TRUNCATED]';
     output = maxString >= marker.length

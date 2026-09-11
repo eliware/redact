@@ -14,10 +14,10 @@ test('handles cycles and Errors', () => {
   expect(redactValue(input).error).toMatchObject({ message: 'failed', token: '[REDACTED]' });
 });
 
-test('supports a custom circular marker through the public API', () => {
+test('uses the fixed circular marker through the public API', () => {
   const input = {};
   input.self = input;
-  expect(redactValue(input, { circularMarker: '<cycle>' }).self).toBe('<cycle>');
+  expect(redactValue(input, { circularMarker: '<cycle>' }).self).toBe('[CIRCULAR]');
 });
 
 test('redacts configured Error metadata fields', () => {

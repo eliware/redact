@@ -1,6 +1,6 @@
 {
   "name": "@eliware/redact",
-  "version": "6.0.0",
+  "version": "8.0.0",
   "description": "Reusable secret-redaction and safe-serialization utilities for Node.js 26+.",
   "author": "Eliware",
   "license": "MIT",

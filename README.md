@@ -57,7 +57,7 @@ safeSerialize({ token: 'secret', nested: { value: 1 } });
 
 Structured redaction is key-based and does not mutate its input. Text
 redaction is best-effort and cannot guarantee detection of unknown secrets.
-Configure `keys`, `marker`, `circularMarker`, and serialization limits
+Configure `keys` and serialization limits
 (`maxDepth`, `maxKeys`, `maxArray`, and `maxString`) for package-specific
 contracts.
 Serialization limits must be non-negative integers.
@@ -92,12 +92,11 @@ limits are options to `safeSerialize`, not properties of `defaultPolicy`.
 
 Configured literal secrets are replaced using substring semantics; empty and
 non-string entries are ignored. Buffer handling is intentionally Node.js-specific.
-Text redaction and error-message redaction accept only `marker` and `secrets`;
+Text redaction and error-message redaction accept `secrets` and `maxString`;
 structured/header policy fields do not apply to those helpers. Header
 enumeration failures are intentionally loss-tolerant and produce an empty safe
 result, as hostile input cannot be represented reliably.
-When both `keys` and the legacy `redactKeys` alias are supplied, `keys` takes
-precedence; unknown policy fields are ignored by normalized policies.
+Unknown policy fields are ignored by normalized policies.
 
 ## Development
 

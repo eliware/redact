@@ -19,10 +19,10 @@ test('handles complex values and limits', () => {
   expect(safeSerialize(Symbol())).toBe('[Symbol: ]');
 });
 
-test('uses the configured circular marker and validates limits', () => {
+test('uses the fixed circular marker and validates limits', () => {
   const value = {};
   value.self = value;
-  expect(safeSerialize(value, { circularMarker: '<cycle>' }).self).toBe('<cycle>');
+  expect(safeSerialize(value, { circularMarker: '<cycle>' }).self).toBe('[CIRCULAR]');
   expect(() => safeSerialize({}, { maxDepth: -1 })).toThrow('maxDepth must be a non-negative integer');
 });
 

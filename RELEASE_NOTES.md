@@ -1,9 +1,11 @@
 # Release Notes
 
-## 6.0.0
+## 8.0.0
 
-- Initial release of `@eliware/redact` for Node.js 26+.
-- Provides structured-value, header, text, and error redaction helpers.
-- Provides bounded safe serialization with circular-reference handling and
-  configurable redaction markers and limits.
-- Includes native ESM exports and TypeScript declarations.
+- Breaking generic redaction contract for shared Eliware consumers.
+- Provides fixed `[REDACTED]` sensitive-value replacements and fixed structural
+  markers for truncation, circular values, and unserializable values.
+- Adds generic coverage for environment assignments, provider credentials,
+  public keys, opaque secrets, structured values, headers, text, and errors.
+- Supports bounded output with a default `maxString` limit of 10,000 and an
+  explicit generic `maxString` option.

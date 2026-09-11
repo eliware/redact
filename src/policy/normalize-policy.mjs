@@ -3,7 +3,7 @@ import { readonlySet } from './readonly-set.mjs';
 import { normalizeHeaderNames } from '../headers/header-name-normalizer.mjs';
 
 export function normalizePolicy(options = {}) {
-  const keys = options.keys ?? options.redactKeys ?? defaultPolicy.keys;
+  const keys = options.keys ?? defaultPolicy.keys;
   if (keys == null || typeof keys[Symbol.iterator] !== 'function') throw new TypeError('Redaction policy keys must be iterable');
   const normalizedKeys = new Set();
   for (const key of keys) normalizedKeys.add(String(key).toLowerCase());
@@ -12,8 +12,8 @@ export function normalizePolicy(options = {}) {
   }
   return {
     keys: readonlySet(normalizedKeys),
-    marker: options.marker ?? defaultPolicy.marker,
-    circularMarker: options.circularMarker ?? defaultPolicy.circularMarker,
+    marker: defaultPolicy.marker,
+    circularMarker: defaultPolicy.circularMarker,
     maxArray: options.maxArray ?? defaultPolicy.maxArray,
     maxDepth: options.maxDepth ?? defaultPolicy.maxDepth,
     maxKeys: options.maxKeys ?? defaultPolicy.maxKeys,

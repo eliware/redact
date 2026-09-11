@@ -2,7 +2,6 @@ import { createPolicy, defaultPolicy, redactHeaders, redactValue, safeSerialize 
 
 const policy = createPolicy({
   keys: ['token'],
-  redactKeys: ['password'],
   matchHeuristics: false,
   headerNames: ['authorization'],
   maxArray: 10,
@@ -11,7 +10,7 @@ const policy = createPolicy({
 });
 
 void defaultPolicy.maxDepth;
-void policy.circularMarker;
+void policy.maxDepth;
 redactValue({ token: 'secret' }, policy);
 redactHeaders({ authorization: 'secret' }, policy);
 safeSerialize({ token: 'secret' }, { ...policy, maxString: 20 });
