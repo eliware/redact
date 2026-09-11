@@ -9,6 +9,13 @@ test('supports Headers and entry arrays', () => {
   expect(redactHeaders([['password', 'secret'], ['x-id', '7']])).toEqual([['password', '[REDACTED]'], ['x-id', '7']]);
 });
 
+test('bounds Headers-style iterators', () => {
+  const headers = { *entries() { yield ['token', 'secret']; } };
+  expect(redactHeaders(headers)).toEqual({ token: '[REDACTED]' });
+  const large = { *entries() { for (let index = 0; index < 1001; index += 1) yield [`x-${index}`, 'value']; } };
+  expect(Object.keys(redactHeaders(large))).toHaveLength(1000);
+});
+
 test('normalizes Headers-style entries to an object shape', () => {
   const headers = { entries: () => [['token', 'secret']] };
   expect(redactHeaders(headers)).toEqual({ token: '[REDACTED]' });
@@ -36,6 +43,10 @@ test('custom header names remain additive to heuristics', () => {
 
 test('custom names retain built-in sensitive names when heuristics are disabled', () => {
   expect(redactHeaders({ authorization: 'secret', 'x-custom': 'secret' }, { headerNames: ['x-custom'], matchHeuristics: false })).toEqual({ authorization: '[REDACTED]', 'x-custom': '[REDACTED]' });
+});
+
+test('normalizes custom header names case-insensitively', () => {
+  expect(redactHeaders({ 'X-CUSTOM': 'secret' }, { headerNames: ['x-custom'], matchHeuristics: false })).toEqual({ 'X-CUSTOM': '[REDACTED]' });
 });
 
 test('preserves special object-form header names safely', () => {

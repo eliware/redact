@@ -3,6 +3,7 @@ import { readonlySet } from './readonly-set.mjs';
 import { normalizeHeaderNames } from '../headers/header-name-normalizer.mjs';
 
 export function normalizePolicy(options = {}) {
+  if (options.matchHeuristics != null && typeof options.matchHeuristics !== 'boolean') throw new TypeError('matchHeuristics must be boolean');
   const keys = options.keys ?? defaultPolicy.keys;
   if (keys == null || typeof keys[Symbol.iterator] !== 'function') throw new TypeError('Redaction policy keys must be iterable');
   const normalizedKeys = new Set();

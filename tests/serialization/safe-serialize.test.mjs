@@ -1,9 +1,11 @@
 import { safeSerialize } from '../../src/serialization/safe-serialize.mjs';
+import { redactValue } from '../../src/structured/redact-value.mjs';
 
 test('serializes primitives and redacts nested keys', () => {
   expect(safeSerialize({ token: 'secret', nested: { id: 2 }, big: 2n })).toEqual({ token: '[REDACTED]', nested: { id: 2 }, big: '2n' });
   expect(safeSerialize(null)).toBeNull();
   expect(safeSerialize('ok')).toBe('ok');
+  expect(safeSerialize('token=secret')).toBe('token=[REDACTED]');
   expect(safeSerialize('abcdef', { maxString: 3 })).toBe('abc');
   expect(safeSerialize('a'.repeat(10001), { maxString: undefined })).toContain('[TRUNCATED]');
 });
@@ -23,6 +25,7 @@ test('uses the fixed circular marker and validates limits', () => {
   const value = {};
   value.self = value;
   expect(safeSerialize(value, { circularMarker: '<cycle>' }).self).toBe('[CIRCULAR]');
+  expect(redactValue(value, { circularMarker: '<cycle>' }).self).toBe('[CIRCULAR]');
   expect(() => safeSerialize({}, { maxDepth: -1 })).toThrow('maxDepth must be a non-negative integer');
 });
 

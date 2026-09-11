@@ -1,4 +1,15 @@
-import { createPolicy, defaultPolicy, redactHeaders, redactValue, safeSerialize } from '@eliware/redact';
+import {
+  createPolicy,
+  defaultPolicy,
+  redactErrorDetails,
+  redactErrorMessage,
+  redactHeaders,
+  redactText,
+  redactValue,
+  replaceLiteralSecret,
+  safeErrorValue,
+  safeSerialize,
+} from '@eliware/redact';
 
 const policy = createPolicy({
   keys: ['token'],
@@ -10,7 +21,16 @@ const policy = createPolicy({
 });
 
 void defaultPolicy.maxDepth;
+void defaultPolicy.maxArray;
+void defaultPolicy.maxKeys;
+void defaultPolicy.matchHeuristics;
+void defaultPolicy.headerNames;
 void policy.maxDepth;
 redactValue({ token: 'secret' }, policy);
 redactHeaders({ authorization: 'secret' }, policy);
 safeSerialize({ token: 'secret' }, { ...policy, maxString: 20 });
+redactText('token=secret', { secrets: ['secret'], maxString: 20 });
+replaceLiteralSecret('secret', 'secret');
+redactErrorMessage(new Error('secret'), { secrets: ['secret'] });
+redactErrorDetails(new Error('secret'), policy);
+safeErrorValue(new Error('secret'), policy);

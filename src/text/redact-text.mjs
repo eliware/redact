@@ -20,9 +20,15 @@ export function redactText(value, options = {}) {
   let output = input;
   const configuredSecrets = options.secrets;
   if (configuredSecrets != null && (typeof configuredSecrets === 'string' || typeof configuredSecrets[Symbol.iterator] !== 'function')) throw new TypeError('secrets must be iterable');
-  const secrets = [...(configuredSecrets ?? [])].slice(0, 100);
+  const secrets = [];
+  if (configuredSecrets != null) {
+    for (const secret of configuredSecrets) {
+      if (typeof secret === 'string' && secret.length > 0) secrets.push(secret);
+      if (secrets.length === 100) break;
+    }
+  }
   for (const secret of secrets) {
-    if (typeof secret === 'string' && secret.length > 0) output = replaceLiteralSecret(output, secret);
+    output = replaceLiteralSecret(output, secret);
   }
   output = applyTextRules(output, rules);
   if (inputTruncated || output.length > maxString) {

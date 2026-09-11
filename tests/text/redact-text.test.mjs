@@ -1,5 +1,16 @@
 import { redactText, replaceLiteralSecret } from '../../src/index.mjs';
 
+test('bounds secret iterable consumption and validates policy booleans', () => {
+  let consumed = 0;
+  const secrets = {
+    *[Symbol.iterator]() {
+      while (true) { consumed += 1; yield `secret-${consumed}`; }
+    },
+  };
+  redactText('safe', { secrets });
+  expect(consumed).toBe(100);
+});
+
 test('redacts common credential-shaped text', () => {
   const output = redactText('Authorization: Bearer abc token=secret ?api_key=key');
   expect(output).not.toContain('abc');

@@ -6,8 +6,10 @@
 before logging, persistence, or transport. Install it with `npm install
 @eliware/redact`, then use the public functions from the package entrypoint.
 
-Configuration is supplied as API options such as `keys`, `marker`,
-`circularMarker`, header policy options, and serialization limits. Do not put
+Configuration is supplied as API options such as `keys`, header policy options,
+and serialization limits. Redaction and circular-reference markers are fixed;
+they are exposed on `defaultPolicy` as runtime constants, not configurable
+options. Do not put
 credentials in source, examples, `.env.example`, or documentation. Redaction
 is best-effort and is not encryption or a guarantee that unknown secrets are
 detected.

@@ -11,6 +11,7 @@ import { serializeObject } from './serialize-object.mjs';
 import { unserializableValue } from './unserializable-value.mjs';
 import { serializeValue } from './serialize-value.mjs';
 import { normalizeSerializationLimits } from './serialization-limits.mjs';
+import { redactText } from '../text/redact-text.mjs';
 
 export function safeSerialize(value, options = {}) {
   const policy = normalizePolicy(options);
@@ -21,7 +22,9 @@ export function safeSerialize(value, options = {}) {
 function serialize(value, policy, limits, seen, depth) {
   try {
     const primitive = serializeValue(value, limits);
-    if (primitive.handled) return primitive.value;
+    if (primitive.handled) return typeof value === 'string' && typeof primitive.value === 'string'
+      ? redactText(primitive.value, { maxString: limits.maxString })
+      : primitive.value;
     if (enforceDepthLimit(depth, limits.maxDepth)) return '[TRUNCATED]';
     if (seen.has(value)) return circularValue(policy.circularMarker);
     seen.add(value);

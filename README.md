@@ -30,7 +30,7 @@ Node.js 26 or newer with native ESM support is required.
 
 ## Status
 
-The repository is at version `6.0.0`. The public API includes
+The repository is at version `8.0.0`. The public API includes
 policy creation, structured redaction, header redaction, best-effort text
 redaction, literal-secret replacement, safe serialization, and error helpers.
 
@@ -51,21 +51,31 @@ redactValue({ token: 'secret', safe: true });
 
 safeSerialize({ token: 'secret', nested: { value: 1 } });
 // { token: '[REDACTED]', nested: { value: 1 } }
+safeSerialize('token=secret');
+// 'token=[REDACTED]'
 ```
 
 ## Configuration
 
 Structured redaction is key-based and does not mutate its input. Text
 redaction is best-effort and cannot guarantee detection of unknown secrets.
-Configure `keys` and serialization limits
-(`maxDepth`, `maxKeys`, `maxArray`, and `maxString`) for package-specific
-contracts.
+Configure `keys` and structured-redaction limits (`maxDepth`, `maxKeys`, and
+`maxArray`) through policy APIs. Configure the serialization-only `maxString`
+limit through `safeSerialize` (it is not part of `defaultPolicy`).
 Serialization limits must be non-negative integers.
 Structured redaction also accepts non-negative integer `maxDepth`, `maxKeys`,
 and `maxArray` limits; exceeding a limit emits `[TRUNCATED]`.
 Header-name heuristics can be disabled with `matchHeuristics: false` when
 custom header policy must be exact. Custom `headerNames` are additive to the
 default heuristic matching unless heuristics are disabled.
+Header redaction always uses the fixed `[REDACTED]` marker; policy marker
+customization is not supported.
+`matchHeuristics` must be boolean when supplied; invalid values throw
+`TypeError`. Object-form header output preserves distinct input key casing;
+case-variant names are separate output properties.
+case-variant names are separate output properties; callers needing canonical
+header maps should normalize keys before calling this helper. Header-like
+iterators are bounded at 1,000 entries.
 The supported runtime is Node.js 26 or newer; browser use does not provide
 Node `Buffer` serialization behavior.
 

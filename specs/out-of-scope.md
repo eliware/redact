@@ -25,3 +25,14 @@ The desired-state inventory is descriptive, not a requirement to implement
 unreleased speculative text rules. Review findings must compare it with the
 current documented release scope rather than treating absent future modules as
 defects.
+# Out of scope
+
+- `normalizeHeaderNames` is an internal additive-normalization helper, not a
+  public exact-match policy API; `redactHeaders` applies `matchHeuristics` at
+  the public boundary.
+- Text redaction intentionally processes at most 100 configured literal
+  secrets and uses bounded repeated replacement for predictable behavior.
+- Node.js `Buffer` handling is intentionally not browser-portable; browser
+  compatibility is outside this package's supported runtime contract.
+- Runtime marker fields are fixed implementation state and are not configurable
+  policy options; public declarations intentionally expose only stable options.

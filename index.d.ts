@@ -14,7 +14,7 @@ export interface SerializationOptions extends RedactionPolicy {
 }
 
 export interface TextRedactionOptions {
-  /** An iterable of non-empty literal strings; non-iterable input throws TypeError. */
+  /** An iterable of non-empty literal strings; non-iterable input throws TypeError. The first 100 entries are processed and the marker is fixed. */
   secrets?: Iterable<string>;
   maxString?: number;
 }
@@ -27,16 +27,20 @@ export declare const defaultPolicy: Readonly<{
   maxDepth: number;
   maxKeys: number;
   matchHeuristics: boolean;
-  headerNames: Iterable<string>;
+  headerNames: ReadonlyArray<string>;
 }>;
 
 export declare function createPolicy(options?: RedactionPolicy): Readonly<RedactionPolicy & {
   keys: ReadonlySet<string>;
+  /** Fixed runtime marker; not accepted as an option. */
+  marker: '[REDACTED]';
+  /** Fixed runtime marker; not accepted as an option. */
+  circularMarker: '[CIRCULAR]';
   maxArray: number;
   maxDepth: number;
   maxKeys: number;
   matchHeuristics: boolean;
-  headerNames: Iterable<string>;
+  headerNames: ReadonlySet<string>;
 }>;
 
 export declare function redactValue<T>(value: T, options?: RedactionPolicy): unknown;
