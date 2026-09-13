@@ -53,21 +53,18 @@
     "node": ">=26"
   },
   "devDependencies": {
-    "@eliware/test": "file:../test",
+    "@eliware/test": "^6.0.1",
     "prettier": "^3.9.6",
     "typescript": "^7.0.2"
   },
   "eliware": {
-    "conventions": {
-      "version": "8.0",
-      "apply": [
+    "apply": [
         "general",
         "node",
         "library",
         "npm-published"
-      ],
-      "exemptions": []
-    },
+    ],
+    "exempt": [],
     "authority": {
       "authoritativeFor": [
         "Redaction and safe-serialization library behavior."
