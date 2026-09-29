@@ -13,15 +13,10 @@ const DEFAULT_HEADER_NAMES = [
 export function normalizeHeaderNames(headerNames) {
   if (
     headerNames != null &&
-    (typeof headerNames === "string" ||
-      typeof headerNames[Symbol.iterator] !== "function")
+    (typeof headerNames === "string" || typeof headerNames[Symbol.iterator] !== "function")
   )
     throw new TypeError("headerNames must be iterable");
   const names =
-    headerNames == null
-      ? DEFAULT_HEADER_NAMES
-      : [...DEFAULT_HEADER_NAMES, ...headerNames];
-  return readonlySet(
-    new Set(names.map((value) => String(value).toLowerCase())),
-  );
+    headerNames == null ? DEFAULT_HEADER_NAMES : [...DEFAULT_HEADER_NAMES, ...headerNames];
+  return readonlySet(new Set(names.map((value) => String(value).toLowerCase())));
 }

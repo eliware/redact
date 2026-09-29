@@ -13,9 +13,7 @@ test("serializes an Error through the supplied callback", () => {
 test("redacts mixed-case Error metadata keys", () => {
   const error = Object.assign(new Error("failed"), { Token: "secret" });
   const policy = { keys: new Set(["token"]), marker: "[REDACTED]" };
-  expect(serializeError(error, policy, (value) => value, 0).Token).toBe(
-    "[REDACTED]",
-  );
+  expect(serializeError(error, policy, (value) => value, 0).Token).toBe("[REDACTED]");
 });
 
 test("does not invoke enumerable Error getters", () => {
@@ -29,8 +27,6 @@ test("does not invoke enumerable Error getters", () => {
     },
   });
   const policy = { keys: new Set(["token"]), marker: "[REDACTED]" };
-  expect(serializeError(error, policy, (value) => value, 0)).not.toHaveProperty(
-    "token",
-  );
+  expect(serializeError(error, policy, (value) => value, 0)).not.toHaveProperty("token");
   expect(invoked).toBe(false);
 });

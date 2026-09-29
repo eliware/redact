@@ -2,5 +2,4 @@ import { formatRedactionMarker } from "../../src/markers/format-redaction-marker
 
 test("formats a marker consistently", () =>
   expect(formatRedactionMarker("hidden")).toBe("[hidden]"));
-test("uses the default marker", () =>
-  expect(formatRedactionMarker()).toBe("[REDACTED]"));
+test("uses the default marker", () => expect(formatRedactionMarker()).toBe("[REDACTED]"));

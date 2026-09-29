@@ -13,9 +13,5 @@ export function redactText(value, options = {}) {
   for (const secret of collectLiteralSecrets(options.secrets)) {
     output = replaceLiteralSecret(output, secret);
   }
-  return truncateRedactedText(
-    applyTextRedactionRules(output),
-    maxString,
-    inputTruncated,
-  );
+  return truncateRedactedText(applyTextRedactionRules(output), maxString, inputTruncated);
 }

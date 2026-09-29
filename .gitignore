@@ -1,4 +1,5 @@
 node_modules/
+.git/
 coverage/
 .eliware-test-coverage/
 test-results/

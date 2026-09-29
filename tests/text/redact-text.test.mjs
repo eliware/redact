@@ -15,46 +15,34 @@ test("bounds secret iterable consumption and validates policy booleans", () => {
 });
 
 test("redacts common credential-shaped text", () => {
-  const output = redactText(
-    "Authorization: Bearer abc token=secret ?api_key=key",
-  );
+  const output = redactText("Authorization: Bearer abc token=secret ?api_key=key");
   expect(output).not.toContain("abc");
   expect(output).not.toContain("secret");
   expect(output).not.toContain("=key");
 });
 
 test("replaces configured literal secrets", () => {
-  expect(replaceLiteralSecret("password is abc", "abc")).toBe(
-    "password is [REDACTED]",
-  );
+  expect(replaceLiteralSecret("password is abc", "abc")).toBe("password is [REDACTED]");
 });
 
 test("supports configured secrets and empty input", () => {
-  expect(
-    redactText("value=known", { secrets: ["known"], marker: "<hidden>" }),
-  ).toBe("value=[REDACTED]");
-  expect(redactText("value=known", { secrets: ["known"] })).toBe(
+  expect(redactText("value=known", { secrets: ["known"], marker: "<hidden>" })).toBe(
     "value=[REDACTED]",
   );
+  expect(redactText("value=known", { secrets: ["known"] })).toBe("value=[REDACTED]");
   expect(redactText()).toBe("");
 });
 
 test("ignores empty and non-string literal secrets", () => {
-  expect(redactText("value=known", { secrets: ["", null, 42] })).toBe(
-    "value=known",
-  );
+  expect(redactText("value=known", { secrets: ["", null, 42] })).toBe("value=known");
 });
 
 test("does not rewrite generated markers with later secrets", () => {
-  expect(redactText("value=first", { secrets: ["first", "[REDACTED]"] })).toBe(
-    "value=[REDACTED]",
-  );
+  expect(redactText("value=first", { secrets: ["first", "[REDACTED]"] })).toBe("value=[REDACTED]");
 });
 
 test("ignores removed custom marker options", () => {
-  expect(redactText("token=secret", { marker: "<hidden>" })).toBe(
-    "token=[REDACTED]",
-  );
+  expect(redactText("token=secret", { marker: "<hidden>" })).toBe("token=[REDACTED]");
 });
 
 test("bounds text output with a distinguishable truncation marker", () => {
@@ -88,7 +76,5 @@ test("rejects invalid text size limits", () => {
   expect(() => redactText("value", { maxString: -1 })).toThrow(
     "maxString must be a non-negative integer",
   );
-  expect(() => redactText("value", { secrets: 42 })).toThrow(
-    "secrets must be iterable",
-  );
+  expect(() => redactText("value", { secrets: 42 })).toThrow("secrets must be iterable");
 });

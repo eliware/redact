@@ -60,13 +60,6 @@ test("returns fallback for hostile circular marker access", () => {
     },
   };
   expect(
-    serializeDispatch(
-      value,
-      policy,
-      { maxDepth: 2, maxKeys: 2 },
-      seen,
-      0,
-      serializeDispatch,
-    ),
+    serializeDispatch(value, policy, { maxDepth: 2, maxKeys: 2 }, seen, 0, serializeDispatch),
   ).toBe("[UNSERIALIZABLE]");
 });

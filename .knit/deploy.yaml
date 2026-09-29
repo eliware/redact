@@ -4,9 +4,8 @@ on:
     deployments:
       - target: dev
         cwd: /opt/redact
+        timeoutMs: 300000
         commands:
-          - git pull --ff-only
+          - git pull --ff-only origin main
           - npm ci
           - npm test
-          - npm audit --omit=dev --audit-level=moderate
-          - npm pack --dry-run

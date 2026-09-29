@@ -1,6 +1,8 @@
 # Release Notes
 
-## 8.0.0
+## 8.0.0 — 2026-09-11
+
+### Changed
 
 - Breaking generic redaction contract for shared Eliware consumers.
 - Provides fixed `[REDACTED]` sensitive-value replacements and fixed structural

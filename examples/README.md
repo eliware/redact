@@ -1,29 +1,25 @@
 # Examples
 
-[Back to the project README](../README.md)
+[Project README](../README.md) · [Documentation](../docs/README.md)
 
-## Prerequisites
+Purpose: demonstrate the public `@eliware/redact` API with safe placeholder values.
 
-The examples require Node.js 26 or newer and an installed project dependency.
-From the repository root, run `npm install` before running an example.
+Prerequisites: Node.js 26 or newer; install repository dependencies with `npm ci` from the repository root. Examples do not require credentials. Expected result: commands print redacted text and safe serialized values.
 
-Run the basic example from the repository root with:
+## Runnable examples
+
+- [Basic runnable entry](basic.mjs)
+- [basic](basic/README.md)
+- [basic.mjs](basic.mjs)
+- [Basic example guide](basic/README.md)
+- [Basic example source](basic/index.mjs)
+
+Run the example from the repository root:
 
 ```sh
 node examples/basic/index.mjs
 ```
 
-All values are placeholders and contain no credentials.
+The same runnable example is available through `node examples/basic.mjs`.
 
-## Expected results
-
-The expected result is redacted text and object output where secret-looking
-fields are replaced with `[REDACTED]`.
-
-## Safety
-
-All values are safe placeholders and contain no credentials.
-
-- [Basic](basic/README.md)
-- [Basic example directory](basic/)
-- [Basic example source](basic/index.mjs)
+Expected output contains `[REDACTED]` markers for placeholder token values.

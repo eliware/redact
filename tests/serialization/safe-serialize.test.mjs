@@ -1,9 +1,11 @@
 import { safeSerialize } from "../../src/serialization/safe-serialize.mjs";
 
 test("serializes and redacts structured values", () => {
-  expect(
-    safeSerialize({ token: "secret", nested: { id: 2 }, big: 2n }),
-  ).toEqual({ token: "[REDACTED]", nested: { id: 2 }, big: "2n" });
+  expect(safeSerialize({ token: "secret", nested: { id: 2 }, big: 2n })).toEqual({
+    token: "[REDACTED]",
+    nested: { id: 2 },
+    big: "2n",
+  });
   expect(safeSerialize("token=secret")).toBe("token=[REDACTED]");
 });
 
@@ -16,26 +18,16 @@ test("handles cycles, arrays, functions, symbols, and buffers", () => {
     buffer: "[Buffer length=3]",
     self: "[CIRCULAR]",
   });
-  expect(safeSerialize([1, 2, 3], { maxArray: 2 })).toEqual([
-    1,
-    2,
-    "[TRUNCATED]",
-  ]);
+  expect(safeSerialize([1, 2, 3], { maxArray: 2 })).toEqual([1, 2, "[TRUNCATED]"]);
 });
 
 test("enforces depth, key, string, and circular limits", () => {
-  expect(safeSerialize({ deep: { value: 1 } }, { maxDepth: 0 }).deep).toBe(
-    "[TRUNCATED]",
-  );
-  expect(safeSerialize({ a: 1, b: 2 }, { maxKeys: 1 }).__truncated).toBe(
-    "[TRUNCATED]",
-  );
+  expect(safeSerialize({ deep: { value: 1 } }, { maxDepth: 0 }).deep).toBe("[TRUNCATED]");
+  expect(safeSerialize({ a: 1, b: 2 }, { maxKeys: 1 }).__truncated).toBe("[TRUNCATED]");
   expect(safeSerialize("abcdef", { maxString: 3 })).toBe("abc");
   const value = {};
   value.self = value;
-  expect(safeSerialize(value, { circularMarker: "<cycle>" }).self).toBe(
-    "[CIRCULAR]",
-  );
+  expect(safeSerialize(value, { circularMarker: "<cycle>" }).self).toBe("[CIRCULAR]");
 });
 
 test("handles errors and hostile values safely", () => {
@@ -76,7 +68,8 @@ test("handles errors and hostile values safely", () => {
       }),
     ),
   ).toMatchObject({ name: "Named", message: "changed" });
-  expect(
-    safeSerialize(new Error("failed"), { keys: ["message", "stack"] }),
-  ).toMatchObject({ message: "[REDACTED]", stack: "[REDACTED]" });
+  expect(safeSerialize(new Error("failed"), { keys: ["message", "stack"] })).toMatchObject({
+    message: "[REDACTED]",
+    stack: "[REDACTED]",
+  });
 });

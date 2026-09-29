@@ -12,9 +12,7 @@ test("redacts generic provider, environment, public-key, and opaque secrets", ()
 });
 
 test("redacts generic Slack and OpenAI provider tokens without over-redacting identifiers", () => {
-  const output = redactText(
-    "xoxb-123456789012 sk-test_123456789012 ordinary_identifier_123",
-  );
+  const output = redactText("xoxb-123456789012 sk-test_123456789012 ordinary_identifier_123");
   expect(output).not.toContain("xoxb-123456789012");
   expect(output).not.toContain("sk-test_123456789012");
   expect(output).toContain("ordinary_identifier_123");

@@ -1,144 +1,114 @@
 # [![eliware.org](https://eliware.org/logos/brand.png)](https://discord.gg/M6aTR9eTwN)
 
-## @eliware/redact [![npm](https://img.shields.io/npm/v/%40eliware%2Fredact)](https://www.npmjs.com/package/@eliware/redact) [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE) [![CI](https://github.com/eliware/redact/actions/workflows/nodejs.yml/badge.svg)](https://github.com/eliware/redact/actions/workflows/nodejs.yml)
+## @eliware/redact [![npm version](https://img.shields.io/npm/v/@eliware/redact.svg)](https://www.npmjs.com/package/@eliware/redact) [![license](https://img.shields.io/github/license/eliware/redact.svg)](LICENSE) [![CI](https://github.com/eliware/redact/actions/workflows/ci.yml/badge.svg)](https://github.com/eliware/redact/actions/workflows/ci.yml)
 
-Reusable secret-redaction and safe-serialization utilities for Node.js 26+.
-This library helps protect observability and boundary data; it is not
-encryption, secret storage, or a guarantee that unknown secrets are detected.
+## Table of Contents
 
-## Contents
-
-- [Installation](#installation)
+- [Features](#features)
 - [Requirements](#requirements)
-- [API](#api)
-- [Configuration](#configuration)
+- [Setup](#setup)
+- [Usage](#usage)
 - [Development](#development)
+- [Testing](#testing)
+- [Troubleshooting](#troubleshooting)
 - [Security](#security)
-- [Design](#design)
+- [API](#api)
+- [Packaging](#packaging)
+- [Examples](#examples)
 - [Support](#support)
 - [License](#license)
+- [Links](#links)
 
-## Installation
+## Features
 
-```sh
-npm install @eliware/redact
-```
+Purpose: `@eliware/redact` provides reusable secret-redaction and safe-serialization utilities for Node.js 26+. Use it to reduce sensitive values before logging, persistence, or transport. Redaction is best-effort; it is not encryption, secret storage, or a guarantee that unknown secrets are detected.
+
+The package description is: Reusable secret-redaction and safe-serialization utilities for Node.js 26+.
+
+- Redacts structured values, headers, text, and error details.
+- Replaces configured literal secrets and safely serializes supported values.
+- Bounds serialization and handles hostile objects without mutating input.
+
+Maintained by Eliware <eliware@eliware.org>. Author: Eliware <eliware@eliware.org>. License: MIT. See [LICENSE](LICENSE).
+
+Documentation: [docs](docs/README.md) · [specifications](specs/README.md) · [examples](examples/README.md)
 
 ## Requirements
 
-Node.js 26 or newer with native ESM support is required.
+- Node.js 26.x with native ESM support.
+- No environment variables or runtime configuration files are required.
 
-## Status
+## Setup
 
-The repository is at version `8.0.0`. The public API includes
-policy creation, structured redaction, header redaction, best-effort text
-redaction, literal-secret replacement, safe serialization, and error helpers.
+Install the public package with `npm install @eliware/redact`. The runtime package entrypoint is `@eliware/redact`, backed by `src/index.mjs`; TypeScript declarations are provided by `index.d.ts`. This checkout declares version 8.0.0 in `package.json`; check the npm registry for the currently published version before selecting a release.
 
-## API
+### Configuration
+
+The library has no environment-variable or configuration-file settings. Supply policy options such as `keys`, `maxDepth`, `maxKeys`, and `maxArray` to the relevant API. `safeSerialize` accepts its own `maxString` limit. These API options are runtime configuration; `package.json` metadata and deployment settings are not.
+
+## Usage
+
+Import the public functions from `@eliware/redact` and redact values before they cross a logging or persistence boundary:
 
 ```js
 import { redactText, redactValue, safeSerialize } from "@eliware/redact";
 
-redactText("Authorization: Bearer secret");
-// 'Authorization: Bearer [REDACTED]'
-
-redactValue({ token: "secret", safe: true });
-// { token: '[REDACTED]', safe: true }
-
-safeSerialize({ token: "secret", nested: { value: 1 } });
-// { token: '[REDACTED]', nested: { value: 1 } }
-safeSerialize("token=secret");
-// 'token=[REDACTED]'
+const text = redactText("Authorization: Bearer example-token");
+const value = redactValue({ token: "example-token", safe: true });
+const serialized = safeSerialize({ token: "example-token", nested: { value: 1 } });
 ```
 
-## Configuration
-
-Structured redaction is key-based and does not mutate its input. Text
-redaction is best-effort and cannot guarantee detection of unknown secrets.
-Configure `keys` and structured-redaction limits (`maxDepth`, `maxKeys`, and
-`maxArray`) through policy APIs. Configure the serialization-only `maxString`
-limit through `safeSerialize` (it is not part of `defaultPolicy`).
-Serialization limits must be non-negative integers.
-Structured redaction also accepts non-negative integer `maxDepth`, `maxKeys`,
-and `maxArray` limits; exceeding a limit emits `[TRUNCATED]`.
-Header-name heuristics can be disabled with `matchHeuristics: false` when
-custom header policy must be exact. Custom `headerNames` are additive to the
-default heuristic matching unless heuristics are disabled.
-Header redaction always uses the fixed `[REDACTED]` marker; policy marker
-customization is not supported.
-`matchHeuristics` must be boolean when supplied; invalid values throw
-`TypeError`. Object-form header output preserves distinct input key casing;
-case-variant names are separate output properties.
-case-variant names are separate output properties; callers needing canonical
-header maps should normalize keys before calling this helper. Header-like
-iterators are bounded at 1,000 entries.
-The supported runtime is Node.js 26 or newer; browser use does not provide
-Node `Buffer` serialization behavior.
-
-Structured redaction is intentionally loss-tolerant for hostile objects: if
-property enumeration fails, unavailable fields are omitted from the safe result.
-Safe serialization similarly reduces unsupported class instances and built-in
-objects to safely readable enumerable own properties; hostile state may be
-omitted by design.
-Literal-secret replacement processes at most 100 configured secrets per call.
-When bounded serialization omits array items, it appends `[TRUNCATED]`; object
-truncation uses a collision-safe metadata key.
-
-Additional boundary helpers are available for common logging paths:
-
-```js
-redactHeaders({ authorization: "Bearer secret", accept: "json" });
-redactErrorMessage(new Error("request token=secret"));
-redactErrorDetails(Object.assign(new Error("failed"), { token: "secret" }));
-safeErrorValue(new Error("failed"));
-```
-
-The same helpers are exported from the package entrypoint; serialization-only
-limits are options to `safeSerialize`, not properties of `defaultPolicy`.
-
-Configured literal secrets are replaced using substring semantics; empty and
-non-string entries are ignored. Buffer handling is intentionally Node.js-specific.
-Text redaction and error-message redaction accept `secrets` and `maxString`;
-structured/header policy fields do not apply to those helpers. Header
-enumeration failures are intentionally loss-tolerant and produce an empty safe
-result, as hostile input cannot be represented reliably.
-Unknown policy fields are ignored by normalized policies.
+The public package entrypoint is `@eliware/redact`, with runtime entry `src/index.mjs` and declarations in `index.d.ts`. This repository's package version is declared in `package.json`; use a version after its release and publication. The default marker is `[REDACTED]`. Structured redaction is key-based, does not mutate its input, and supports bounded traversal. Text redaction is best-effort and may not recognize unknown secret formats. See the [usage guide](docs/usage.md) and [basic example](examples/basic/README.md).
 
 ## Development
 
-```text
-npm test
-npm run lint
-npm run typecheck
-npm run pack
-npm run audit
-npm run format:check
-```
+Read [AGENTS.md](AGENTS.md), [documentation](docs/README.md), and [specifications](specs/README.md) before changing the package. Install the locked dependencies with `npm ci`. Source modules live under `src/` and their behavior tests mirror them under `tests/`.
 
-The project uses `@eliware/test` for its test and lint gates.
+## Testing
 
-## Operations
+Run `npm test` for aggregate validation and coverage. Use `npm run lint`, `npm run audit`, `npm run format:check`, `npm run typecheck`, and `npm run pack` for the applicable focused checks. `npm run format` writes formatted files; `npm run format:check` is read-only.
 
-This library has no runtime deployment or operational state. Publication and
-release actions are performed through the approved CI and release process.
+## Troubleshooting
+
+- Import the package entrypoint `@eliware/redact`; internal `src/` modules are not separately exported.
+- Unsupported options throw `TypeError`; see the [specifications](specs/README.md) for accepted behavior.
+- If a value is not redacted, configure the applicable key or literal secret and review the documented best-effort limits. Do not include real secrets in an issue report.
 
 ## Security
 
-Redaction is an observability and boundary-safety aid, not encryption, secret
-storage, access control, or a guarantee that unknown secrets are detected.
-Redact values before logging, persistence, transport, or browser delivery.
+Redaction is not encryption, access control, or guaranteed detection of unknown secrets. Redact values before logging, persistence, or transport. Keep credentials out of source, tests, examples, and version control; `.env.example` contains only safe placeholders.
 
-## Design
+## API
 
-See [documentation](docs/README.md), [specifications](specs/README.md),
-[examples](examples/README.md), and [release notes](RELEASE_NOTES.md).
+The package exports policy creation, structured-value redaction, header redaction, text redaction, literal-secret replacement, safe serialization, and error helpers. The supported exports and TypeScript declarations are listed in [src/index.mjs](src/index.mjs) and [index.d.ts](index.d.ts). Compatibility behavior is specified in [Compatibility](specs/compatibility.md); removed or undocumented aliases are not part of the contract.
+
+## Packaging
+
+The intentional package allowlist is `src/`, `index.d.ts`, `README.md`, `docs/`, `examples/`, `specs/`, `LICENSE`, and `RELEASE_NOTES.md`. Validate packed contents with `npm run pack`; the shared pack check must pass and the packed files must match the allowlist before release consideration. Public publication uses npm provenance and an exact version tag matching `package.json`, after Ubuntu validation. Verify the exact version in the npm registry after an explicitly authorized publication handoff.
+
+## Examples
+
+The runnable examples and their prerequisites are indexed in [examples/README.md](examples/README.md). Start with the [basic example](examples/basic/README.md), which runs with placeholder values and no credentials.
 
 ## Support
 
-Report reproducible issues at [github.com/eliware/redact/issues](https://github.com/eliware/redact/issues),
-the [Eliware Discord community](https://discord.gg/M6aTR9eTwN), or
-[eliware@eliware.org](mailto:eliware@eliware.org).
+[![Discord](https://eliware.org/logos/discord_96.png)](https://discord.gg/M6aTR9eTwN)
+
+**[eliware.org on Discord](https://discord.gg/M6aTR9eTwN)**
+
+For help, questions, or discussion, use [Eliware on Discord](https://discord.gg/M6aTR9eTwN), [GitHub issues](https://github.com/eliware/redact/issues), or [eliware@eliware.org](mailto:eliware@eliware.org).
 
 ## License
 
-This package is distributed under the terms in [LICENSE](LICENSE).
+MIT. See [LICENSE](LICENSE).
+
+## Links
+
+- [Eliware home](https://eliware.org)
+- [Eliware GitHub organization](https://github.com/eliware)
+- [GitHub repository](https://github.com/eliware/redact)
+- [npm package](https://www.npmjs.com/package/@eliware/redact)
+- [Documentation](docs/README.md)
+- [Specifications](specs/README.md)
+- [Runnable examples](examples/README.md)
+- [Release notes](RELEASE_NOTES.md)

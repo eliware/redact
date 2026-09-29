@@ -16,8 +16,7 @@ export function redactError(value, policy, redactChild) {
   const stack = read("stack");
   if (stack) output.stack = redactProperty("stack", stack, policy, redactChild);
   for (const [key, child] of readObjectEntries(value)) {
-    if (!(key in output))
-      output[key] = redactProperty(key, child, policy, redactChild);
+    if (!(key in output)) output[key] = redactProperty(key, child, policy, redactChild);
   }
   return output;
 }

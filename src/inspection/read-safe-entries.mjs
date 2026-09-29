@@ -5,9 +5,7 @@ export function readSafeEntries(value) {
       .flatMap((key) => {
         try {
           const descriptor = Object.getOwnPropertyDescriptor(value, key);
-          return descriptor?.enumerable && "value" in descriptor
-            ? [[key, descriptor.value]]
-            : [];
+          return descriptor?.enumerable && "value" in descriptor ? [[key, descriptor.value]] : [];
         } catch {
           return [];
         }

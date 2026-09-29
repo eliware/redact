@@ -30,9 +30,7 @@ test("handles cycles and Errors", () => {
 test("uses the fixed circular marker through the public API", () => {
   const input = {};
   input.self = input;
-  expect(redactValue(input, { circularMarker: "<cycle>" }).self).toBe(
-    "[CIRCULAR]",
-  );
+  expect(redactValue(input, { circularMarker: "<cycle>" }).self).toBe("[CIRCULAR]");
 });
 
 test("redacts configured Error metadata fields", () => {
@@ -104,9 +102,7 @@ test("handles an error without a stack and extra fields", () => {
 });
 
 test("bounds structured object keys", () => {
-  const value = Object.fromEntries(
-    Array.from({ length: 3 }, (_, index) => [`key${index}`, index]),
-  );
+  const value = Object.fromEntries(Array.from({ length: 3 }, (_, index) => [`key${index}`, index]));
   const output = redactValue(value, { maxKeys: 2 });
   expect(output.key0).toBe(0);
   expect(output.key1).toBe(1);
@@ -122,7 +118,5 @@ test("rejects invalid structured traversal limits", () => {
   expect(() => redactValue({}, { maxDepth: -1 })).toThrow(
     "maxDepth must be a non-negative integer",
   );
-  expect(() => redactValue({}, { maxKeys: 1.5 })).toThrow(
-    "maxKeys must be a non-negative integer",
-  );
+  expect(() => redactValue({}, { maxKeys: 1.5 })).toThrow("maxKeys must be a non-negative integer");
 });

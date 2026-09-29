@@ -17,16 +17,10 @@ function redact(value, policy, seen, depth) {
   seen.set(value, true);
   try {
     if (isError(value))
-      return redactError(value, policy, (child) =>
-        redact(child, policy, seen, depth + 1),
-      );
+      return redactError(value, policy, (child) => redact(child, policy, seen, depth + 1));
     return Array.isArray(value)
-      ? redactArray(value, policy, (child) =>
-          redact(child, policy, seen, depth + 1),
-        )
-      : redactObject(value, policy, (child) =>
-          redact(child, policy, seen, depth + 1),
-        );
+      ? redactArray(value, policy, (child) => redact(child, policy, seen, depth + 1))
+      : redactObject(value, policy, (child) => redact(child, policy, seen, depth + 1));
   } finally {
     seen.delete(value);
   }

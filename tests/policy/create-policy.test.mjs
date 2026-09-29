@@ -22,7 +22,5 @@ test("normalizes custom header names into a canonical readonly set", () => {
 });
 
 test("rejects non-iterable header names", () => {
-  expect(() => createPolicy({ headerNames: 42 })).toThrow(
-    "headerNames must be iterable",
-  );
+  expect(() => createPolicy({ headerNames: 42 })).toThrow("headerNames must be iterable");
 });

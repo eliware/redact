@@ -11,14 +11,7 @@ import { serializeValue } from "./serialize-value.mjs";
 import { redactText } from "../text/redact-text.mjs";
 import { readBoundedObject } from "./read-bounded-object.mjs";
 
-export function serializeDispatch(
-  value,
-  policy,
-  limits,
-  seen,
-  depth,
-  _serialize,
-) {
+export function serializeDispatch(value, policy, limits, seen, depth, _serialize) {
   try {
     const primitive = serializeValue(value, limits);
     if (primitive.handled)
@@ -35,39 +28,18 @@ export function serializeDispatch(
           value,
           policy,
           (child, childDepth) =>
-            serializeDispatch(
-              child,
-              policy,
-              limits,
-              seen,
-              childDepth,
-              serializeDispatch,
-            ),
+            serializeDispatch(child, policy, limits, seen, childDepth, serializeDispatch),
           depth,
         );
       if (Array.isArray(value))
         return serializeArray(value, limits.maxArray, (item) =>
-          serializeDispatch(
-            item,
-            policy,
-            limits,
-            seen,
-            depth + 1,
-            serializeDispatch,
-          ),
+          serializeDispatch(item, policy, limits, seen, depth + 1, serializeDispatch),
         );
       const source = readBoundedObject(value, limits.maxKeys);
       return serializeObject(source, limits.maxKeys, (key, child) =>
         policy.keys.has(key.toLowerCase())
           ? policy.marker
-          : serializeDispatch(
-              child,
-              policy,
-              limits,
-              seen,
-              depth + 1,
-              serializeDispatch,
-            ),
+          : serializeDispatch(child, policy, limits, seen, depth + 1, serializeDispatch),
       );
     } finally {
       seen.delete(value);

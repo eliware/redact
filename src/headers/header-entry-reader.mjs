@@ -1,9 +1,5 @@
 export function readHeaderEntries(headers) {
-  if (
-    headers &&
-    !Array.isArray(headers) &&
-    typeof headers.entries === "function"
-  ) {
+  if (headers && !Array.isArray(headers) && typeof headers.entries === "function") {
     try {
       const entries = [];
       for (const entry of headers.entries()) {

@@ -1,6 +1,7 @@
 {
   "name": "@eliware/redact",
   "version": "8.0.0",
+  "private": false,
   "description": "Reusable secret-redaction and safe-serialization utilities for Node.js 26+.",
   "author": "Eliware <eliware@eliware.org>",
   "license": "MIT",
@@ -25,10 +26,10 @@
     "test": "eliware-test",
     "lint": "eliware-test --lint",
     "typecheck": "tsc --noEmit",
-    "pack": "npm pack --dry-run",
-    "audit": "npm audit --ignore-scripts --omit=dev --audit-level=moderate",
-    "format": "prettier --write src tests typecheck examples README.md AGENTS.md RELEASE_NOTES.md docs specs *.md",
-    "format:check": "prettier --check src tests typecheck examples README.md AGENTS.md RELEASE_NOTES.md docs specs *.md"
+    "audit": "eliware-test --audit",
+    "pack": "eliware-test --pack",
+    "format": "eliware-test --format",
+    "format:check": "eliware-test --format-check"
   },
   "repository": {
     "type": "git",
@@ -50,21 +51,50 @@
     "provenance": true
   },
   "engines": {
-    "node": ">=26"
+    "node": ">=26 <27"
   },
   "devDependencies": {
-    "@eliware/test": "^6.0.1",
-    "prettier": "^3.9.6",
+    "@eliware/test": "^8.0.0",
     "typescript": "^7.0.2"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/tests/**/*.test.mjs"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.mjs"
+    ],
+    "coverageReporters": [
+      "text",
+      "json-summary"
+    ]
+  },
+  "prettier": {
+    "printWidth": 100,
+    "tabWidth": 2,
+    "useTabs": false,
+    "semi": true,
+    "singleQuote": false,
+    "quoteProps": "as-needed",
+    "jsxSingleQuote": false,
+    "trailingComma": "all",
+    "bracketSpacing": true,
+    "bracketSameLine": false,
+    "arrowParens": "always",
+    "proseWrap": "preserve",
+    "endOfLine": "lf"
   },
   "eliware": {
     "apply": [
-        "general",
-        "node",
-        "library",
-        "npm-published"
+      "general",
+      "library",
+      "npm-published"
     ],
     "exempt": [],
+    "capabilities": [
+      "typecheck"
+    ],
     "authority": {
       "authoritativeFor": [
         "Redaction and safe-serialization library behavior."

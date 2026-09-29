@@ -1,28 +1,13 @@
 # Documentation
 
-[Back to the project README](../README.md)
+[Project README](../README.md) · [Specifications](../specs/README.md) · [Examples](../examples/README.md)
 
-`@eliware/redact` is a reusable boundary-safety library for protecting values
-before logging, persistence, or transport. Install it with `npm install
-@eliware/redact`, then use the public functions from the package entrypoint.
+This documentation describes the public `@eliware/redact` package, safe usage boundaries, and support paths.
 
-Configuration is supplied as API options such as `keys`, header policy options,
-and serialization limits. Redaction and circular-reference markers are fixed;
-they are exposed on `defaultPolicy` as runtime constants, not configurable
-options. Do not put
-credentials in source, examples, `.env.example`, or documentation. Redaction
-is best-effort and is not encryption or a guarantee that unknown secrets are
-detected.
-
-For troubleshooting, run `npm test`, `npm run lint`, `npm run typecheck`, and
-`npm run pack`. Report reproducible issues through the GitHub issue tracker.
-
-- [Specifications](../specs/README.md)
-- [Release notes](../RELEASE_NOTES.md)
-- [Examples](../examples/README.md)
 - [Usage](usage.md)
 - [Troubleshooting](troubleshooting.md)
+- [Specifications](../specs/README.md)
+- [Examples](../examples/README.md)
+- [Release notes](../RELEASE_NOTES.md)
 
-Audience: package users. Prerequisites: a supported runtime and values that
-must be handled safely. Expected result: documented redaction workflows remove
-configured sensitive values without treating redaction as encryption.
+Audience: package users. Prerequisites: Node.js 26 or newer and values that need boundary-safe handling. Expected result: readers can choose the appropriate public helper and understand that redaction is not encryption or guaranteed detection.

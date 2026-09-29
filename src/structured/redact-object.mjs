@@ -11,11 +11,7 @@ export function redactObject(value, policy, redactChild) {
       addTruncationMarker(output);
       break;
     }
-    copyPropertyDescriptor(
-      output,
-      key,
-      redactProperty(key, child, policy, redactChild),
-    );
+    copyPropertyDescriptor(output, key, redactProperty(key, child, policy, redactChild));
   }
   return output;
 }
