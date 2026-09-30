@@ -1,5 +1,13 @@
 # Release Notes
 
+## 9.0.0 — 2026-09-30
+
+### Changed
+
+- Align package and specification versions with the v9 convention baseline.
+- Assign Redact's repository directive ID `E-101`.
+- No user-facing library API or runtime behavior changed.
+
 ## 8.0.0 — 2026-09-11
 
 ### Changed

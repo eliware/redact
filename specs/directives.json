@@ -1,10 +1,10 @@
 {
-  "version": "8.0",
+  "version": "9.0",
   "repositoryId": "eliware/redact",
-  "description": "Applicable shared Eliware conventions and project behavior authority.",
+  "description": "Applicable shared Eliware profiles and project requirements.",
   "directives": [
     {
-      "id": "E-1",
+      "id": "E-101",
       "source": "eliware/conventions",
       "profiles": ["general", "library", "npm-published"]
     }

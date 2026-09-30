@@ -1,6 +1,6 @@
 {
   "name": "@eliware/redact",
-  "version": "8.0.0",
+  "version": "9.0.0",
   "private": false,
   "description": "Reusable secret-redaction and safe-serialization utilities for Node.js 26+.",
   "author": "Eliware <eliware@eliware.org>",
@@ -94,21 +94,6 @@
     "exempt": [],
     "capabilities": [
       "typecheck"
-    ],
-    "authority": {
-      "authoritativeFor": [
-        "Redaction and safe-serialization library behavior."
-      ],
-      "notAuthoritativeFor": [
-        "Shared platform conventions, operations, publication, or deployment."
-      ]
-    },
-    "crosslinks": [
-      {
-        "path": "specs/README.md",
-        "relation": "relatedAuthority",
-        "authoritativeFor": "Project-specific behavior specifications."
-      }
     ]
   }
 }

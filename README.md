@@ -96,7 +96,7 @@ The runnable examples and their prerequisites are indexed in [examples/README.md
 
 **[eliware.org on Discord](https://discord.gg/M6aTR9eTwN)**
 
-For help, questions, or discussion, use [Eliware on Discord](https://discord.gg/M6aTR9eTwN), [GitHub issues](https://github.com/eliware/redact/issues), or [eliware@eliware.org](mailto:eliware@eliware.org).
+Use the [Eliware Discord community](https://discord.gg/M6aTR9eTwN), [GitHub issues](https://github.com/eliware/redact/issues), or [eliware@eliware.org](mailto:eliware@eliware.org). Include redacted context only; never include real secrets in a support request.
 
 ## License
 
@@ -110,5 +110,6 @@ MIT. See [LICENSE](LICENSE).
 - [npm package](https://www.npmjs.com/package/@eliware/redact)
 - [Documentation](docs/README.md)
 - [Specifications](specs/README.md)
+- [Canonical repository profile specifications](https://github.com/eliware/test/blob/main/specs/conventions/README.md)
 - [Runnable examples](examples/README.md)
 - [Release notes](RELEASE_NOTES.md)

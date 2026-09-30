@@ -6,7 +6,7 @@ Repository: `eliware/redact`. Purpose: maintain `@eliware/redact`, a Node.js 26 
 
 ## Scope and boundaries
 
-Repository-wide scope: these instructions apply throughout `eliware/redact`; nearer `AGENTS.md` files govern their subdirectories. Important boundaries: this repository owns and includes the library implementation and public contract. It excludes ownership of shared requirements, documentation policy, and release procedures. Shared repository requirements are maintained by `eliware/test`, documentation authority by `eliware/docs`, and release procedures by `eliware/operations`.
+Repository-wide scope: these instructions apply throughout `eliware/redact`; nearer `AGENTS.md` files govern their subdirectories. Important boundaries: this repository owns and includes the library implementation and public contract. It excludes ownership of shared requirements, documentation policy, and release procedures. Shared repository requirements are maintained by `eliware/test`, documentation indexes maintained by `eliware/docs`, and release procedures by `eliware/operations`.
 
 ## Layout
 
