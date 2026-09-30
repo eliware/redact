@@ -40,7 +40,7 @@ Documentation: [docs](docs/README.md) · [specifications](specs/README.md) · [e
 
 ## Setup
 
-Install the public package with `npm install @eliware/redact`. The runtime package entrypoint is `@eliware/redact`, backed by `src/index.mjs`; TypeScript declarations are provided by `index.d.ts`. This checkout declares version 8.0.0 in `package.json`; check the npm registry for the currently published version before selecting a release.
+Install the public package with `npm install @eliware/redact`. The runtime package entrypoint is `@eliware/redact`, backed by `src/index.mjs`; TypeScript declarations are provided by `index.d.ts`. This checkout declares its version in `package.json`; check the npm registry for the currently published version before selecting a release.
 
 ### Configuration
 

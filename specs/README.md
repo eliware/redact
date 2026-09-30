@@ -6,7 +6,7 @@ This directory is the normative behavior inventory for `@eliware/redact`.
 
 This overview: [README.md](README.md).
 
-- [Applicable Eliware convention profiles](directives.json)
+- [Package directives](directives.json)
 - [Architecture](architecture.md)
 - [Requirements](requirements.md)
 - [Compatibility](compatibility.md)
