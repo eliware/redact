@@ -10,3 +10,6 @@ normalize to a null-prototype object; entry-array inputs retain array shape.
 Arbitrary iterable objects without an `entries()` method are not part of the
 public input contract. Malformed entries yielded by a Headers-style `entries()`
 iterator are skipped while valid entries are redacted.
+Entry names must be strings; malformed entries and entries with other name types
+are skipped. Headers-style iterators are bounded to the first 1,000 yielded
+entries. Entries beyond that bound are omitted without an additional marker.

@@ -13,12 +13,11 @@ export function readBoundedObject(value, maxKeys, excludedKeys = []) {
   let count = 0;
   for (const key of keys) {
     if (excluded.has(key)) continue;
-    if (count >= maxKeys) {
-      return appendTruncationMarker(output);
-    }
-    count += 1;
     const property = readOwnDataProperty(value, key);
-    if (property.found) output[key] = property.value;
+    if (!property.found) continue;
+    if (count >= maxKeys) return appendTruncationMarker(output);
+    output[key] = property.value;
+    count += 1;
   }
   return output;
 }

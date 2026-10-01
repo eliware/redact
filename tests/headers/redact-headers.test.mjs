@@ -58,3 +58,12 @@ test("normalizes custom header names case-insensitively", () => {
     redactHeaders({ "X-CUSTOM": "secret" }, { headerNames: ["x-custom"], matchHeuristics: false }),
   ).toEqual({ "X-CUSTOM": "[REDACTED]" });
 });
+
+test("supports custom header names from a single-use iterable", () => {
+  const headerNames = (function* () {
+    yield "x-custom";
+  })();
+  expect(redactHeaders({ "x-custom": "secret" }, { headerNames, matchHeuristics: false })).toEqual({
+    "x-custom": "[REDACTED]",
+  });
+});

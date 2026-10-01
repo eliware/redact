@@ -55,6 +55,17 @@ test("reuses literal secrets from one-shot iterables across string values", () =
   });
 });
 
+test("redacts literal secrets and credential patterns in Error string fields", () => {
+  const error = new Error("token=secret");
+  error.name = "known-secret";
+  error.stack = "stack known-secret";
+  expect(safeSerialize(error, { secrets: ["known-secret"] })).toMatchObject({
+    name: "[REDACTED]",
+    message: "token=[REDACTED]",
+    stack: "stack [REDACTED]",
+  });
+});
+
 test("handles errors and hostile values safely", () => {
   const error = Object.assign(new Error("failed"), {
     token: "secret",

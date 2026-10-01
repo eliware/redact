@@ -1,4 +1,4 @@
 export const redactPrivateKeyRule = [
-  /-----BEGIN [^-]+-----[\s\S]*?-----END [^-]+-----/gu,
+  /-----BEGIN [\w -]+?-----[\s\S]*?-----END [\w -]+?-----/gu,
   "[REDACTED]",
 ];

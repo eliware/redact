@@ -25,3 +25,15 @@ test("does not invoke enumerable Error metadata getters", () => {
   expect(readBoundedObject(value, 2)).toEqual(Object.create(null));
   expect(invoked).toBe(false);
 });
+
+test("does not spend the retained-key limit on skipped accessors", () => {
+  const value = {};
+  Object.defineProperty(value, "blocked", {
+    enumerable: true,
+    get() {
+      throw new Error("must not run");
+    },
+  });
+  value.safe = "visible";
+  expect(readBoundedObject(value, 1)).toEqual({ safe: "visible" });
+});

@@ -69,7 +69,7 @@ const headers = redactHeaders({
 const error = safeErrorValue(new Error("Request failed with token=example-token"));
 ```
 
-The public package entrypoint is `@eliware/redact`, with runtime entry `src/index.mjs` and declarations in `index.d.ts`. This repository's package version is declared in `package.json`; use a version after its release and publication. The default marker is `[REDACTED]`. Structured redaction is key-based, does not mutate its input, and supports bounded traversal. Text redaction is best-effort and may not recognize unknown secret formats. See the [usage guide](docs/usage.md) and [basic example](examples/basic/README.md).
+The public package entrypoint is `@eliware/redact`, with runtime entry `src/index.mjs` and declarations in `index.d.ts`. This repository's package version is declared in `package.json`; use a version after its release and publication. Sensitive values always use the fixed `[REDACTED]` marker; structural markers such as `[CIRCULAR]` and `[TRUNCATED]` are fixed as well. Structured redaction is key-based, does not mutate its input, and supports bounded traversal. Text redaction is best-effort, may not recognize unknown secret formats, and processes at most the first 100 configured literal secrets. See the [usage guide](docs/usage.md) and [basic example](examples/basic/README.md).
 
 ## Development
 

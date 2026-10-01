@@ -119,4 +119,7 @@ test("rejects invalid structured traversal limits", () => {
     "maxDepth must be a non-negative integer",
   );
   expect(() => redactValue({}, { maxKeys: 1.5 })).toThrow("maxKeys must be a non-negative integer");
+  expect(() => redactValue({}, { maxArray: Number.POSITIVE_INFINITY })).toThrow(
+    "maxArray must be a non-negative integer",
+  );
 });

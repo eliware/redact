@@ -32,3 +32,13 @@ test("bounds iterator consumption and handles iterator failures", () => {
     }),
   ).toEqual([]);
 });
+
+test("keeps valid entries yielded before an iterator failure", () => {
+  const headers = {
+    *entries() {
+      yield ["accept", "json"];
+      throw new Error("blocked");
+    },
+  };
+  expect(readHeaderIteratorEntries(headers)).toEqual([["accept", "json"]]);
+});
