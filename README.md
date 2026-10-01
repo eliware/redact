@@ -116,6 +116,7 @@ MIT. See [LICENSE](LICENSE).
 ## Links
 
 - [Eliware home](https://eliware.org)
+- [Package homepage](https://github.com/eliware/redact#readme)
 - [Eliware GitHub organization](https://github.com/eliware)
 - [Discord](https://discord.gg/M6aTR9eTwN)
 - [GitHub repository](https://github.com/eliware/redact) (`git+https://github.com/eliware/redact.git`)
