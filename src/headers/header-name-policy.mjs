@@ -1,10 +1,6 @@
-const DEFAULT_SENSITIVE_HEADER_NAMES = new Set([
-  "authorization",
-  "cookie",
-  "set-cookie",
-  "proxy-authorization",
-  "x-api-key",
-]);
+import { DEFAULT_HEADER_NAMES } from "./default-header-names.mjs";
+
+const DEFAULT_SENSITIVE_HEADER_NAMES = new Set(DEFAULT_HEADER_NAMES);
 
 export function isSensitiveHeaderName(name, options = {}) {
   // `normalizedHeaderNames` is the configured additive set, including

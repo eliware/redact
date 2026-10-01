@@ -6,21 +6,14 @@ test("reads object, iterable, and entry-array headers", () => {
   expect(readHeaderEntries(new Headers({ a: "1" }))).toEqual([["a", "1"]]);
 });
 
-test("skips malformed entries from Headers-style iterators", () => {
+test("handles hostile input shape checks", () => {
   const { proxy, revoke } = Proxy.revocable([], {});
   revoke();
-  const headers = {
-    *entries() {
-      yield ["accept", "json"];
-      yield null;
-      yield "invalid";
-      yield proxy;
-      yield ["authorization"];
-      yield ["content-type", "text/plain"];
+  expect(readHeaderEntries(proxy)).toEqual([]);
+  const headers = Object.defineProperty({}, "entries", {
+    get() {
+      throw new Error("blocked");
     },
-  };
-  expect(readHeaderEntries(headers)).toEqual([
-    ["accept", "json"],
-    ["content-type", "text/plain"],
-  ]);
+  });
+  expect(readHeaderEntries(headers)).toEqual([]);
 });

@@ -1,22 +1,12 @@
-import { readObjectEntries } from "./object-entry-reader.mjs";
-import { redactProperty } from "./redact-property.mjs";
+import { copyPropertyDescriptor } from "./copy-property-descriptor.mjs";
+import { readErrorStandardFields } from "./read-error-standard-fields.mjs";
+import { redactErrorMetadata } from "./redact-error-metadata.mjs";
+import { redactErrorStandardFields } from "./redact-error-standard-fields.mjs";
 
 export function redactError(value, policy, redactChild) {
-  const read = (key) => {
-    try {
-      return value[key];
-    } catch {
-      return undefined;
-    }
-  };
-  const output = {
-    name: redactProperty("name", read("name"), policy, redactChild),
-    message: redactProperty("message", read("message"), policy, redactChild),
-  };
-  const stack = read("stack");
-  if (stack) output.stack = redactProperty("stack", stack, policy, redactChild);
-  for (const [key, child] of readObjectEntries(value)) {
-    if (!(key in output)) output[key] = redactProperty(key, child, policy, redactChild);
-  }
+  const fields = readErrorStandardFields(value);
+  const output = redactErrorStandardFields(fields, policy, redactChild);
+  for (const [key, child] of redactErrorMetadata(value, policy, redactChild))
+    copyPropertyDescriptor(output, key, child);
   return output;
 }

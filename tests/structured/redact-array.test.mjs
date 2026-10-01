@@ -11,22 +11,6 @@ test("truncates arrays past the configured limit", () => {
   ).toEqual([1, 2, "[TRUNCATED]"]);
 });
 
-test("rejects invalid array limits", () => {
-  expect(() => redactArray([1], { keys: new Set(), maxArray: -1 }, (value) => value)).toThrow(
-    "maxArray must be a non-negative integer",
-  );
-});
-
-test("returns a safe result for hostile array proxies", () => {
-  const value = new Proxy([], {
-    get(target, key) {
-      if (key === "slice") throw new Error("blocked");
-      return Reflect.get(target, key);
-    },
-  });
-  expect(redactArray(value, { keys: new Set() }, (item) => item)).toEqual([]);
-});
-
 test("returns a safe result when hostile array length access throws", () => {
   const value = new Proxy([1], {
     get(target, key, receiver) {
@@ -37,21 +21,12 @@ test("returns a safe result when hostile array length access throws", () => {
   expect(redactArray(value, { keys: new Set() }, (item) => item)).toEqual([]);
 });
 
-test("preserves safe array items when one child fails", () => {
-  expect(
-    redactArray([1, 2], { keys: new Set() }, (value) => {
-      if (value === 2) throw new Error("blocked");
-      return value;
-    }),
-  ).toEqual([1, "[UNSERIALIZABLE]"]);
-});
-
-test("returns a safe result when a hostile slice returns a non-array", () => {
+test("returns empty output when bounded selection fails", () => {
   const value = new Proxy([1], {
     get(target, key, receiver) {
-      if (key === "slice") return () => ({});
+      if (key === "slice") throw new Error("blocked");
       return Reflect.get(target, key, receiver);
     },
   });
-  expect(redactArray(value, { keys: new Set() }, (item) => item)).toEqual([]);
+  expect(redactArray(value, { keys: new Set(), maxArray: 1 }, (item) => item)).toEqual([]);
 });

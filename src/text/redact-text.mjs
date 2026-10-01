@@ -4,11 +4,11 @@ import { replaceLiteralSecret } from "./replace-literal-secret.mjs";
 import { collectLiteralSecrets } from "./collect-literal-secrets.mjs";
 import { applyTextRedactionRules } from "./text-redaction-rules.mjs";
 import { truncateRedactedText } from "./truncate-redacted-text.mjs";
+import { prepareRedactionInput } from "./prepare-redaction-input.mjs";
 
 export function redactText(value, options = {}) {
   const { maxString } = normalizeSerializationLimits(options, DEFAULT_LIMITS);
-  const input = String(value ?? "");
-  const inputTruncated = input.length > maxString;
+  const { input, inputTruncated } = prepareRedactionInput(value, maxString);
   let output = input;
   for (const secret of collectLiteralSecrets(options.secrets)) {
     output = replaceLiteralSecret(output, secret);

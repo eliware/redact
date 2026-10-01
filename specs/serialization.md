@@ -10,7 +10,8 @@ hostile state may be omitted. Accessor-backed properties are intentionally not
 invoked, even when their descriptors are enumerable; getters are outside the
 safe serializer's supported execution boundary.
 
-`maxKeys` limits retained source data properties. An over-limit object may
+`maxKeys` limits retained source data properties, including enumerable Error
+metadata. An over-limit object may
 therefore contain one additional collision-safe `[TRUNCATED]` metadata property;
 that metadata slot is intentional and is not counted as source data.
 Arrays serialize indexed items only; enumerable named properties attached to an

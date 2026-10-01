@@ -1,4 +1,5 @@
-import { redactProperty } from "./redact-property.mjs";
+import { redactArrayItems } from "./redact-array-items.mjs";
+import { selectBoundedArray } from "./select-bounded-array.mjs";
 
 export function redactArray(value, policy, redactChild) {
   let limit;
@@ -7,24 +8,9 @@ export function redactArray(value, policy, redactChild) {
   } catch {
     return [];
   }
-  if (!Number.isInteger(limit) || limit < 0)
-    throw new TypeError("maxArray must be a non-negative integer");
-  let items;
-  let truncated;
-  try {
-    items = value.slice(0, limit);
-    truncated = value.length > limit;
-  } catch {
-    return [];
-  }
-  if (!Array.isArray(items)) return [];
-  const output = items.map((item) => {
-    try {
-      return redactProperty("", item, policy, () => redactChild(item));
-    } catch {
-      return "[UNSERIALIZABLE]";
-    }
-  });
-  if (truncated) output.push("[TRUNCATED]");
+  const selection = selectBoundedArray(value, limit);
+  if (!selection) return [];
+  const output = redactArrayItems(selection.items, policy, redactChild);
+  if (selection.truncated) output.push("[TRUNCATED]");
   return output;
 }

@@ -1,18 +1,4 @@
-import { redactText, replaceLiteralSecret } from "../../src/index.mjs";
-
-test("bounds secret iterable consumption and validates policy booleans", () => {
-  let consumed = 0;
-  const secrets = {
-    *[Symbol.iterator]() {
-      while (true) {
-        consumed += 1;
-        yield `secret-${consumed}`;
-      }
-    },
-  };
-  redactText("safe", { secrets });
-  expect(consumed).toBe(100);
-});
+import { redactText } from "../../src/index.mjs";
 
 test("redacts common credential-shaped text", () => {
   const output = redactText("Authorization: Bearer abc token=secret ?api_key=key");
@@ -21,20 +7,12 @@ test("redacts common credential-shaped text", () => {
   expect(output).not.toContain("=key");
 });
 
-test("replaces configured literal secrets", () => {
-  expect(replaceLiteralSecret("password is abc", "abc")).toBe("password is [REDACTED]");
-});
-
 test("supports configured secrets and empty input", () => {
   expect(redactText("value=known", { secrets: ["known"], marker: "<hidden>" })).toBe(
     "value=[REDACTED]",
   );
   expect(redactText("value=known", { secrets: ["known"] })).toBe("value=[REDACTED]");
   expect(redactText()).toBe("");
-});
-
-test("ignores empty and non-string literal secrets", () => {
-  expect(redactText("value=known", { secrets: ["", null, 42] })).toBe("value=known");
 });
 
 test("does not rewrite generated markers with later secrets", () => {

@@ -12,3 +12,16 @@ test("avoids truncation-key collisions and hostile descriptors", () => {
   });
   expect(readBoundedObject(value, 2)).toEqual({});
 });
+
+test("does not invoke enumerable Error metadata getters", () => {
+  let invoked = false;
+  const value = Object.defineProperty({}, "token", {
+    enumerable: true,
+    get() {
+      invoked = true;
+      return "secret";
+    },
+  });
+  expect(readBoundedObject(value, 2)).toEqual(Object.create(null));
+  expect(invoked).toBe(false);
+});

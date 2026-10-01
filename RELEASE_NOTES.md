@@ -5,6 +5,7 @@
 ### Changed
 
 - Allow `safeSerialize` to redact configured literal secrets in string values.
+- Apply `maxKeys` bounds to enumerable Error metadata during safe serialization.
 - Skip malformed entries yielded by Headers-style header iterators.
 - Document header and error helper usage.
 

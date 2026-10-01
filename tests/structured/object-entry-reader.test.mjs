@@ -10,3 +10,16 @@ test("reads safe enumerable entries and skips throwing getters", () => {
   });
   expect(readObjectEntries(value)).toEqual([["safe", 1]]);
 });
+
+test("excludes named properties before reading their values", () => {
+  let invoked = false;
+  const value = Object.defineProperty({}, "message", {
+    enumerable: true,
+    get() {
+      invoked = true;
+      return "private";
+    },
+  });
+  expect(readObjectEntries(value, Number.POSITIVE_INFINITY, ["message"])).toEqual([]);
+  expect(invoked).toBe(false);
+});

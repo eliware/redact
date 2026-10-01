@@ -1,28 +1,19 @@
+import { readHeaderArrayEntries } from "./read-header-array-entries.mjs";
+import { readHeaderIteratorEntries } from "./read-header-iterator-entries.mjs";
+import { readHeaderObjectEntries } from "./read-header-object-entries.mjs";
+
 export function readHeaderEntries(headers) {
-  if (headers && !Array.isArray(headers) && typeof headers.entries === "function") {
-    try {
-      const entries = [];
-      for (const entry of headers.entries()) {
-        if (isHeaderEntry(entry)) entries.push(entry);
-        if (entries.length === 1000) break;
-      }
-      return entries;
-    } catch {
-      return [];
-    }
-  }
-  if (Array.isArray(headers)) return headers.filter(isHeaderEntry);
+  let isArray;
   try {
-    return Object.entries(headers ?? {});
+    isArray = Array.isArray(headers);
   } catch {
     return [];
   }
-}
-
-function isHeaderEntry(entry) {
+  if (isArray) return readHeaderArrayEntries(headers);
   try {
-    return Array.isArray(entry) && entry.length >= 2;
+    if (headers && typeof headers.entries === "function") return readHeaderIteratorEntries(headers);
   } catch {
-    return false;
+    return [];
   }
+  return readHeaderObjectEntries(headers);
 }

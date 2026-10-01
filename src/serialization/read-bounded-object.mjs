@@ -1,24 +1,24 @@
-export function readBoundedObject(value, maxKeys) {
+import { readOwnDataProperty } from "./read-own-data-property.mjs";
+import { appendTruncationMarker } from "../limits/append-truncation-marker.mjs";
+
+export function readBoundedObject(value, maxKeys, excludedKeys = []) {
   const output = Object.create(null);
+  const excluded = new Set(excludedKeys);
   let keys;
   try {
     keys = Object.keys(value);
   } catch {
     return output;
   }
-  for (const [index, key] of keys.entries()) {
-    if (index >= maxKeys) {
-      let marker = "__truncated";
-      while (Object.hasOwn(output, marker)) marker = `_${marker}`;
-      output[marker] = "[TRUNCATED]";
-      return output;
+  let count = 0;
+  for (const key of keys) {
+    if (excluded.has(key)) continue;
+    if (count >= maxKeys) {
+      return appendTruncationMarker(output);
     }
-    try {
-      const descriptor = Object.getOwnPropertyDescriptor(value, key);
-      if (descriptor && "value" in descriptor) output[key] = descriptor.value;
-    } catch {
-      /* hostile property is omitted */
-    }
+    count += 1;
+    const property = readOwnDataProperty(value, key);
+    if (property.found) output[key] = property.value;
   }
   return output;
 }
