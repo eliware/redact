@@ -1,5 +1,13 @@
 # Release Notes
 
+## Unreleased
+
+### Changed
+
+- Allow `safeSerialize` to redact configured literal secrets in string values.
+- Skip malformed entries yielded by Headers-style header iterators.
+- Document header and error helper usage.
+
 ## 9.0.0 — 2026-09-30
 
 ### Changed

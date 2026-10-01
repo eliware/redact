@@ -3,6 +3,8 @@
 Structured redaction recursively copies values and replaces sensitive fields
 with the fixed `[REDACTED]` marker. It must handle nested objects, arrays, Errors,
 null-prototype objects, cycles, throwing accessors, and hostile objects safely.
+Standard Error fields such as `name`, `message`, and `stack` are checked against
+the configured sensitive-key policy before their values are copied.
 It detects cycles but does not preserve non-cyclic shared-reference identity;
 repeated references are copied. Traversal is bounded by the policy's
 `maxDepth`, `maxKeys`, and `maxArray` limits, and emits `[TRUNCATED]` when a

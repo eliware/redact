@@ -4,7 +4,7 @@
 
 ## Prerequisites
 
-Use Node.js 26 or newer and run `npm install` from the repository root.
+Use Node.js 26 or newer and run `npm ci` from the repository root.
 
 From the repository root, run:
 

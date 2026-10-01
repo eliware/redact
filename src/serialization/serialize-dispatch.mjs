@@ -16,7 +16,10 @@ export function serializeDispatch(value, policy, limits, seen, depth, _serialize
     const primitive = serializeValue(value, limits);
     if (primitive.handled)
       return typeof value === "string" && typeof primitive.value === "string"
-        ? redactText(primitive.value, { maxString: limits.maxString })
+        ? redactText(primitive.value, {
+            maxString: limits.maxString,
+            secrets: limits.secrets,
+          })
         : primitive.value;
     if (enforceDepthLimit(depth, limits.maxDepth)) return "[TRUNCATED]";
     if (seen.has(value)) return circularValue(policy.circularMarker);
@@ -36,7 +39,8 @@ export function serializeDispatch(value, policy, limits, seen, depth, _serialize
           serializeDispatch(item, policy, limits, seen, depth + 1, serializeDispatch),
         );
       const source = readBoundedObject(value, limits.maxKeys);
-      return serializeObject(source, limits.maxKeys, (key, child) =>
+      // readBoundedObject already applies maxKeys and adds truncation metadata.
+      return serializeObject(source, Number.POSITIVE_INFINITY, (key, child) =>
         policy.keys.has(key.toLowerCase())
           ? policy.marker
           : serializeDispatch(child, policy, limits, seen, depth + 1, serializeDispatch),

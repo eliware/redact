@@ -8,3 +8,16 @@ test("redacts Error properties", () =>
       (value) => value,
     ),
   ).toMatchObject({ token: "[x]" }));
+
+test("redacts standard Error fields when their names are configured", () => {
+  const error = Object.assign(new Error("private message"), {
+    name: "PrivateError",
+    stack: "private stack",
+  });
+  const output = redactError(
+    error,
+    { keys: new Set(["name", "message", "stack"]), marker: "[x]" },
+    (value) => value,
+  );
+  expect(output).toMatchObject({ name: "[x]", message: "[x]", stack: "[x]" });
+});

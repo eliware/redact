@@ -23,11 +23,36 @@ test("handles cycles, arrays, functions, symbols, and buffers", () => {
 
 test("enforces depth, key, string, and circular limits", () => {
   expect(safeSerialize({ deep: { value: 1 } }, { maxDepth: 0 }).deep).toBe("[TRUNCATED]");
-  expect(safeSerialize({ a: 1, b: 2 }, { maxKeys: 1 }).__truncated).toBe("[TRUNCATED]");
+  expect(safeSerialize({ a: 1, b: 2 }, { maxKeys: 1 })).toEqual({
+    a: 1,
+    __truncated: "[TRUNCATED]",
+  });
   expect(safeSerialize("abcdef", { maxString: 3 })).toBe("abc");
   const value = {};
   value.self = value;
   expect(safeSerialize(value, { circularMarker: "<cycle>" }).self).toBe("[CIRCULAR]");
+});
+
+test("serializes indexed array items and omits named array properties", () => {
+  const value = ["item"];
+  value.token = "secret";
+  expect(safeSerialize(value)).toEqual(["item"]);
+});
+
+test("replaces configured literal secrets in nested string values", () => {
+  expect(safeSerialize({ value: "known-secret" }, { secrets: ["known-secret"] })).toEqual({
+    value: "[REDACTED]",
+  });
+});
+
+test("reuses literal secrets from one-shot iterables across string values", () => {
+  const secrets = (function* () {
+    yield "known-secret";
+  })();
+  expect(safeSerialize({ first: "known-secret", second: "known-secret" }, { secrets })).toEqual({
+    first: "[REDACTED]",
+    second: "[REDACTED]",
+  });
 });
 
 test("handles errors and hostile values safely", () => {

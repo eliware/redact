@@ -51,11 +51,22 @@ The library has no environment-variable or configuration-file settings. Supply p
 Import the public functions from `@eliware/redact` and redact values before they cross a logging or persistence boundary:
 
 ```js
-import { redactText, redactValue, safeSerialize } from "@eliware/redact";
+import {
+  redactHeaders,
+  redactText,
+  redactValue,
+  safeErrorValue,
+  safeSerialize,
+} from "@eliware/redact";
 
 const text = redactText("Authorization: Bearer example-token");
 const value = redactValue({ token: "example-token", safe: true });
 const serialized = safeSerialize({ token: "example-token", nested: { value: 1 } });
+const headers = redactHeaders({
+  Authorization: "Bearer example-token",
+  Accept: "application/json",
+});
+const error = safeErrorValue(new Error("Request failed with token=example-token"));
 ```
 
 The public package entrypoint is `@eliware/redact`, with runtime entry `src/index.mjs` and declarations in `index.d.ts`. This repository's package version is declared in `package.json`; use a version after its release and publication. The default marker is `[REDACTED]`. Structured redaction is key-based, does not mutate its input, and supports bounded traversal. Text redaction is best-effort and may not recognize unknown secret formats. See the [usage guide](docs/usage.md) and [basic example](examples/basic/README.md).

@@ -29,6 +29,7 @@ void policy.maxDepth;
 redactValue({ token: "secret" }, policy);
 redactHeaders({ authorization: "secret" }, policy);
 safeSerialize({ token: "secret" }, { ...policy, maxString: 20 });
+safeSerialize({ value: "known-secret" }, { secrets: ["known-secret"] });
 redactText("token=secret", { secrets: ["secret"], maxString: 20 });
 replaceLiteralSecret("secret", "secret");
 redactErrorMessage(new Error("secret"), { secrets: ["secret"] });

@@ -8,4 +8,5 @@ The supported inputs are plain objects, `Headers`-style objects exposing
 `entries()`, and arrays of `[name, value]` entries. Object and `Headers` inputs
 normalize to a null-prototype object; entry-array inputs retain array shape.
 Arbitrary iterable objects without an `entries()` method are not part of the
-public input contract.
+public input contract. Malformed entries yielded by a Headers-style `entries()`
+iterator are skipped while valid entries are redacted.

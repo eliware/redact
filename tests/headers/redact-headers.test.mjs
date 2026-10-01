@@ -59,6 +59,22 @@ test("handles a Headers-like object whose iterator throws", () => {
   ).toEqual({});
 });
 
+test("skips malformed entries from Headers-style iterators", () => {
+  const headers = {
+    *entries() {
+      yield ["authorization", "secret"];
+      yield null;
+      yield "invalid";
+      yield ["accept"];
+      yield ["accept", "json"];
+    },
+  };
+  expect(redactHeaders(headers)).toEqual({
+    authorization: "[REDACTED]",
+    accept: "json",
+  });
+});
+
 test("skips malformed entry arrays", () => {
   expect(redactHeaders([["accept", "json"], ["broken"]])).toEqual([["accept", "json"]]);
 });

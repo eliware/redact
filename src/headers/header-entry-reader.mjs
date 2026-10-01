@@ -3,7 +3,7 @@ export function readHeaderEntries(headers) {
     try {
       const entries = [];
       for (const entry of headers.entries()) {
-        entries.push(entry);
+        if (isHeaderEntry(entry)) entries.push(entry);
         if (entries.length === 1000) break;
       }
       return entries;
@@ -11,11 +11,18 @@ export function readHeaderEntries(headers) {
       return [];
     }
   }
-  if (Array.isArray(headers))
-    return headers.filter((entry) => Array.isArray(entry) && entry.length >= 2);
+  if (Array.isArray(headers)) return headers.filter(isHeaderEntry);
   try {
     return Object.entries(headers ?? {});
   } catch {
     return [];
+  }
+}
+
+function isHeaderEntry(entry) {
+  try {
+    return Array.isArray(entry) && entry.length >= 2;
+  } catch {
+    return false;
   }
 }

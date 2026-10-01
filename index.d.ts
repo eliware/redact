@@ -11,6 +11,8 @@ export interface SerializationOptions extends RedactionPolicy {
   maxDepth?: number;
   maxKeys?: number;
   maxString?: number;
+  /** Literal secrets to replace in serialized string values; at most 100 entries are processed. */
+  secrets?: Iterable<string>;
 }
 
 export interface TextRedactionOptions {
