@@ -1,0 +1,16 @@
+{
+  "version": "9.0",
+  "description": "Sensitive-key and text policy requirements for @eliware/redact.",
+  "directives": [
+    {
+      "id": "E-206",
+      "dos": [
+        "Use conservative default redaction policies.",
+        "Match sensitive structured keys case-insensitively.",
+        "Allow callers to customize policy.",
+        "Apply redaction without mutating input values."
+      ],
+      "donts": ["Do not mutate caller-owned input while applying a policy."]
+    }
+  ]
+}

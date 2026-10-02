@@ -1,0 +1,25 @@
+{
+  "version": "9.0",
+  "description": "Recursive structured-value redaction contract.",
+  "directives": [
+    {
+      "id": "E-210",
+      "dos": [
+        "Recursively copy values and replace sensitive fields with the fixed [REDACTED] marker.",
+        "Safely handle nested objects, arrays, Errors, null-prototype objects, cycles, throwing accessors, and hostile objects.",
+        "Check standard Error fields name, message, and stack against the sensitive-key policy before copying their values.",
+        "Detect cycles without preserving non-cyclic shared-reference identity; copy repeated references independently.",
+        "Bound traversal by maxDepth, maxKeys, and maxArray, and emit [TRUNCATED] when a limit is reached.",
+        "Omit accessor-backed object properties without invoking getters.",
+        "Limit maxKeys to copied output properties, while acknowledging that own-key enumeration materializes a temporary key list.",
+        "Reduce hostile array operations that do not produce an array to an empty safe result; represent individual child failures as [UNSERIALIZABLE] while retaining other safe items.",
+        "For non-plain built-ins such as Date, Map, and Set, copy enumerable own properties when available without reconstructing internal built-in state."
+      ],
+      "donts": [
+        "Do not invoke accessors during structured redaction.",
+        "Do not promise maxKeys bounds temporary memory used to enumerate an object's own keys.",
+        "Do not promise preservation of non-plain built-in internal state; use safeSerialize when callers need safe representations of those values."
+      ]
+    }
+  ]
+}

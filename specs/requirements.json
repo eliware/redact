@@ -1,0 +1,15 @@
+{
+  "version": "9.0",
+  "description": "Contract maintenance and verification requirements for @eliware/redact.",
+  "directives": [
+    {
+      "id": "E-207",
+      "dos": [
+        "Treat the public README, package metadata, source, tests, and release notes as the package behavior record.",
+        "Preserve documented behavior when changing the package.",
+        "Add or update tests when behavior changes."
+      ],
+      "donts": ["Do not change behavior while leaving its tests or public documentation stale."]
+    }
+  ]
+}

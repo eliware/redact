@@ -1,0 +1,18 @@
+{
+  "version": "9.0",
+  "description": "Architecture and module ownership requirements for @eliware/redact.",
+  "directives": [
+    {
+      "id": "E-201",
+      "dos": [
+        "Keep production modules under src/ and mirror their hierarchy under tests/.",
+        "Give every module one cohesive responsibility and one reason to change.",
+        "Define public exports only in src/index.mjs; internal modules are outside the package contract unless explicitly exported."
+      ],
+      "donts": [
+        "Do not combine distinct responsibilities in one source or test module.",
+        "Do not expose internal modules as public API implicitly."
+      ]
+    }
+  ]
+}

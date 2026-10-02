@@ -1,0 +1,21 @@
+{
+  "version": "9.0",
+  "description": "Supported HTTP header redaction behavior and input representations.",
+  "directives": [
+    {
+      "id": "E-203",
+      "dos": [
+        "Replace sensitive HTTP header values while preserving safe names and values.",
+        "Match header names case-insensitively.",
+        "Support plain objects, Headers-style objects exposing entries(), and arrays of [name, value] entries.",
+        "Normalize object and Headers-style inputs to a null-prototype object; preserve the array shape of entry-array inputs.",
+        "Skip malformed entries and entries whose names are not strings; skip malformed entries yielded by Headers-style iterators.",
+        "Process at most the first 1,000 entries from a Headers-style iterator; omit later entries without an additional marker."
+      ],
+      "donts": [
+        "Do not treat arbitrary iterable objects without an entries() method as supported header inputs.",
+        "Do not imply that all input representations preserve their original shape."
+      ]
+    }
+  ]
+}

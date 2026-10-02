@@ -1,0 +1,15 @@
+{
+  "version": "9.0",
+  "description": "Runtime and compatibility contract for @eliware/redact.",
+  "directives": [
+    {
+      "id": "E-202",
+      "dos": [
+        "Target Node.js 26 and native ECMAScript modules.",
+        "Version public exports, behavior, markers, and declarations according to SemVer.",
+        "Make breaking public API changes only in an intentional major release."
+      ],
+      "donts": ["Do not introduce a breaking public API change in a minor or patch release."]
+    }
+  ]
+}

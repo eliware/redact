@@ -1,0 +1,21 @@
+{
+  "version": "9.0",
+  "description": "Explicit product boundaries and review interpretation for @eliware/redact.",
+  "directives": [
+    {
+      "id": "E-205",
+      "dos": [
+        "Keep the package focused on redaction and safe serialization.",
+        "Treat path-local cycle tracking and depth-truncated Error metadata as intentional contracts when implementation and tests agree.",
+        "Compare review findings against the documented release scope and current behavior."
+      ],
+      "donts": [
+        "Do not claim the package provides HTML sanitization, SQL sanitization, filesystem path sanitization, general input validation, encryption, secret storage, secret scanning guarantees, authentication, authorization, access control, data-loss-prevention enforcement, or memory/compiler sanitizers.",
+        "Do not treat documented boundary semantics as defects unless implementation contradicts the contract.",
+        "Do not treat speculative unreleased text rules or absent future modules as current implementation requirements.",
+        "Do not treat normalizeHeaderNames as a public exact-match policy API; redactHeaders applies matchHeuristics at the public boundary.",
+        "Do not require browser portability for Node.js Buffer handling or caller-configurable runtime marker fields."
+      ]
+    }
+  ]
+}

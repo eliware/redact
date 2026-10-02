@@ -1,0 +1,23 @@
+{
+  "version": "9.0",
+  "description": "Best-effort text redaction patterns, limits, and literal-secret replacement.",
+  "directives": [
+    {
+      "id": "E-211",
+      "dos": [
+        "Describe text redaction as best-effort and document supported patterns, including common authorization and bearer values, named and environment assignments, query secrets, provider tokens, JWTs, public/private key material, and opaque secrets.",
+        "Accept maxString as a non-negative integer with a default of 10,000; ensure returned text does not exceed it.",
+        "Process input coercion and redaction before truncating the result; maxString bounds output rather than coercion and inspection work.",
+        "Append [TRUNCATED] when input or replacement expansion requires truncation and the configured limit can fit the marker.",
+        "Use the fixed [REDACTED] marker for sensitive-value replacement.",
+        "Accept an optional iterable secrets value, replace non-empty string entries literally, and ignore non-string entries.",
+        "Process at most 100 configured literal secrets using bounded repeated replacement."
+      ],
+      "donts": [
+        "Do not claim text redaction detects arbitrary unknown secrets.",
+        "Do not confuse [TRUNCATED] with the fixed [REDACTED] marker.",
+        "Do not imply marker customization or unbounded configured-secret processing is supported."
+      ]
+    }
+  ]
+}

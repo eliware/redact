@@ -1,0 +1,18 @@
+{
+  "version": "9.0",
+  "description": "Resource bounds and truncation markers for redaction and serialization.",
+  "directives": [
+    {
+      "id": "E-204",
+      "dos": [
+        "Bound traversal depth, object keys, array items, string size, and text output size.",
+        "Use 10,000 characters as the default maxString limit for serialized string values and redactText output.",
+        "Use [TRUNCATED] for text truncation and [REDACTED] for sensitive-value replacement.",
+        "Keep output within a configured maxString limit."
+      ],
+      "donts": [
+        "Do not promise a complete truncation marker when the configured limit is shorter than the marker; in that case bounded output takes precedence."
+      ]
+    }
+  ]
+}

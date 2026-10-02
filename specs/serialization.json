@@ -1,0 +1,27 @@
+{
+  "version": "9.0",
+  "description": "Safe serialization behavior, supported values, and intentional boundaries.",
+  "directives": [
+    {
+      "id": "E-209",
+      "dos": [
+        "Provide bounded, non-throwing representations for complex values, including Errors, functions, symbols, BigInts, buffers, cycles, and unserializable properties.",
+        "Replace up to 100 non-empty literal string entries from the optional secrets iterable in every serialized string value; ignore non-string entries.",
+        "Keep serialization limits separate from secrecy rules.",
+        "Represent unsupported non-plain objects using safely readable enumerable own properties; omit inherited, non-enumerable, accessor-backed, or hostile state.",
+        "Limit maxKeys to retained source data properties, including enumerable Error metadata; an over-limit object may contain one additional collision-safe [TRUNCATED] metadata property.",
+        "Serialize indexed array items only and omit enumerable named array properties.",
+        "Track cycles along the active recursion path so repeated non-cyclic references serialize independently and active-path references emit the circular marker.",
+        "Reduce unexpected hostile-value inspection errors to [UNSERIALIZABLE] at the public boundary.",
+        "Redact keys at the represented depth before truncating their child values beyond maxDepth.",
+        "Serialize Error name, message, stack, and enumerable data-property metadata at the Error's child depth, applying maxDepth consistently."
+      ],
+      "donts": [
+        "Do not invoke getters, including enumerable accessors.",
+        "Do not count the optional truncation metadata slot as retained source data.",
+        "Do not let hostile diagnostic values make the public serializer throw.",
+        "Do not bypass maxDepth for Error metadata."
+      ]
+    }
+  ]
+}
