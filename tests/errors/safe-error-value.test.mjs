@@ -17,6 +17,10 @@ test("creates a safe error value", () => {
     name: "Error",
     message: "plain",
   });
+  expect(safeErrorValue({ message: "plain", name: 42 })).toEqual({
+    name: "Error",
+    message: "plain",
+  });
 });
 
 test("returns safe fallbacks when Error field accessors throw", () => {

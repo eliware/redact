@@ -43,3 +43,15 @@ replaceLiteralSecret("secret", "secret");
 redactErrorMessage(new Error("secret"), { secrets: ["secret"] });
 redactErrorDetails(new Error("secret"), policy);
 safeErrorValue(new Error("secret"), policy);
+
+// @ts-expect-error maxDepth must be a number
+createPolicy({ maxDepth: "deep" });
+// @ts-expect-error matchHeuristics must be a boolean
+redactHeaders({}, { matchHeuristics: "yes" });
+// @ts-expect-error maxString must be a number
+redactText("secret", { maxString: "long" });
+// @ts-expect-error secrets must be an iterable of strings
+safeSerialize("secret", { secrets: 42 });
+
+const normalizedName: string | undefined = safeErrorValue(new Error("secret")).name;
+void normalizedName;

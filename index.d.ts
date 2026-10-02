@@ -8,8 +8,6 @@ export interface RedactionPolicy {
 }
 
 export interface SerializationOptions extends RedactionPolicy {
-  maxDepth?: number;
-  maxKeys?: number;
   maxString?: number;
   /** Literal secrets to replace in serialized string values; the first 100 non-empty strings count. */
   secrets?: Iterable<string>;

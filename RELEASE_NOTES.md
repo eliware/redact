@@ -7,6 +7,7 @@
 - Allow `safeSerialize` to redact configured literal secrets in string values.
 - Apply `maxKeys` bounds to enumerable Error metadata during safe serialization.
 - Skip malformed entries yielded by Headers-style header iterators.
+- Fall back to the standard `Error` name for non-string error-like names.
 - Document header and error helper usage.
 
 ## 9.0.0 — 2026-09-30

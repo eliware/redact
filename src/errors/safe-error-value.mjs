@@ -4,8 +4,9 @@ import { readSafeErrorField } from "./read-safe-error-field.mjs";
 
 export function safeErrorValue(error, options = {}) {
   if (!error) return { message: "" };
+  const errorName = readSafeErrorField(error, "name");
   const output = {
-    name: readSafeErrorField(error, "name") ?? "Error",
+    name: typeof errorName === "string" ? errorName : "Error",
     message: redactErrorMessage(error, options),
   };
   const details = redactErrorDetails(error, options);

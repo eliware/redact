@@ -1,8 +1,7 @@
 {
   "compilerOptions": {
     "strict": true,
-    "noEmit": true,
-    "skipLibCheck": true
+    "noEmit": true
   },
   "include": ["index.d.ts", "typecheck/**/*.ts"]
 }
