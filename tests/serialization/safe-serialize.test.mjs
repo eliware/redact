@@ -46,7 +46,7 @@ test("handles complex values and limits", () => {
 
 test("coordinates depth, key, and array limits", () => {
   expect(safeSerialize({ a: 1, b: 2 }, { maxKeys: 1 }).__truncated).toBe("[TRUNCATED]");
-  expect(safeSerialize([1, 2], { maxArray: 1 })).toEqual([1]);
+  expect(safeSerialize([1, 2], { maxArray: 1 })).toEqual([1, "[TRUNCATED]"]);
   expect(safeSerialize({ deep: { value: 1 } }, { maxDepth: 0 }).deep).toBe("[TRUNCATED]");
 });
 

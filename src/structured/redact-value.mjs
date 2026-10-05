@@ -13,7 +13,15 @@ function redact(value, policy, limits, seen, depth) {
   if (value === null || typeof value !== "object") return value;
   if (depth > limits.maxDepth) return "[TRUNCATED]";
   if (seen.has(value)) return policy.circularMarker ?? "[CIRCULAR]";
-  if (value instanceof Error) {
+  let isArray;
+  let isError;
+  try {
+    isArray = Array.isArray(value);
+    isError = value instanceof Error;
+  } catch {
+    return isArray ? [] : {};
+  }
+  if (isError) {
     seen.set(value, true);
     try {
       return redactError(
@@ -28,12 +36,18 @@ function redact(value, policy, limits, seen, depth) {
   }
   seen.set(value, true);
   try {
-    if (Array.isArray(value)) {
-      const items = value
-        .slice(0, limits.maxArray)
-        .map((item) => redact(item, policy, limits, seen, depth + 1));
-      if (value.length > limits.maxArray) items.push("[TRUNCATED]");
-      return items;
+    if (isArray) {
+      try {
+        const length = value.length;
+        const retained = Math.min(length, limits.maxArray);
+        const items = [];
+        for (let index = 0; index < retained; index++)
+          items.push(redact(value[index], policy, limits, seen, depth + 1));
+        if (length > retained) items.push("[TRUNCATED]");
+        return items;
+      } catch {
+        return [];
+      }
     }
     const output = {};
     const inspected = inspectEntries(value, limits.maxKeys);

@@ -39,6 +39,42 @@ test("bounds array items and marks omitted items", () => {
   ]);
 });
 
+test("does not rely on overridable array slice or map methods", () => {
+  const input = [{ token: "secret" }];
+  input.slice = () => {
+    throw new Error("overridden");
+  };
+  input.map = () => {
+    throw new Error("overridden");
+  };
+
+  expect(redactValue(input)).toEqual([{ token: "[REDACTED]" }]);
+});
+
+test("returns an empty array when reading a hostile array item throws", () => {
+  const input = new Proxy([{ token: "secret" }], {
+    get(target, key, receiver) {
+      if (key === "0") throw new Error("blocked");
+      return Reflect.get(target, key, receiver);
+    },
+  });
+
+  expect(redactValue(input)).toEqual([]);
+});
+
+test("fails closed when classifying revoked proxies or hostile array proxies", () => {
+  const revoked = Proxy.revocable({}, {});
+  revoked.revoke();
+  expect(redactValue(revoked.proxy)).toEqual({});
+
+  const hostileArray = new Proxy([], {
+    getPrototypeOf() {
+      throw new Error("blocked");
+    },
+  });
+  expect(redactValue(hostileArray)).toEqual([]);
+});
+
 test("bounds custom Error properties", () => {
   const error = Object.assign(new Error("failed"), { first: 1, token: "secret", last: 3 });
 

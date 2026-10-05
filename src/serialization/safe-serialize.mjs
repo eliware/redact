@@ -21,10 +21,13 @@ function serialize(value, policy, limits, seen, depth) {
     if (typeof Buffer !== "undefined" && Buffer.isBuffer(value)) return serializeBuffer(value);
     if (value instanceof Error)
       return serializeError(value, policy, limits, seen, depth, serialize);
-    if (Array.isArray(value))
-      return value
+    if (Array.isArray(value)) {
+      const items = value
         .slice(0, limits.maxArray)
         .map((item) => serialize(item, policy, limits, seen, depth + 1));
+      if (value.length > limits.maxArray) items.push("[TRUNCATED]");
+      return items;
+    }
     const output = {};
     const inspected = inspectEntries(value, limits.maxKeys);
     if (inspected.failed) return {};
