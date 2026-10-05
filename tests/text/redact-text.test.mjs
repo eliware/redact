@@ -13,6 +13,18 @@ test("applies configured literal secrets after built-in rules", () => {
   expect(redactText("note: known", { secrets: ["known"] })).toBe("note: [REDACTED]");
 });
 
+test("applies configured sensitive keys to text assignments", () => {
+  expect(redactText("customer_ref=private", { keys: ["customer_ref"] })).toBe(
+    "customer_ref=[REDACTED]",
+  );
+  expect(redactText("customer_ref=private", { redactKeys: ["customer_ref"] })).toBe(
+    "customer_ref=[REDACTED]",
+  );
+  expect(redactText("customer_ref=private", { keys: ["customer_ref"], marker: "<hidden>" })).toBe(
+    "customer_ref=<hidden>",
+  );
+});
+
 test("replaces overlapping configured secrets without exposing fragments", () => {
   expect(redactText("abcde", { secrets: ["abc", "bcde"] })).toBe("[REDACTED]");
 });

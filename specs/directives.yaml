@@ -92,6 +92,7 @@ directives:
       - id: E-101.10
         dos:
           - Document text redaction as best-effort and cover common authorization and bearer values, named assignments, query secrets, provider tokens, JWTs, key material, and configured literal secrets.
+          - Apply configured sensitive keys from keys or redactKeys to matching text assignments and query values.
           - Merge overlapping configured literal-secret matches so no fragment of a covered secret remains exposed.
           - Bound redactText output length with a configurable maximum and a truncation marker.
           - Document supported patterns and limitations so callers can decide whether additional policy is needed.

@@ -14,6 +14,8 @@
 
 Redaction is best-effort and does not guarantee detection of unknown secrets.
 
+- Text redaction now applies configured `keys` and `redactKeys` to matching assignments and query values.
+
 - Text redaction now caps output at 10,000 characters by default, configurable with `maxOutputLength`.
 - Array truncation in safe serialization now includes an explicit `[TRUNCATED]` marker; structured redaction handles hostile arrays without calling overridable array methods.
 - Structured-redaction truncation markers no longer overwrite a retained `__truncated` property.
