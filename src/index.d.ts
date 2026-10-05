@@ -18,6 +18,11 @@ export interface StructuredRedactionOptions extends RedactionPolicy {
   maxArray?: number;
 }
 
+export interface TextRedactionOptions extends RedactionPolicy {
+  secrets?: Iterable<string>;
+  maxOutputLength?: number;
+}
+
 export declare const defaultPolicy: Readonly<{
   keys: ReadonlySet<string>;
   marker: "[REDACTED]";
@@ -35,10 +40,7 @@ export declare function redactHeaders(
   headers: unknown,
   options?: StructuredRedactionOptions,
 ): unknown;
-export declare function redactText(
-  value: unknown,
-  options?: RedactionPolicy & { secrets?: Iterable<string> },
-): string;
+export declare function redactText(value: unknown, options?: TextRedactionOptions): string;
 export declare function replaceLiteralSecret(
   value: unknown,
   secret: unknown,

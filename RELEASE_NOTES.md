@@ -14,6 +14,7 @@
 
 Redaction is best-effort and does not guarantee detection of unknown secrets.
 
+- Text redaction now caps output at 10,000 characters by default, configurable with `maxOutputLength`.
 - Policy key views no longer expose runtime Set mutation methods that could disable default redaction.
 - Safe serialization and structured redaction preserve enumerable own `__proto__` keys as data.
 - Malformed header entry arrays now fail closed with an empty entry array.
