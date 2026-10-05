@@ -10,7 +10,7 @@ Policy `keys` are exposed as frozen, read-only Set views. They support the `Read
 
 ## Redaction
 
-- `redactValue(value, options)` returns a redacted copy of structured data. `maxDepth`, `maxKeys`, and `maxArray` default to 20, 1,000, and 1,000. Reaching the depth limit returns `[TRUNCATED]`; omitted array items add a `[TRUNCATED]` array item, and omitted object keys add a `__truncated` property. Key limits bound retained property reads; JavaScript still enumerates all own keys to produce the key list.
+- `redactValue(value, options)` returns a redacted copy of structured data. `maxDepth`, `maxKeys`, and `maxArray` default to 20, 1,000, and 1,000. Reaching the depth limit returns `[TRUNCATED]`; omitted array items add a `[TRUNCATED]` array item, and omitted object keys add a `__truncated` property (with a numeric suffix if that name is already retained). Key limits bound retained property reads; JavaScript still enumerates all own keys to produce the key list.
 - `redactHeaders(headers, options)` redacts sensitive header values. Valid entry-array inputs preserve duplicate names; Headers-like iterable inputs return a record where duplicate names collapse to the last redacted value. Malformed entry-array inputs and failures reading or iterating a Headers-like input return an empty entry array.
 - `redactText(value, options)` applies best-effort text rules and can receive configured literal `secrets`. Its output is limited to 10,000 characters by default; set `maxOutputLength` to customize the bound. Truncated output ends with `[TRUNCATED]`, or `…` when the configured bound is shorter than that marker.
 - `replaceLiteralSecret(value, secret, marker)` replaces literal occurrences in text.

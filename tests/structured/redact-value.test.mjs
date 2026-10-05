@@ -32,6 +32,15 @@ test("bounds retained object keys and marks omitted properties", () => {
   });
 });
 
+test("preserves a retained __truncated property and adds a separate marker", () => {
+  const input = { __truncated: "retained value", omitted: "omitted value" };
+
+  expect(redactValue(input, { maxKeys: 1 })).toEqual({
+    __truncated: "retained value",
+    __truncated_1: "[TRUNCATED]",
+  });
+});
+
 test("bounds array items and marks omitted items", () => {
   expect(redactValue([{ safe: 1 }, { token: "secret" }], { maxArray: 1 })).toEqual([
     { safe: 1 },

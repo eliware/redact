@@ -61,9 +61,16 @@ function redact(value, policy, limits, seen, depth) {
         configurable: true,
         writable: true,
       });
-    if (inspected.truncated) output.__truncated = "[TRUNCATED]";
+    if (inspected.truncated) markTruncated(output);
     return output;
   } finally {
     seen.delete(value);
   }
+}
+
+function markTruncated(output) {
+  let key = "__truncated";
+  let suffix = 0;
+  while (Object.hasOwn(output, key)) key = `__truncated_${++suffix}`;
+  output[key] = "[TRUNCATED]";
 }
