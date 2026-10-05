@@ -46,3 +46,26 @@ test("applies configured sensitive keys to Error name and stack", () => {
     stack: "[REDACTED]",
   });
 });
+
+test("returns an empty object when a custom Error property cannot be read", () => {
+  const error = new Error("failed");
+  Object.defineProperty(error, "blocked", {
+    enumerable: true,
+    get() {
+      throw new Error("blocked");
+    },
+  });
+
+  expect(
+    serializeError(error, normalizePolicy(), DEFAULT_LIMITS, new WeakSet(), 0, (value) => value),
+  ).toEqual({});
+});
+
+test("marks omitted custom Error properties after the maxKeys bound", () => {
+  const error = Object.assign(new Error("failed"), { first: 1, second: 2 });
+  const limits = { ...DEFAULT_LIMITS, maxKeys: 1 };
+
+  expect(
+    serializeError(error, normalizePolicy(), limits, new WeakSet(), 0, (value) => value),
+  ).toMatchObject({ first: 1, __truncated: "[TRUNCATED]" });
+});

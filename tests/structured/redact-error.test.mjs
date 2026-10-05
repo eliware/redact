@@ -38,3 +38,15 @@ test("applies configured sensitive keys to standard Error fields", () => {
     stack: "[REDACTED]",
   });
 });
+
+test("returns an empty object when a custom Error property cannot be read", () => {
+  const error = new Error("failed");
+  Object.defineProperty(error, "blocked", {
+    enumerable: true,
+    get() {
+      throw new Error("blocked");
+    },
+  });
+
+  expect(redactError(error, normalizePolicy(), (value) => value)).toEqual({});
+});

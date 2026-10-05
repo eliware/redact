@@ -4,10 +4,12 @@
 
 ### Added
 
-- Established the v11 public package contract with native ESM exports, TypeScript declarations, documentation, examples, and an explicit package allowlist.
-- Added policy creation, structured and header redaction, best-effort text redaction, literal-secret replacement, and bounded safe serialization.
-- Added focused mirrored tests and shared repository validation.
+- Policy creation with configurable sensitive keys and redaction markers.
+- Non-mutating structured value redaction and HTTP header redaction.
+- Best-effort text redaction and literal-secret replacement.
+- Bounded safe serialization for logging and diagnostic output.
+- Native ESM public exports with TypeScript declarations, documentation, and runnable examples.
 
 ### Security
 
-- Documented that redaction is best-effort and does not guarantee detection of unknown secrets.
+Redaction is best-effort and does not guarantee detection of unknown secrets.

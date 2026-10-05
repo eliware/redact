@@ -28,11 +28,7 @@ function serialize(value, policy, limits, seen, depth) {
     const output = {};
     const inspected = inspectEntries(value, limits.maxKeys);
     if (inspected.failed) return {};
-    for (const [index, [key, child]] of inspected.entries.entries()) {
-      if (index >= limits.maxKeys) {
-        output.__truncated = "[TRUNCATED]";
-        break;
-      }
+    for (const [key, child] of inspected.entries) {
       output[key] = policy.keys.has(key.toLowerCase())
         ? policy.marker
         : serialize(child, policy, limits, seen, depth + 1);

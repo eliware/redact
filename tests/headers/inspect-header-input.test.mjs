@@ -41,3 +41,10 @@ test.each([
 ])("fails closed when the %s throws", (_case, input) => {
   expect(inspectHeaderInput(input)).toEqual({ type: "entries", entries: [] });
 });
+
+test("fails closed for a revoked proxy", () => {
+  const { proxy, revoke } = Proxy.revocable({}, {});
+  revoke();
+
+  expect(inspectHeaderInput(proxy)).toEqual({ type: "entries", entries: [] });
+});
