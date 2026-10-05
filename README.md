@@ -21,9 +21,9 @@
 
 ## Features
 
-Reusable secret-redaction and safe-serialization utilities for Node.js 26+. `@eliware/redact` helps Eliware packages remove sensitive values before logging, persistence, or transport. The package owns a focused library API; callers own their application policies and decide where redaction belongs in their data flow.
+Reusable secret-redaction and safe-serialization utilities for Node.js 26. `@eliware/redact` helps Eliware packages remove sensitive values before logging, persistence, or transport. The package owns a focused library API; callers own their application policies and decide where redaction belongs in their data flow.
 
-Purpose: `@eliware/redact` provides reusable secret-redaction and safe-serialization utilities for Node.js packages.
+Purpose: `@eliware/redact` provides reusable secret-redaction and safe-serialization utilities for Node.js 26.
 
 Author: Eliware <eliware@eliware.org>. License: MIT.
 
@@ -98,9 +98,7 @@ MIT. See [LICENSE](LICENSE).
 
 ## Links
 
-- [User documentation](docs/README.md)
 - [docs](docs/README.md)
-- [Eliware Docs](https://github.com/eliware/docs/blob/main/README.md)
 - [Home Page](https://github.com/eliware/redact#readme)
 - [GitHub repository](https://github.com/eliware/redact.git)
 - [Eliware](https://eliware.org)
