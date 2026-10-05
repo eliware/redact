@@ -50,3 +50,30 @@ test("returns an empty object when a custom Error property cannot be read", () =
 
   expect(redactError(error, normalizePolicy(), (value) => value)).toEqual({});
 });
+
+test("does not count enumerable standard fields against the custom property limit", () => {
+  const error = new Error("failed");
+  for (const [key, value] of [
+    ["name", "CustomError"],
+    ["message", "failed"],
+    ["stack", "stack"],
+    ["token", "secret"],
+  ])
+    Object.defineProperty(error, key, { value, enumerable: true, configurable: true });
+
+  expect(redactError(error, normalizePolicy(), (value) => value, 1)).toEqual({
+    name: "CustomError",
+    message: "failed",
+    stack: "stack",
+    token: "[REDACTED]",
+  });
+});
+
+test("marks custom Error properties omitted by the key limit", () => {
+  const error = Object.assign(new Error("failed"), { first: 1, second: 2 });
+
+  expect(redactError(error, normalizePolicy(), (value) => value, 1)).toMatchObject({
+    first: 1,
+    __truncated: "[TRUNCATED]",
+  });
+});

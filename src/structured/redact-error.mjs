@@ -7,12 +7,10 @@ export function redactError(error, policy, redactChild, maxKeys = Infinity) {
   };
   if (error.stack)
     output.stack = policy.keys.has("stack") ? policy.marker : redactChild(error.stack);
-  const inspected = inspectEntries(error, maxKeys);
+  const inspected = inspectEntries(error, maxKeys, (key) => !Object.hasOwn(output, key));
   if (inspected.failed) return {};
-  for (const [key, child] of inspected.entries) {
-    if (!(key in output))
-      output[key] = policy.keys.has(key.toLowerCase()) ? policy.marker : redactChild(child);
-  }
+  for (const [key, child] of inspected.entries)
+    output[key] = policy.keys.has(key.toLowerCase()) ? policy.marker : redactChild(child);
   if (inspected.truncated) output.__truncated = "[TRUNCATED]";
   return output;
 }
