@@ -15,6 +15,16 @@ test("omits enumerable symbol keys from the string-keyed serialization", () => {
   expect(safeSerialize(input)).toEqual({ visible: "value" });
 });
 
+test("preserves an own __proto__ key as serialized data", () => {
+  const input = {};
+  Object.defineProperty(input, "__proto__", { value: { visible: "value" }, enumerable: true });
+
+  const output = safeSerialize(input);
+  expect(Object.hasOwn(output, "__proto__")).toBe(true);
+  expect(output.__proto__).toEqual({ visible: "value" });
+  expect(Object.getPrototypeOf(output)).toBe(Object.prototype);
+});
+
 test("handles complex values and limits", () => {
   const value = {
     buffer: Buffer.from("abc"),

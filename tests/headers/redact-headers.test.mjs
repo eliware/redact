@@ -55,3 +55,26 @@ test("collapses duplicate names from Headers-like inputs after redacting each va
 test("handles null input", () => {
   expect(redactHeaders(null)).toEqual({});
 });
+
+test("returns an empty entry array for malformed or unreadable entries", () => {
+  expect(redactHeaders([null])).toEqual([]);
+  expect(redactHeaders([["token", "secret"], ["missing-value"]])).toEqual([]);
+  expect(
+    redactHeaders({
+      entries() {
+        throw new Error("blocked");
+      },
+    }),
+  ).toEqual([]);
+  expect(
+    redactHeaders({
+      entries() {
+        return {
+          [Symbol.iterator]() {
+            throw new Error("blocked");
+          },
+        };
+      },
+    }),
+  ).toEqual([]);
+});

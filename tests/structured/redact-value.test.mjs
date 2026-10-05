@@ -16,6 +16,16 @@ test("handles cycles", () => {
   expect(redactValue(input).self).toBe("[CIRCULAR]");
 });
 
+test("preserves an own __proto__ key without changing the result prototype", () => {
+  const input = {};
+  Object.defineProperty(input, "__proto__", { value: { visible: "value" }, enumerable: true });
+
+  const output = redactValue(input);
+  expect(Object.hasOwn(output, "__proto__")).toBe(true);
+  expect(output.__proto__).toEqual({ visible: "value" });
+  expect(Object.getPrototypeOf(output)).toBe(Object.prototype);
+});
+
 test("returns an empty record if an enumerable getter prevents complete redaction", () => {
   const input = { safe: "visible" };
   Object.defineProperty(input, "blocked", {

@@ -69,3 +69,20 @@ test("marks omitted custom Error properties after the maxKeys bound", () => {
     serializeError(error, normalizePolicy(), limits, new WeakSet(), 0, (value) => value),
   ).toMatchObject({ first: 1, __truncated: "[TRUNCATED]" });
 });
+
+test("preserves an own __proto__ Error property as data", () => {
+  const error = new Error("failed");
+  Object.defineProperty(error, "__proto__", { value: { visible: "value" }, enumerable: true });
+  const output = serializeError(
+    error,
+    normalizePolicy(),
+    DEFAULT_LIMITS,
+    new WeakSet(),
+    0,
+    (value) => value,
+  );
+
+  expect(Object.hasOwn(output, "__proto__")).toBe(true);
+  expect(output.__proto__).toEqual({ visible: "value" });
+  expect(Object.getPrototypeOf(output)).toBe(Object.prototype);
+});

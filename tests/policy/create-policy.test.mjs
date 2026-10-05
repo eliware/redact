@@ -4,6 +4,8 @@ test("creates a normalized immutable policy", () => {
   const policy = createPolicy({ keys: ["Token"] });
   expect(policy.keys.has("token")).toBe(true);
   expect(Object.isFrozen(policy)).toBe(true);
+  expect(Object.isFrozen(policy.keys)).toBe(true);
+  expect(policy.keys.add).toBeUndefined();
 });
 
 test("uses defaults when options are omitted", () => {

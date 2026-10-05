@@ -13,12 +13,17 @@ export function serializeError(error, policy, limits, seen, depth, serialize) {
     output.stack = policy.keys.has("stack")
       ? policy.marker
       : serialize(error.stack, policy, limits, seen, depth);
-  const inspected = inspectEntries(error, limits.maxKeys, (key) => !(key in output));
+  const inspected = inspectEntries(error, limits.maxKeys, (key) => !Object.hasOwn(output, key));
   if (inspected.failed) return {};
   for (const [key, child] of inspected.entries)
-    output[key] = policy.keys.has(key.toLowerCase())
-      ? policy.marker
-      : serialize(child, policy, limits, seen, depth + 1);
+    Object.defineProperty(output, key, {
+      value: policy.keys.has(key.toLowerCase())
+        ? policy.marker
+        : serialize(child, policy, limits, seen, depth + 1),
+      enumerable: true,
+      configurable: true,
+      writable: true,
+    });
   if (inspected.truncated) output.__truncated = "[TRUNCATED]";
   return output;
 }

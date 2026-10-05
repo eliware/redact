@@ -31,6 +31,7 @@ directives:
           - Match sensitive header names without case sensitivity and preserve supported input representations.
           - Preserve repeated names for entry-array input; for Headers-like iterable input, redact every occurrence before converting to a record where the last occurrence for a name is retained.
           - Return an empty entry array when reading or consuming a Headers-like entries iterable throws.
+          - Return an empty entry array when an entry-array input contains malformed pairs.
         donts:
           - Do not alter safe header values as if they were sensitive.
       - id: E-101.4
@@ -49,6 +50,7 @@ directives:
         dos:
           - Keep redaction policy focused on sensitive structured keys and supported text patterns.
           - Use conservative defaults, case-insensitive key matching, caller-customizable options, and non-mutating transformations.
+          - Expose policy key collections as frozen ReadonlySet views without runtime mutation methods.
         donts:
           - Do not use broad default matching that creates unacceptable false positives or mutates caller-owned values.
       - id: E-101.7
@@ -64,6 +66,7 @@ directives:
           - Serialize enumerable string-keyed object properties only; omit enumerable symbol-keyed properties.
           - Read no more than maxKeys property values and perform a key-only lookahead to detect omitted properties.
           - If reading a retained enumerable own property fails, return an empty object rather than a partial object representation.
+          - Preserve an enumerable own `__proto__` property as data without changing the output prototype.
           - Apply configured sensitive-key policy to Error name, message, and stack fields.
         donts:
           - Do not treat successful serialization as proof that data is safe to disclose.
@@ -72,6 +75,7 @@ directives:
           - Recursively copy structured values and replace sensitive fields with a stable marker.
           - Handle nested objects, arrays, Errors, null-prototype objects, cycles, throwing accessors, and hostile objects safely.
           - If reading any enumerable own property fails, return an empty object rather than a partial redaction result.
+          - Preserve an enumerable own `__proto__` property as data without changing the output prototype.
           - Apply configured sensitive-key policy to Error name, message, and stack fields.
         donts:
           - Do not mutate input values while redacting them.

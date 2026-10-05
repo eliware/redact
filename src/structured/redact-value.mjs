@@ -25,9 +25,12 @@ function redact(value, policy, seen) {
     const inspected = inspectEntries(value);
     if (inspected.failed) return {};
     for (const [key, child] of inspected.entries)
-      output[key] = policy.keys.has(key.toLowerCase())
-        ? policy.marker
-        : redact(child, policy, seen);
+      Object.defineProperty(output, key, {
+        value: policy.keys.has(key.toLowerCase()) ? policy.marker : redact(child, policy, seen),
+        enumerable: true,
+        configurable: true,
+        writable: true,
+      });
     return output;
   } finally {
     seen.delete(value);

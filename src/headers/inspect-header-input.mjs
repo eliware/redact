@@ -10,6 +10,6 @@ export function inspectHeaderInput(headers) {
     if (isArray) return { type: "array", entries: headers };
     return { type: "object", value: headers ?? {} };
   } catch {
-    return { type: "entries", entries: [] };
+    return { type: "entries", entries: [], failed: true };
   }
 }

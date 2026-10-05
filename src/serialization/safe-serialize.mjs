@@ -29,9 +29,14 @@ function serialize(value, policy, limits, seen, depth) {
     const inspected = inspectEntries(value, limits.maxKeys);
     if (inspected.failed) return {};
     for (const [key, child] of inspected.entries) {
-      output[key] = policy.keys.has(key.toLowerCase())
-        ? policy.marker
-        : serialize(child, policy, limits, seen, depth + 1);
+      Object.defineProperty(output, key, {
+        value: policy.keys.has(key.toLowerCase())
+          ? policy.marker
+          : serialize(child, policy, limits, seen, depth + 1),
+        enumerable: true,
+        configurable: true,
+        writable: true,
+      });
     }
     if (inspected.truncated) output.__truncated = "[TRUNCATED]";
     return output;

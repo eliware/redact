@@ -19,7 +19,7 @@ export declare const defaultPolicy: Readonly<{
 
 export declare function createPolicy(options?: RedactionPolicy): Readonly<
   RedactionPolicy & {
-    keys: Set<string>;
+    keys: ReadonlySet<string>;
     marker: string;
   }
 >;
