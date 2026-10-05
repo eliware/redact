@@ -1,16 +1,12 @@
 import { normalizePolicy } from "../policy/normalize-policy.mjs";
 import { inspectEntries } from "../inspection/safe-entries.mjs";
 import { redactError } from "./redact-error.mjs";
-import { DEFAULT_LIMITS } from "../limits/default-limits.mjs";
 import { addTruncationMarker } from "../inspection/add-truncation-marker.mjs";
+import { normalizeTraversalLimits } from "../limits/normalize-traversal-limits.mjs";
 
 export function redactValue(value, options = {}) {
   const policy = normalizePolicy(options);
-  const limits = {
-    ...DEFAULT_LIMITS,
-    ...options,
-    maxDepth: Number.isFinite(options.maxDepth) ? options.maxDepth : DEFAULT_LIMITS.maxDepth,
-  };
+  const limits = normalizeTraversalLimits(options);
   return redact(value, policy, limits, new WeakMap(), 0);
 }
 
@@ -46,8 +42,10 @@ function redact(value, policy, limits, seen, depth) {
         const length = value.length;
         const retained = Math.min(length, limits.maxArray);
         const items = [];
+        items.length = retained;
         for (let index = 0; index < retained; index++)
-          items.push(redact(value[index], policy, limits, seen, depth + 1));
+          if (Object.hasOwn(value, index))
+            items[index] = redact(value[index], policy, limits, seen, depth + 1);
         if (length > retained) items.push("[TRUNCATED]");
         return items;
       } catch {

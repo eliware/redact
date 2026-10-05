@@ -20,6 +20,20 @@ test("serializes arrays without calling their overridable methods", () => {
   expect(safeSerialize(input)).toEqual([1, 2]);
 });
 
+test("does not serialize inherited numeric values from sparse arrays", () => {
+  const prototype = Object.create(Array.prototype, {
+    0: { value: "inherited-secret", enumerable: true },
+  });
+  const input = [];
+  input.length = 1;
+  Object.setPrototypeOf(input, prototype);
+
+  const output = safeSerialize(input);
+  expect(output).toHaveLength(1);
+  expect(Object.hasOwn(output, 0)).toBe(false);
+  expect(0 in output).toBe(false);
+});
+
 test("omits enumerable symbol keys from the string-keyed serialization", () => {
   const secretKey = Symbol("token");
   const input = { visible: "value", [secretKey]: "secret" };
@@ -60,6 +74,14 @@ test("coordinates depth, key, and array limits", () => {
   expect(safeSerialize({ a: 1, b: 2 }, { maxKeys: 1 }).__truncated).toBe("[TRUNCATED]");
   expect(safeSerialize([1, 2], { maxArray: 1 })).toEqual([1, "[TRUNCATED]"]);
   expect(safeSerialize({ deep: { value: 1 } }, { maxDepth: 0 }).deep).toBe("[TRUNCATED]");
+});
+
+test("normalizes fractional key and array limits", () => {
+  expect(safeSerialize({ first: 1, second: 2 }, { maxKeys: 1.9 })).toEqual({
+    first: 1,
+    __truncated: "[TRUNCATED]",
+  });
+  expect(safeSerialize([1, 2, 3], { maxArray: 1.9 })).toEqual([1, "[TRUNCATED]"]);
 });
 
 test.each([Infinity, -Infinity, Number.NaN])(

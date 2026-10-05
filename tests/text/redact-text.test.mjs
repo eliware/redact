@@ -13,6 +13,10 @@ test("applies configured literal secrets after built-in rules", () => {
   expect(redactText("note: known", { secrets: ["known"] })).toBe("note: [REDACTED]");
 });
 
+test("replaces overlapping configured secrets without exposing fragments", () => {
+  expect(redactText("abcde", { secrets: ["abc", "bcde"] })).toBe("[REDACTED]");
+});
+
 test.each([
   ["query secrets", "request ?api_key=query-secret", "request ?api_key=[REDACTED]"],
   ["provider tokens", "github token ghp_Example123", "github token [REDACTED]"],

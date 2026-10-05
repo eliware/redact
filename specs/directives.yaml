@@ -37,6 +37,7 @@ directives:
       - id: E-101.4
         dos:
           - Bound traversal depth, object keys, array items, string size, and text output size.
+          - Normalize maxDepth, maxKeys, and maxArray as nonnegative integers; floor finite fractions and replace non-finite values with defaults.
           - Treat maxKeys as a bound on retained property values and perform only a key-only lookahead; the JavaScript runtime may enumerate all own keys to produce the key list.
           - Make truncation markers distinguishable from redaction markers.
           - Append `[TRUNCATED]` to arrays when maxArray omits one or more items.
@@ -82,6 +83,7 @@ directives:
           - Normalize non-finite maxDepth values to the finite default depth.
           - Preserve retained input data when selecting an object truncation marker property; use an unused suffixed key if `__truncated` is occupied.
           - Handle nested objects, arrays, Errors, null-prototype objects, cycles, throwing accessors, and hostile objects safely.
+          - Visit only own array indices and preserve sparse holes without reading inherited numeric properties.
           - If reading any retained enumerable own property fails, return an empty object rather than a partial redaction result.
           - Preserve an enumerable own `__proto__` property as data without changing the output prototype.
           - Apply configured sensitive-key policy to Error name, message, and stack fields.
@@ -90,6 +92,7 @@ directives:
       - id: E-101.10
         dos:
           - Document text redaction as best-effort and cover common authorization and bearer values, named assignments, query secrets, provider tokens, JWTs, key material, and configured literal secrets.
+          - Merge overlapping configured literal-secret matches so no fragment of a covered secret remains exposed.
           - Bound redactText output length with a configurable maximum and a truncation marker.
           - Document supported patterns and limitations so callers can decide whether additional policy is needed.
         donts:

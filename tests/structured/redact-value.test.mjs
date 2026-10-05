@@ -16,6 +16,20 @@ test("handles cycles", () => {
   expect(redactValue(input).self).toBe("[CIRCULAR]");
 });
 
+test("does not redact inherited numeric values from sparse arrays", () => {
+  const prototype = Object.create(Array.prototype, {
+    0: { value: "inherited-secret", enumerable: true },
+  });
+  const input = [];
+  input.length = 1;
+  Object.setPrototypeOf(input, prototype);
+
+  const output = redactValue(input);
+  expect(output).toHaveLength(1);
+  expect(Object.hasOwn(output, 0)).toBe(false);
+  expect(0 in output).toBe(false);
+});
+
 test("bounds nested depth while redacting retained secrets", () => {
   const input = { nested: { token: "secret", deeper: { value: true } }, omitted: "value" };
 
@@ -42,6 +56,22 @@ test("bounds retained object keys and marks omitted properties", () => {
     first: 1,
     __truncated: "[TRUNCATED]",
   });
+});
+
+test("normalizes fractional and non-finite key and array limits", () => {
+  expect(redactValue({ first: 1, second: 2 }, { maxKeys: 1.9 })).toEqual({
+    first: 1,
+    __truncated: "[TRUNCATED]",
+  });
+  expect(redactValue([1, 2, 3], { maxArray: 1.9 })).toEqual([1, "[TRUNCATED]"]);
+  const limited = redactValue(
+    Array.from({ length: 1001 }, (_, index) => index),
+    {
+      maxArray: Infinity,
+    },
+  );
+  expect(limited).toHaveLength(1001);
+  expect(limited[1000]).toBe("[TRUNCATED]");
 });
 
 test("preserves a retained __truncated property and adds a separate marker", () => {

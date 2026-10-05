@@ -20,6 +20,7 @@ Redaction is best-effort and does not guarantee detection of unknown secrets.
 - Truncation markers now preserve retained properties for Error redaction and safe serialization; safe serialization ignores overridden array methods.
 - Non-finite structured-redaction depth limits now fall back to the finite default.
 - Non-finite safe-serialization depth limits now fall back to the finite default.
+- Structured traversal limits now normalize non-finite and fractional values safely; sparse arrays no longer read inherited numeric values, and overlapping configured text secrets are replaced together.
 - Policy key views no longer expose runtime Set mutation methods that could disable default redaction.
 - Safe serialization and structured redaction preserve enumerable own `__proto__` keys as data.
 - Malformed header entry arrays now fail closed with an empty entry array.
