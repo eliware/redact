@@ -1,0 +1,74 @@
+version: "11.0"
+description: Repository-specific public contract and behavior for @eliware/redact.
+directives:
+  - id: E-101
+    dos:
+      - Maintain a Node.js 26 native ESM library for secret redaction and safe serialization.
+      - Keep the public API limited to exports declared by src/index.mjs and src/index.d.ts.
+      - Treat redaction as best-effort data handling, not a guarantee that every secret is detected.
+    donts:
+      - Do not expose internal implementation modules as public API without an intentional compatibility decision.
+      - Do not claim that the package encrypts, stores, or controls access to secrets.
+    directives:
+      - id: E-101.1
+        dos:
+          - Keep production modules under src/ and mirror their hierarchy under tests/ with one focused .test.mjs file per .mjs source.
+          - Give every source and test module one cohesive purpose and one reason to change.
+          - Keep src/index.mjs as a thin public export barrel; internal modules are not public unless exported there.
+        donts:
+          - Do not add a production module without its matching focused test.
+          - Do not combine unrelated implementation responsibilities in a module or duplicate module-level assertions in higher-level tests.
+      - id: E-101.2
+        dos:
+          - Use Node.js 26 and native ESM for the supported runtime.
+          - Preserve public exports, behavior, markers, and declaration compatibility according to SemVer.
+          - Make breaking public API changes only as an intentional major version change with migration guidance.
+        donts:
+          - Do not add CommonJS entrypoints or imply compatibility that is not declared and tested.
+      - id: E-101.3
+        dos:
+          - Redact sensitive HTTP header values while preserving safe header names and values.
+          - Match sensitive header names without case sensitivity and preserve supported input representations.
+        donts:
+          - Do not alter safe header values as if they were sensitive.
+      - id: E-101.4
+        dos:
+          - Bound traversal depth, object keys, array items, string size, and text output size.
+          - Make truncation markers distinguishable from redaction markers.
+        donts:
+          - Do not treat output limits as a substitute for confidentiality redaction.
+      - id: E-101.5
+        dos:
+          - Keep HTML sanitization, SQL identifier or query sanitization, filesystem path sanitization, general input validation, encryption, secret storage, secret scanning, access control, authorization, data-loss prevention, and memory or compiler sanitizers outside this package.
+        donts:
+          - Do not present out-of-scope behavior as a capability of @eliware/redact.
+      - id: E-101.6
+        dos:
+          - Keep redaction policy focused on sensitive structured keys and supported text patterns.
+          - Use conservative defaults, case-insensitive key matching, caller-customizable options, and non-mutating transformations.
+        donts:
+          - Do not use broad default matching that creates unacceptable false positives or mutates caller-owned values.
+      - id: E-101.7
+        dos:
+          - Describe redaction as an observability and boundary-safety aid, not encryption, secret storage, access control, or a guarantee that unknown secrets are detected.
+          - Redact values before sending them to logs, persistence, transport, or browser delivery.
+        donts:
+          - Do not claim complete detection of unknown secrets or treat redaction as the sole security control.
+      - id: E-101.8
+        dos:
+          - Provide bounded, non-throwing safe representations for complex values, including Errors, functions, symbols, BigInts, buffers, cycles, and unserializable properties.
+          - Keep serialization limits separate from secrecy rules.
+        donts:
+          - Do not treat successful serialization as proof that data is safe to disclose.
+      - id: E-101.9
+        dos:
+          - Recursively copy structured values and replace sensitive fields with a stable marker.
+          - Handle nested objects, arrays, Errors, null-prototype objects, cycles, throwing accessors, and hostile objects safely.
+        donts:
+          - Do not mutate input values while redacting them.
+      - id: E-101.10
+        dos:
+          - Document text redaction as best-effort and cover common authorization and bearer values, named assignments, query secrets, provider tokens, JWTs, key material, and configured literal secrets.
+          - Document supported patterns and limitations so callers can decide whether additional policy is needed.
+        donts:
+          - Do not claim that text redaction detects arbitrary unknown secrets.

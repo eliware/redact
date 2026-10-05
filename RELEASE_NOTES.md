@@ -1,8 +1,13 @@
 # Release Notes
 
-## 4.0.0
+## 11.0.0 — 2026-10-04
 
-- Bootstrapped the `@eliware/redact` package.
-- Established the intended decomposed architecture and behavioral
-  specifications.
-- Added the initial native-ESM package entrypoint and test harness.
+### Added
+
+- Established the v11 public package contract with native ESM exports, TypeScript declarations, documentation, examples, and an explicit package allowlist.
+- Added policy creation, structured and header redaction, best-effort text redaction, literal-secret replacement, and bounded safe serialization.
+- Added focused mirrored tests and shared repository validation.
+
+### Security
+
+- Documented that redaction is best-effort and does not guarantee detection of unknown secrets.

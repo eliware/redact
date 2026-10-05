@@ -1,4 +1,4 @@
-import { normalizePolicy } from './normalize-policy.mjs';
+import { normalizePolicy } from "./normalize-policy.mjs";
 
 export function createPolicy(options = {}) {
   return Object.freeze(normalizePolicy(options));
