@@ -76,6 +76,19 @@ test("coordinates depth, key, and array limits", () => {
   expect(safeSerialize({ deep: { value: 1 } }, { maxDepth: 0 }).deep).toBe("[TRUNCATED]");
 });
 
+test("counts Error standard fields as children for maxDepth", () => {
+  const error = new Error();
+  error.name = { nested: "name" };
+  error.message = { nested: "message" };
+  error.stack = { nested: "stack" };
+
+  expect(safeSerialize(error, { maxDepth: 0 })).toMatchObject({
+    name: "[TRUNCATED]",
+    message: "[TRUNCATED]",
+    stack: "[TRUNCATED]",
+  });
+});
+
 test("normalizes fractional key and array limits", () => {
   expect(safeSerialize({ first: 1, second: 2 }, { maxKeys: 1.9 })).toEqual({
     first: 1,

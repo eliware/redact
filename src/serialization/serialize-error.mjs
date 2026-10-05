@@ -13,7 +13,7 @@ export function serializeError(error, policy, limits, seen, depth, serialize) {
     Object.defineProperty(output, key, {
       value: policy.keys.has(key)
         ? policy.marker
-        : serialize(field.value, policy, limits, seen, depth),
+        : serialize(field.value, policy, limits, seen, depth + 1),
       enumerable: true,
       configurable: true,
       writable: true,
