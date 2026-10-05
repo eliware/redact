@@ -32,3 +32,17 @@ test("serializes stack and delegates safe property values", () => {
   expect(output.stack).toContain("serialized:Error: failed");
   expect(output.detail).toEqual({ safe: true });
 });
+
+test("applies configured sensitive keys to Error name and stack", () => {
+  const error = Object.assign(new Error("message"), {
+    name: "sensitive name",
+    stack: "sensitive stack",
+  });
+  const policy = normalizePolicy({ keys: ["name", "stack"] });
+  const output = serializeError(error, policy, DEFAULT_LIMITS, new WeakSet(), 0, (value) => value);
+
+  expect(output).toMatchObject({
+    name: "[REDACTED]",
+    stack: "[REDACTED]",
+  });
+});

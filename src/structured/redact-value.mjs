@@ -1,5 +1,5 @@
 import { normalizePolicy } from "../policy/normalize-policy.mjs";
-import { safeEntries } from "../inspection/safe-entries.mjs";
+import { inspectEntries } from "../inspection/safe-entries.mjs";
 import { redactError } from "./redact-error.mjs";
 
 export function redactValue(value, options = {}) {
@@ -22,7 +22,9 @@ function redact(value, policy, seen) {
   try {
     if (Array.isArray(value)) return value.map((item) => redact(item, policy, seen));
     const output = {};
-    for (const [key, child] of safeEntries(value))
+    const inspected = inspectEntries(value);
+    if (inspected.failed) return {};
+    for (const [key, child] of inspected.entries)
       output[key] = policy.keys.has(key.toLowerCase())
         ? policy.marker
         : redact(child, policy, seen);

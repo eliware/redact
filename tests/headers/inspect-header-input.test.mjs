@@ -15,3 +15,29 @@ test("preserves entry arrays and ordinary object inputs", () => {
   expect(inspectHeaderInput(object)).toEqual({ type: "object", value: object });
   expect(inspectHeaderInput(null)).toEqual({ type: "object", value: {} });
 });
+
+test.each([
+  [
+    "entries method",
+    {
+      entries() {
+        throw new Error("blocked");
+      },
+    },
+  ],
+  [
+    "entries iterator",
+    {
+      entries() {
+        return {
+          *[Symbol.iterator]() {
+            yield ["authorization", "secret"];
+            throw new Error("blocked");
+          },
+        };
+      },
+    },
+  ],
+])("fails closed when the %s throws", (_case, input) => {
+  expect(inspectHeaderInput(input)).toEqual({ type: "entries", entries: [] });
+});

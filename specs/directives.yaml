@@ -29,11 +29,14 @@ directives:
         dos:
           - Redact sensitive HTTP header values while preserving safe header names and values.
           - Match sensitive header names without case sensitivity and preserve supported input representations.
+          - Preserve repeated names for entry-array input; for Headers-like iterable input, redact every occurrence before converting to a record where the last occurrence for a name is retained.
+          - Return an empty entry array when reading or consuming a Headers-like entries iterable throws.
         donts:
           - Do not alter safe header values as if they were sensitive.
       - id: E-101.4
         dos:
           - Bound traversal depth, object keys, array items, string size, and text output size.
+          - Treat maxKeys as a bound on retained property values and perform only a key-only lookahead; the JavaScript runtime may enumerate all own keys to produce the key list.
           - Make truncation markers distinguishable from redaction markers.
         donts:
           - Do not treat output limits as a substitute for confidentiality redaction.
@@ -58,12 +61,18 @@ directives:
         dos:
           - Provide bounded, non-throwing safe representations for complex values, including Errors, functions, symbols, BigInts, buffers, cycles, and unserializable properties.
           - Keep serialization limits separate from secrecy rules.
+          - Serialize enumerable string-keyed object properties only; omit enumerable symbol-keyed properties.
+          - Read no more than maxKeys property values and perform a key-only lookahead to detect omitted properties.
+          - If reading a retained enumerable own property fails, return an empty object rather than a partial object representation.
+          - Apply configured sensitive-key policy to Error name, message, and stack fields.
         donts:
           - Do not treat successful serialization as proof that data is safe to disclose.
       - id: E-101.9
         dos:
           - Recursively copy structured values and replace sensitive fields with a stable marker.
           - Handle nested objects, arrays, Errors, null-prototype objects, cycles, throwing accessors, and hostile objects safely.
+          - If reading any enumerable own property fails, return an empty object rather than a partial redaction result.
+          - Apply configured sensitive-key policy to Error name, message, and stack fields.
         donts:
           - Do not mutate input values while redacting them.
       - id: E-101.10

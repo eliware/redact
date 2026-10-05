@@ -25,6 +25,33 @@ test("redacts values consistently for Headers and entry arrays", () => {
   expect(fromEntries[1][1]).toBe("7");
 });
 
+test("preserves duplicate entry-array names and redacts duplicate sensitive values", () => {
+  expect(
+    redactHeaders([
+      ["authorization", "first secret"],
+      ["authorization", "second secret"],
+      ["x-id", "first"],
+      ["x-id", "second"],
+    ]),
+  ).toEqual([
+    ["authorization", "[REDACTED]"],
+    ["authorization", "[REDACTED]"],
+    ["x-id", "first"],
+    ["x-id", "second"],
+  ]);
+});
+
+test("collapses duplicate names from Headers-like inputs after redacting each value", () => {
+  const headers = {
+    *entries() {
+      yield ["authorization", "first secret"];
+      yield ["authorization", "second secret"];
+    },
+  };
+
+  expect(redactHeaders(headers)).toEqual({ authorization: "[REDACTED]" });
+});
+
 test("handles null input", () => {
   expect(redactHeaders(null)).toEqual({});
 });

@@ -8,6 +8,13 @@ test("serializes primitives and redacts nested keys", () => {
   });
 });
 
+test("omits enumerable symbol keys from the string-keyed serialization", () => {
+  const secretKey = Symbol("token");
+  const input = { visible: "value", [secretKey]: "secret" };
+
+  expect(safeSerialize(input)).toEqual({ visible: "value" });
+});
+
 test("handles complex values and limits", () => {
   const value = {
     buffer: Buffer.from("abc"),
@@ -44,4 +51,16 @@ test("returns a safe fallback when a special object throws during serialization"
       }),
     ),
   ).toBe("[UNSERIALIZABLE]");
+});
+
+test("returns an empty object when an enumerable getter prevents complete serialization", () => {
+  const input = { visible: "safe" };
+  Object.defineProperty(input, "blocked", {
+    enumerable: true,
+    get() {
+      throw new Error("blocked");
+    },
+  });
+
+  expect(safeSerialize(input)).toEqual({});
 });

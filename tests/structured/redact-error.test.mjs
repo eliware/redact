@@ -26,3 +26,15 @@ test("copies a stack and redacts custom child values", () => {
   expect(output.stack).toContain("Error: failed");
   expect(output.detail).toEqual({ token: "[REDACTED]" });
 });
+
+test("applies configured sensitive keys to standard Error fields", () => {
+  const error = new Error("sensitive message");
+  error.stack = "sensitive stack";
+  const policy = normalizePolicy({ keys: ["name", "message", "stack"] });
+
+  expect(redactError(error, policy, (value) => value)).toEqual({
+    name: "[REDACTED]",
+    message: "[REDACTED]",
+    stack: "[REDACTED]",
+  });
+});

@@ -16,6 +16,18 @@ test("handles cycles", () => {
   expect(redactValue(input).self).toBe("[CIRCULAR]");
 });
 
+test("returns an empty record if an enumerable getter prevents complete redaction", () => {
+  const input = { safe: "visible" };
+  Object.defineProperty(input, "blocked", {
+    enumerable: true,
+    get() {
+      throw new Error("blocked");
+    },
+  });
+
+  expect(redactValue(input)).toEqual({});
+});
+
 test("coordinates Error redaction with recursive child values", () => {
   const error = Object.assign(new Error("failed"), {
     detail: { token: "secret" },
