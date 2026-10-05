@@ -62,6 +62,18 @@ test("coordinates depth, key, and array limits", () => {
   expect(safeSerialize({ deep: { value: 1 } }, { maxDepth: 0 }).deep).toBe("[TRUNCATED]");
 });
 
+test.each([Infinity, -Infinity, Number.NaN])(
+  "normalizes non-finite maxDepth %s to the finite default",
+  (maxDepth) => {
+    let input = { leaf: true };
+    for (let index = 0; index < 30; index++) input = { child: input };
+
+    let output = safeSerialize(input, { maxDepth });
+    for (let index = 0; index < 20; index++) output = output.child;
+    expect(output.child).toBe("[TRUNCATED]");
+  },
+);
+
 test("returns a safe fallback when a special object throws during serialization", () => {
   expect(
     safeSerialize(

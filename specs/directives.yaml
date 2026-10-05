@@ -67,6 +67,7 @@ directives:
           - Keep serialization limits separate from secrecy rules.
           - Serialize enumerable string-keyed object properties only; omit enumerable symbol-keyed properties.
           - Read no more than maxKeys property values and perform a key-only lookahead to detect omitted properties.
+          - Normalize non-finite maxDepth values to the finite default depth.
           - Count enumerable Error name, message, and stack fields within the same maxKeys budget as custom properties, and read each field at most once.
           - If reading a retained enumerable own property fails, return an empty object rather than a partial object representation.
           - Preserve an enumerable own `__proto__` property as data without changing the output prototype.

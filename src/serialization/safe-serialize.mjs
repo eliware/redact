@@ -9,6 +9,7 @@ import { serializePrimitive } from "./serialize-primitive.mjs";
 export function safeSerialize(value, options = {}) {
   const policy = normalizePolicy(options);
   const limits = { ...DEFAULT_LIMITS, ...options };
+  if (!Number.isFinite(limits.maxDepth)) limits.maxDepth = DEFAULT_LIMITS.maxDepth;
   return serialize(value, policy, limits, new WeakSet(), 0);
 }
 
