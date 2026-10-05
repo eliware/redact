@@ -1,5 +1,6 @@
 import { DEFAULT_LIMITS } from "../limits/default-limits.mjs";
 import { inspectEntries } from "../inspection/safe-entries.mjs";
+import { addTruncationMarker } from "../inspection/add-truncation-marker.mjs";
 import { normalizePolicy } from "../policy/normalize-policy.mjs";
 import { serializeBuffer } from "./serialize-buffer.mjs";
 import { serializeError } from "./serialize-error.mjs";
@@ -22,10 +23,12 @@ function serialize(value, policy, limits, seen, depth) {
     if (value instanceof Error)
       return serializeError(value, policy, limits, seen, depth, serialize);
     if (Array.isArray(value)) {
-      const items = value
-        .slice(0, limits.maxArray)
-        .map((item) => serialize(item, policy, limits, seen, depth + 1));
-      if (value.length > limits.maxArray) items.push("[TRUNCATED]");
+      const length = value.length;
+      const retained = Math.min(length, limits.maxArray);
+      const items = [];
+      for (let index = 0; index < retained; index++)
+        items.push(serialize(value[index], policy, limits, seen, depth + 1));
+      if (length > retained) items.push("[TRUNCATED]");
       return items;
     }
     const output = {};
@@ -41,7 +44,7 @@ function serialize(value, policy, limits, seen, depth) {
         writable: true,
       });
     }
-    if (inspected.truncated) output.__truncated = "[TRUNCATED]";
+    if (inspected.truncated) addTruncationMarker(output);
     return output;
   } catch {
     return "[UNSERIALIZABLE]";

@@ -1,4 +1,5 @@
 import { inspectEntries } from "../inspection/safe-entries.mjs";
+import { addTruncationMarker } from "../inspection/add-truncation-marker.mjs";
 
 export function redactError(error, policy, redactChild, maxKeys = Infinity) {
   const output = {
@@ -16,6 +17,6 @@ export function redactError(error, policy, redactChild, maxKeys = Infinity) {
       configurable: true,
       writable: true,
     });
-  if (inspected.truncated) output.__truncated = "[TRUNCATED]";
+  if (inspected.truncated) addTruncationMarker(output);
   return output;
 }

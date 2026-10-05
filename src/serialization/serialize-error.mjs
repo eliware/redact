@@ -1,4 +1,5 @@
 import { inspectEntries } from "../inspection/safe-entries.mjs";
+import { addTruncationMarker } from "../inspection/add-truncation-marker.mjs";
 
 export function serializeError(error, policy, limits, seen, depth, serialize) {
   const output = {
@@ -24,6 +25,6 @@ export function serializeError(error, policy, limits, seen, depth, serialize) {
       configurable: true,
       writable: true,
     });
-  if (inspected.truncated) output.__truncated = "[TRUNCATED]";
+  if (inspected.truncated) addTruncationMarker(output);
   return output;
 }

@@ -1,5 +1,6 @@
 import { normalizePolicy } from "../../src/policy/normalize-policy.mjs";
 import { redactError } from "../../src/structured/redact-error.mjs";
+import { redactValue } from "../../src/structured/redact-value.mjs";
 
 test("copies error fields and redacts sensitive custom properties", () => {
   const error = Object.assign(new Error("failed"), {
@@ -75,6 +76,18 @@ test("marks custom Error properties omitted by the key limit", () => {
   expect(redactError(error, normalizePolicy(), (value) => value, 1)).toMatchObject({
     first: 1,
     __truncated: "[TRUNCATED]",
+  });
+});
+
+test("preserves a retained __truncated Error property when custom keys are omitted", () => {
+  const error = Object.assign(new Error("failed"), {
+    __truncated: "retained value",
+    omitted: "omitted value",
+  });
+
+  expect(redactValue(error, { maxKeys: 1 })).toMatchObject({
+    __truncated: "retained value",
+    __truncated_1: "[TRUNCATED]",
   });
 });
 

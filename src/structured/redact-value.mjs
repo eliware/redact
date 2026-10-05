@@ -2,6 +2,7 @@ import { normalizePolicy } from "../policy/normalize-policy.mjs";
 import { inspectEntries } from "../inspection/safe-entries.mjs";
 import { redactError } from "./redact-error.mjs";
 import { DEFAULT_LIMITS } from "../limits/default-limits.mjs";
+import { addTruncationMarker } from "../inspection/add-truncation-marker.mjs";
 
 export function redactValue(value, options = {}) {
   const policy = normalizePolicy(options);
@@ -61,16 +62,9 @@ function redact(value, policy, limits, seen, depth) {
         configurable: true,
         writable: true,
       });
-    if (inspected.truncated) markTruncated(output);
+    if (inspected.truncated) addTruncationMarker(output);
     return output;
   } finally {
     seen.delete(value);
   }
-}
-
-function markTruncated(output) {
-  let key = "__truncated";
-  let suffix = 0;
-  while (Object.hasOwn(output, key)) key = `__truncated_${++suffix}`;
-  output[key] = "[TRUNCATED]";
 }

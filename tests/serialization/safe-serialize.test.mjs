@@ -8,6 +8,18 @@ test("serializes primitives and redacts nested keys", () => {
   });
 });
 
+test("serializes arrays without calling their overridable methods", () => {
+  const input = [1, 2];
+  input.slice = () => {
+    throw new Error("overridden slice");
+  };
+  input.map = () => {
+    throw new Error("overridden map");
+  };
+
+  expect(safeSerialize(input)).toEqual([1, 2]);
+});
+
 test("omits enumerable symbol keys from the string-keyed serialization", () => {
   const secretKey = Symbol("token");
   const input = { visible: "value", [secretKey]: "secret" };

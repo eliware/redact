@@ -40,6 +40,7 @@ directives:
           - Treat maxKeys as a bound on retained property values and perform only a key-only lookahead; the JavaScript runtime may enumerate all own keys to produce the key list.
           - Make truncation markers distinguishable from redaction markers.
           - Append `[TRUNCATED]` to arrays when maxArray omits one or more items.
+          - Preserve retained `__truncated` properties and use an unused suffixed marker key when needed.
         donts:
           - Do not treat output limits as a substitute for confidentiality redaction.
       - id: E-101.5
