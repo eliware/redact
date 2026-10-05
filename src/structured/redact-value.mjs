@@ -6,7 +6,11 @@ import { addTruncationMarker } from "../inspection/add-truncation-marker.mjs";
 
 export function redactValue(value, options = {}) {
   const policy = normalizePolicy(options);
-  const limits = { ...DEFAULT_LIMITS, ...options };
+  const limits = {
+    ...DEFAULT_LIMITS,
+    ...options,
+    maxDepth: Number.isFinite(options.maxDepth) ? options.maxDepth : DEFAULT_LIMITS.maxDepth,
+  };
   return redact(value, policy, limits, new WeakMap(), 0);
 }
 

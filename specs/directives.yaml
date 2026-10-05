@@ -76,6 +76,7 @@ directives:
         dos:
           - Recursively copy structured values and replace sensitive fields with a stable marker.
           - Bound structured redaction depth, retained object keys, and array items with configurable defaults; mark omitted output with `[TRUNCATED]`.
+          - Normalize non-finite maxDepth values to the finite default depth.
           - Preserve retained input data when selecting an object truncation marker property; use an unused suffixed key if `__truncated` is occupied.
           - Handle nested objects, arrays, Errors, null-prototype objects, cycles, throwing accessors, and hostile objects safely.
           - If reading any retained enumerable own property fails, return an empty object rather than a partial redaction result.

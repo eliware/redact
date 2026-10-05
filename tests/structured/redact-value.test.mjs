@@ -25,6 +25,18 @@ test("bounds nested depth while redacting retained secrets", () => {
   });
 });
 
+test.each([Infinity, -Infinity, Number.NaN])(
+  "normalizes non-finite maxDepth %s to the default",
+  (maxDepth) => {
+    let input = { value: "leaf" };
+    for (let index = 0; index < 30; index++) input = { next: input };
+
+    let output = redactValue(input, { maxDepth });
+    for (let index = 0; index < 20; index++) output = output.next;
+    expect(output.next).toBe("[TRUNCATED]");
+  },
+);
+
 test("bounds retained object keys and marks omitted properties", () => {
   expect(redactValue({ first: 1, second: 2 }, { maxKeys: 1 })).toEqual({
     first: 1,

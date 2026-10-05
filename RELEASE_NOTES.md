@@ -18,6 +18,7 @@ Redaction is best-effort and does not guarantee detection of unknown secrets.
 - Array truncation in safe serialization now includes an explicit `[TRUNCATED]` marker; structured redaction handles hostile arrays without calling overridable array methods.
 - Structured-redaction truncation markers no longer overwrite a retained `__truncated` property.
 - Truncation markers now preserve retained properties for Error redaction and safe serialization; safe serialization ignores overridden array methods.
+- Non-finite structured-redaction depth limits now fall back to the finite default.
 - Policy key views no longer expose runtime Set mutation methods that could disable default redaction.
 - Safe serialization and structured redaction preserve enumerable own `__proto__` keys as data.
 - Malformed header entry arrays now fail closed with an empty entry array.
