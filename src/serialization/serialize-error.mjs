@@ -2,21 +2,25 @@ import { inspectEntries } from "../inspection/safe-entries.mjs";
 import { addTruncationMarker } from "../inspection/add-truncation-marker.mjs";
 
 export function serializeError(error, policy, limits, seen, depth, serialize) {
-  const output = {
-    name: policy.keys.has("name")
-      ? policy.marker
-      : serialize(error.name, policy, limits, seen, depth),
-    message: policy.keys.has("message")
-      ? policy.marker
-      : serialize(error.message, policy, limits, seen, depth),
-  };
-  if (error.stack)
-    output.stack = policy.keys.has("stack")
-      ? policy.marker
-      : serialize(error.stack, policy, limits, seen, depth);
-  const inspected = inspectEntries(error, limits.maxKeys, (key) => !Object.hasOwn(output, key));
+  const inspected = inspectEntries(error, limits.maxKeys);
   if (inspected.failed) return {};
-  for (const [key, child] of inspected.entries)
+  const values = new Map(inspected.entries);
+  const enumerableKeys = new Set(inspected.keys);
+  const output = {};
+  for (const key of ["name", "message", "stack"]) {
+    const field = readErrorField(error, key, values, enumerableKeys);
+    if (!field.present || (key === "stack" && !field.value)) continue;
+    Object.defineProperty(output, key, {
+      value: policy.keys.has(key)
+        ? policy.marker
+        : serialize(field.value, policy, limits, seen, depth),
+      enumerable: true,
+      configurable: true,
+      writable: true,
+    });
+  }
+  for (const [key, child] of inspected.entries) {
+    if (["name", "message", "stack"].includes(key)) continue;
     Object.defineProperty(output, key, {
       value: policy.keys.has(key.toLowerCase())
         ? policy.marker
@@ -25,6 +29,13 @@ export function serializeError(error, policy, limits, seen, depth, serialize) {
       configurable: true,
       writable: true,
     });
+  }
   if (inspected.truncated) addTruncationMarker(output);
   return output;
+}
+
+function readErrorField(error, key, values, enumerableKeys) {
+  if (enumerableKeys.has(key))
+    return values.has(key) ? { present: true, value: values.get(key) } : { present: false };
+  return { present: true, value: error[key] };
 }

@@ -70,6 +70,55 @@ test("marks omitted custom Error properties after the maxKeys bound", () => {
   ).toMatchObject({ first: 1, __truncated: "[TRUNCATED]" });
 });
 
+test("counts enumerable standard Error fields against maxKeys and reads them once", () => {
+  const error = new Error("failed");
+  const reads = { name: 0, message: 0, stack: 0 };
+  for (const [key, value] of Object.entries({
+    name: "CustomError",
+    message: "failed",
+    stack: "stack",
+    extra: "omitted",
+  }))
+    Object.defineProperty(error, key, {
+      enumerable: true,
+      configurable: true,
+      get() {
+        if (key in reads) reads[key]++;
+        return value;
+      },
+    });
+  const limits = { ...DEFAULT_LIMITS, maxKeys: 3 };
+
+  expect(
+    serializeError(error, normalizePolicy(), limits, new WeakSet(), 0, (value) => value),
+  ).toEqual({
+    name: "CustomError",
+    message: "failed",
+    stack: "stack",
+    __truncated: "[TRUNCATED]",
+  });
+  expect(reads).toEqual({ name: 1, message: 1, stack: 1 });
+
+  reads.name = 0;
+  reads.message = 0;
+  reads.stack = 0;
+  expect(
+    serializeError(
+      error,
+      normalizePolicy(),
+      { ...limits, maxKeys: 2 },
+      new WeakSet(),
+      0,
+      (value) => value,
+    ),
+  ).toEqual({
+    message: "failed",
+    stack: "stack",
+    __truncated: "[TRUNCATED]",
+  });
+  expect(reads).toEqual({ name: 0, message: 1, stack: 1 });
+});
+
 test("preserves an own __proto__ Error property as data", () => {
   const error = new Error("failed");
   Object.defineProperty(error, "__proto__", { value: { visible: "value" }, enumerable: true });

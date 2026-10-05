@@ -30,8 +30,13 @@ test("distinguishes failed enumeration from a genuinely empty object", () => {
     },
   );
 
-  expect(inspectEntries({})).toEqual({ entries: [], failed: false, truncated: false });
-  expect(inspectEntries(hostile)).toEqual({ entries: [], failed: true, truncated: false });
+  expect(inspectEntries({})).toEqual({ entries: [], keys: [], failed: false, truncated: false });
+  expect(inspectEntries(hostile)).toEqual({
+    entries: [],
+    keys: [],
+    failed: true,
+    truncated: false,
+  });
 });
 
 test("limits property reads and performs only a key-only overflow lookahead", () => {
@@ -45,6 +50,7 @@ test("limits property reads and performs only a key-only overflow lookahead", ()
 
   expect(inspectEntries(value, 1)).toEqual({
     entries: [["first", 1]],
+    keys: ["first", "second"],
     failed: false,
     truncated: true,
   });
