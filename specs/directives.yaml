@@ -73,8 +73,9 @@ directives:
       - id: E-101.9
         dos:
           - Recursively copy structured values and replace sensitive fields with a stable marker.
+          - Bound structured redaction depth, retained object keys, and array items with configurable defaults; mark omitted output with `[TRUNCATED]`.
           - Handle nested objects, arrays, Errors, null-prototype objects, cycles, throwing accessors, and hostile objects safely.
-          - If reading any enumerable own property fails, return an empty object rather than a partial redaction result.
+          - If reading any retained enumerable own property fails, return an empty object rather than a partial redaction result.
           - Preserve an enumerable own `__proto__` property as data without changing the output prototype.
           - Apply configured sensitive-key policy to Error name, message, and stack fields.
         donts:

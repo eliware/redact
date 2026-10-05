@@ -17,3 +17,4 @@ Redaction is best-effort and does not guarantee detection of unknown secrets.
 - Policy key views no longer expose runtime Set mutation methods that could disable default redaction.
 - Safe serialization and structured redaction preserve enumerable own `__proto__` keys as data.
 - Malformed header entry arrays now fail closed with an empty entry array.
+- Structured redaction now bounds depth, object keys, and array items, with configurable limits and truncation markers.

@@ -16,6 +16,39 @@ test("handles cycles", () => {
   expect(redactValue(input).self).toBe("[CIRCULAR]");
 });
 
+test("bounds nested depth while redacting retained secrets", () => {
+  const input = { nested: { token: "secret", deeper: { value: true } }, omitted: "value" };
+
+  expect(redactValue(input, { maxDepth: 1 })).toEqual({
+    nested: { token: "[REDACTED]", deeper: "[TRUNCATED]" },
+    omitted: "value",
+  });
+});
+
+test("bounds retained object keys and marks omitted properties", () => {
+  expect(redactValue({ first: 1, second: 2 }, { maxKeys: 1 })).toEqual({
+    first: 1,
+    __truncated: "[TRUNCATED]",
+  });
+});
+
+test("bounds array items and marks omitted items", () => {
+  expect(redactValue([{ safe: 1 }, { token: "secret" }], { maxArray: 1 })).toEqual([
+    { safe: 1 },
+    "[TRUNCATED]",
+  ]);
+});
+
+test("bounds custom Error properties", () => {
+  const error = Object.assign(new Error("failed"), { first: 1, token: "secret", last: 3 });
+
+  expect(redactValue(error, { maxKeys: 1 })).toMatchObject({
+    first: 1,
+    __truncated: "[TRUNCATED]",
+  });
+  expect(Object.hasOwn(redactValue(error, { maxKeys: 1 }), "token")).toBe(false);
+});
+
 test("preserves an own __proto__ key without changing the result prototype", () => {
   const input = {};
   Object.defineProperty(input, "__proto__", { value: { visible: "value" }, enumerable: true });
