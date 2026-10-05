@@ -14,6 +14,6 @@ export function redactHeaders(headers, options = {}) {
 
 function validEntries(entries) {
   return entries.every(
-    (entry) => Array.isArray(entry) && entry.length >= 2 && typeof entry[0] === "string",
+    (entry) => Array.isArray(entry) && entry.length === 2 && typeof entry[0] === "string",
   );
 }

@@ -59,6 +59,7 @@ test("handles null input", () => {
 test("returns an empty entry array for malformed or unreadable entries", () => {
   expect(redactHeaders([null])).toEqual([]);
   expect(redactHeaders([["token", "secret"], ["missing-value"]])).toEqual([]);
+  expect(redactHeaders([["token", "secret", "extra"]])).toEqual([]);
   expect(
     redactHeaders({
       entries() {

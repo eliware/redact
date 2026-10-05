@@ -10,7 +10,12 @@ export function redactError(error, policy, redactChild, maxKeys = Infinity) {
   const inspected = inspectEntries(error, maxKeys, (key) => !Object.hasOwn(output, key));
   if (inspected.failed) return {};
   for (const [key, child] of inspected.entries)
-    output[key] = policy.keys.has(key.toLowerCase()) ? policy.marker : redactChild(child);
+    Object.defineProperty(output, key, {
+      value: policy.keys.has(key.toLowerCase()) ? policy.marker : redactChild(child),
+      enumerable: true,
+      configurable: true,
+      writable: true,
+    });
   if (inspected.truncated) output.__truncated = "[TRUNCATED]";
   return output;
 }
