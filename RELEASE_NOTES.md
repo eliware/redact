@@ -1,5 +1,12 @@
 # Release Notes
 
+## 12.0.0 — 2026-10-11
+
+### Changed
+
+- Aligned package metadata, documentation, and specifications with Convention v12.
+- Added the repository specifications to the published package contents.
+
 ## 11.0.0 — 2026-10-04
 
 ### Added
@@ -15,7 +22,6 @@
 Redaction is best-effort and does not guarantee detection of unknown secrets.
 
 - Text redaction now applies configured `keys` and `redactKeys` to matching assignments and query values.
-
 - Text redaction now caps output at 10,000 characters by default, configurable with `maxOutputLength`.
 - Array truncation in safe serialization now includes an explicit `[TRUNCATED]` marker; structured redaction handles hostile arrays without calling overridable array methods.
 - Structured-redaction truncation markers no longer overwrite a retained `__truncated` property.
