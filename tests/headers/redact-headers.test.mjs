@@ -49,7 +49,7 @@ test("collapses duplicate names from Headers-like inputs after redacting each va
     },
   };
 
-  expect(redactHeaders(headers)).toEqual({ Authorization: "[REDACTED]" });
+  expect(redactHeaders(headers)).toEqual({ authorization: "[REDACTED]" });
 });
 
 test("redacts a Headers-like __proto__ name as an own property", () => {

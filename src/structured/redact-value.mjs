@@ -41,12 +41,24 @@ function redact(value, policy, limits, seen, depth) {
       try {
         const length = value.length;
         const retained = Math.min(length, limits.maxArray);
+        const hasOmittedProperties = Object.keys(value).some((key) => {
+          const index = Number(key);
+          const isArrayIndex =
+            Number.isInteger(index) &&
+            index >= 0 &&
+            index < length &&
+            index < 4294967295 &&
+            String(index) === key;
+          if (isArrayIndex) return false;
+          const descriptor = Object.getOwnPropertyDescriptor(value, key);
+          return !descriptor || !("value" in descriptor) || typeof descriptor.value !== "function";
+        });
         const items = [];
         items.length = retained;
         for (let index = 0; index < retained; index++)
           if (Object.hasOwn(value, index))
             items[index] = redact(value[index], policy, limits, seen, depth + 1);
-        if (length > retained) items.push("[TRUNCATED]");
+        if (length > retained || hasOmittedProperties) items.push("[TRUNCATED]");
         return items;
       } catch {
         return [];
@@ -55,15 +67,17 @@ function redact(value, policy, limits, seen, depth) {
     const output = {};
     const inspected = inspectEntries(value, limits.maxKeys);
     if (inspected.failed) return {};
-    for (const [key, child] of inspected.entries)
+    for (const [key, child] of inspected.entries) {
+      const redactedChild = policy.keys.has(key.toLowerCase())
+        ? policy.marker
+        : redact(child, policy, limits, seen, depth + 1);
       Object.defineProperty(output, key, {
-        value: policy.keys.has(key.toLowerCase())
-          ? policy.marker
-          : redact(child, policy, limits, seen, depth + 1),
+        value: redactedChild,
         enumerable: true,
         configurable: true,
         writable: true,
       });
+    }
     if (inspected.truncated) addTruncationMarker(output);
     return output;
   } finally {

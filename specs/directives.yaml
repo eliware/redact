@@ -35,7 +35,7 @@ directives:
           - Match sensitive header names without case sensitivity and preserve supported input representations.
           - >-
             Preserve repeated names for entry-array input; for Headers-like iterable input, redact every occurrence
-            before converting to a record where the last occurrence for a name is retained.
+            before converting to a lowercase record where the last occurrence for a name is retained.
           - Return an empty entry array when reading or consuming a Headers-like entries iterable throws.
           - Return an empty entry array when an entry-array or Headers-like input contains malformed pairs.
         donts:
@@ -114,6 +114,7 @@ directives:
             Handle nested objects, arrays, Errors, null-prototype objects, cycles, throwing accessors, and hostile
             objects safely.
           - Visit only own array indices and preserve sparse holes without reading inherited numeric properties.
+          - Add `[TRUNCATED]` when structured redaction omits enumerable array properties that are not array indices.
           - If reading a retained own array index fails, return an empty array.
           - >-
             If reading any retained enumerable own object property fails, return an empty object rather than a partial

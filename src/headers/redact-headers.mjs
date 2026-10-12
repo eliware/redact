@@ -13,8 +13,8 @@ export function redactHeaders(headers, options = {}) {
     });
     if (input.type !== "entries") return entries;
     const byName = new Map();
-    for (const entry of entries) byName.set(entry[0].toLowerCase(), entry);
-    return Object.fromEntries(byName.values());
+    for (const [key, value] of entries) byName.set(key.toLowerCase(), value);
+    return Object.fromEntries(byName);
   } catch {
     return [];
   }
