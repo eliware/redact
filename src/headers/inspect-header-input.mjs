@@ -4,7 +4,6 @@ export function inspectHeaderInput(headers) {
     isArray = Array.isArray(headers);
     if (headers && !isArray) {
       const entries = headers.entries;
-      // codescope ignore this because a non-callable entries field remains a plain object field.
       if (typeof entries === "function")
         return { type: "entries", entries: [...entries.call(headers)] };
     }

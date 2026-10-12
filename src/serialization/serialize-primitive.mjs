@@ -1,4 +1,3 @@
-// codescope ignore this because maxString is the safeSerialize string-size limit.
 export function serializePrimitive(value, maxString) {
   if (value === null) return null;
   if (value === undefined) return "[Undefined]";

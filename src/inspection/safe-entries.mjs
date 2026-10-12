@@ -4,7 +4,6 @@ export function safeEntries(value, maxEntries = Infinity) {
 
 export function inspectEntries(value, maxEntries = Infinity) {
   try {
-    // codescope ignore this because Object.keys finds omitted keys while value reads stay within maxEntries.
     const keys = Object.keys(value);
     const entries = [];
     for (const key of keys) {
@@ -12,7 +11,6 @@ export function inspectEntries(value, maxEntries = Infinity) {
       entries.push([key, value[key]]);
     }
     return { entries, keys, failed: false, truncated: false };
-    // codescope ignore this because enumeration and retained-value failures both fail closed.
   } catch {
     return { entries: [], keys: [], failed: true, truncated: false };
   }
