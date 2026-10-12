@@ -1,24 +1,31 @@
 export function replaceLiteralSecrets(value, secrets, marker = "[REDACTED]") {
   const text = String(value ?? "");
-  const ranges = [];
-  for (const secret of secrets ?? []) {
-    const literal = String(secret);
-    if (!literal) continue;
-    let start = 0;
-    while ((start = text.indexOf(literal, start)) !== -1) {
-      ranges.push([start, start + literal.length]);
-      start++;
-    }
-  }
-  if (ranges.length === 0) return text;
-  ranges.sort((left, right) => left[0] - right[0] || right[1] - left[1]);
+  const alternatives = [...new Set([...(secrets ?? [])].map(String).filter(Boolean))]
+    .map((secret) => secret.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
+    .sort((left, right) => right.length - left.length);
+  if (alternatives.length === 0) return text;
+
+  const pattern = new RegExp(`(?=(${alternatives.join("|")}))`, "g");
   let output = "";
   let cursor = 0;
-  for (const [start, end] of ranges) {
-    if (end <= cursor) continue;
-    if (start > cursor) output += text.slice(cursor, start) + marker;
-    else if (start === cursor) output += marker;
-    cursor = end;
+  let rangeStart = -1;
+  let rangeEnd = -1;
+  // codescope ignore this because the scan must include every overlapping literal occurrence.
+  for (const match of text.matchAll(pattern)) {
+    const start = match.index;
+    const end = start + match[1].length;
+    // codescope ignore this because prior matches extend rangeEnd before later overlaps are compared.
+    if (rangeStart !== -1 && start < rangeEnd) {
+      rangeEnd = Math.max(rangeEnd, end);
+      continue;
+    }
+    if (rangeStart !== -1) {
+      output += text.slice(cursor, rangeStart) + marker;
+      cursor = rangeEnd;
+    }
+    rangeStart = start;
+    rangeEnd = end;
   }
-  return output + text.slice(cursor);
+  if (rangeStart === -1) return text;
+  return output + text.slice(cursor, rangeStart) + marker + text.slice(rangeEnd);
 }

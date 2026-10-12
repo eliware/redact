@@ -25,6 +25,12 @@ test("applies configured sensitive keys to text assignments", () => {
   );
 });
 
+test("applies default sensitive keys to text assignments", () => {
+  expect(redactText("cookie=secret privatekey=key passphrase=phrase")).toBe(
+    "cookie=[REDACTED] privatekey=[REDACTED] passphrase=[REDACTED]",
+  );
+});
+
 test("replaces overlapping configured secrets without exposing fragments", () => {
   expect(redactText("abcde", { secrets: ["abc", "bcde"] })).toBe("[REDACTED]");
 });

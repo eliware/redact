@@ -76,6 +76,10 @@ test("coordinates depth, key, and array limits", () => {
   expect(safeSerialize({ deep: { value: 1 } }, { maxDepth: 0 }).deep).toBe("[TRUNCATED]");
 });
 
+test("truncates primitive children beyond the depth limit", () => {
+  expect(safeSerialize({ value: "visible" }, { maxDepth: 0 })).toEqual({ value: "[TRUNCATED]" });
+});
+
 test("counts Error standard fields as children for maxDepth", () => {
   const error = new Error();
   error.name = { nested: "name" };
@@ -120,6 +124,17 @@ test("returns a safe fallback when a special object throws during serialization"
       }),
     ),
   ).toBe("[UNSERIALIZABLE]");
+});
+
+test("returns the unserializable fallback when an array item cannot be read", () => {
+  const input = new Proxy([1], {
+    get(target, key, receiver) {
+      if (key === "0") throw new Error("blocked");
+      return Reflect.get(target, key, receiver);
+    },
+  });
+
+  expect(safeSerialize(input)).toBe("[UNSERIALIZABLE]");
 });
 
 test("returns an empty object when an enumerable getter prevents complete serialization", () => {

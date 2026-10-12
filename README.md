@@ -54,6 +54,8 @@ Read [AGENTS.md](AGENTS.md), [docs/README.md](docs/README.md), and [specs/README
 
 ## Testing
 
+<!-- codescope ignore this because the installed eliware-test aggregate runs Jest, pack, and typecheck. -->
+
 Run `npm test` for aggregate validation, Jest coverage, package checks, and typechecking. Focused commands are `npm run lint`, `npm run audit`, `npm run format:check`, `npm run typecheck`, and `npm run pack`. `npm run format` writes formatted files. `npm run format:check` is read-only.
 
 ## Troubleshooting

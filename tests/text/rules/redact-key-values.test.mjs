@@ -24,6 +24,18 @@ test("escapes configured key names before matching", () => {
   );
 });
 
+test("matches longer configured keys before their prefixes", () => {
+  expect(redactConfiguredKeyValues("token_id=secret", ["token", "token_id"])).toBe(
+    "token_id=[REDACTED]",
+  );
+});
+
 test("returns text unchanged when no configured keys are supplied", () => {
   expect(redactConfiguredKeyValues(undefined, [""])).toBe("");
+});
+
+test("preserves replacement syntax in configured markers", () => {
+  expect(redactConfiguredKeyValues("token=secret ?token=query", ["token"], "$&")).toBe(
+    "token=$& ?token=$&",
+  );
 });

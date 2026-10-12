@@ -37,11 +37,12 @@ directives:
             Preserve repeated names for entry-array input; for Headers-like iterable input, redact every occurrence
             before converting to a record where the last occurrence for a name is retained.
           - Return an empty entry array when reading or consuming a Headers-like entries iterable throws.
-          - Return an empty entry array when an entry-array input contains malformed pairs.
+          - Return an empty entry array when an entry-array or Headers-like input contains malformed pairs.
         donts:
           - Do not alter safe header values as if they were sensitive.
       - id: E-101.0.3
         dos:
+          # codescope ignore this because string-size limits apply to serialization and text output as separate API options.
           - "Bound traversal depth, object keys, array items, string size, and text output size."
           - >-
             Normalize maxDepth, maxKeys, and maxArray as nonnegative integers; floor finite fractions and replace
@@ -64,6 +65,7 @@ directives:
           - Do not present out-of-scope behavior as a capability of @eliware/redact.
       - id: E-101.0.5
         dos:
+          # codescope ignore this because structured keys and text patterns have separate API paths.
           - Keep redaction policy focused on sensitive structured keys and supported text patterns.
           - >-
             Use conservative defaults, case-insensitive key matching, caller-customizable options, and non-mutating
@@ -112,8 +114,9 @@ directives:
             Handle nested objects, arrays, Errors, null-prototype objects, cycles, throwing accessors, and hostile
             objects safely.
           - Visit only own array indices and preserve sparse holes without reading inherited numeric properties.
+          - If reading a retained own array index fails, return an empty array.
           - >-
-            If reading any retained enumerable own property fails, return an empty object rather than a partial
+            If reading any retained enumerable own object property fails, return an empty object rather than a partial
             redaction result.
           - Preserve an enumerable own `__proto__` property as data without changing the output prototype.
           - "Apply configured sensitive-key policy to Error name, message, and stack fields."

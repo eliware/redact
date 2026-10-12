@@ -11,8 +11,16 @@ test("represents primitive values for safe serialization", () => {
 test("bounds strings and labels functions and symbols", () => {
   expect(serializePrimitive("abcdef", 3)).toBe("abc...[TRUNCATED]");
   expect(serializePrimitive("ok", 3)).toBe("ok");
-  expect(serializePrimitive(function named() {}, 10)).toBe("[Function: named]");
-  expect(serializePrimitive(() => {}, 10)).toBe("[Function: anonymous]");
-  expect(serializePrimitive(Symbol("x"), 10)).toBe("[Symbol: x]");
-  expect(serializePrimitive(Symbol(), 10)).toBe("[Symbol: ]");
+  expect(serializePrimitive(function named() {}, 100)).toBe("[Function: named]");
+  expect(serializePrimitive(() => {}, 100)).toBe("[Function: anonymous]");
+  expect(serializePrimitive(Symbol("x"), 100)).toBe("[Symbol: x]");
+  expect(serializePrimitive(Symbol(), 100)).toBe("[Symbol: ]");
+});
+
+test("bounds string representations of BigInts, functions, and symbols", () => {
+  const named = Object.defineProperty(function value() {}, "name", { value: "long-name" });
+
+  expect(serializePrimitive(123456n, 3)).toBe("123...[TRUNCATED]");
+  expect(serializePrimitive(named, 3)).toBe("[Fu...[TRUNCATED]");
+  expect(serializePrimitive(Symbol("long-description"), 3)).toBe("[Sy...[TRUNCATED]");
 });

@@ -45,11 +45,24 @@ test("collapses duplicate names from Headers-like inputs after redacting each va
   const headers = {
     *entries() {
       yield ["authorization", "first secret"];
-      yield ["authorization", "second secret"];
+      yield ["Authorization", "second secret"];
     },
   };
 
-  expect(redactHeaders(headers)).toEqual({ authorization: "[REDACTED]" });
+  expect(redactHeaders(headers)).toEqual({ Authorization: "[REDACTED]" });
+});
+
+test("redacts a Headers-like __proto__ name as an own property", () => {
+  const headers = {
+    *entries() {
+      yield ["__proto__", "secret"];
+    },
+  };
+  const output = redactHeaders(headers, { keys: ["__proto__"] });
+
+  expect(Object.hasOwn(output, "__proto__")).toBe(true);
+  expect(output.__proto__).toBe("[REDACTED]");
+  expect(Object.getPrototypeOf(output)).toBe(Object.prototype);
 });
 
 test("handles null input", () => {
@@ -78,4 +91,57 @@ test("returns an empty entry array for malformed or unreadable entries", () => {
       },
     }),
   ).toEqual([]);
+});
+
+test("returns an empty entry array for malformed Headers-like pairs", () => {
+  expect(
+    redactHeaders({
+      *entries() {
+        yield [1, "secret"];
+      },
+    }),
+  ).toEqual([]);
+  expect(
+    redactHeaders({
+      *entries() {
+        yield ["token"];
+      },
+    }),
+  ).toEqual([]);
+  expect(
+    redactHeaders({
+      *entries() {
+        yield ["x-id", 7];
+      },
+    }),
+  ).toEqual([]);
+});
+
+test("returns an empty entry array when a Headers-like pair throws during validation", () => {
+  const pair = new Proxy(["token", "secret"], {
+    get(target, key, receiver) {
+      if (key === "length") throw new Error("blocked");
+      return Reflect.get(target, key, receiver);
+    },
+  });
+
+  expect(
+    redactHeaders({
+      *entries() {
+        yield pair;
+      },
+    }),
+  ).toEqual([]);
+});
+
+test("returns an empty entry array when a pair changes after validation", () => {
+  let lengthReads = 0;
+  const pair = new Proxy(["token", "secret"], {
+    get(target, key, receiver) {
+      if (key === "length" && ++lengthReads > 1) throw new Error("blocked");
+      return Reflect.get(target, key, receiver);
+    },
+  });
+
+  expect(redactHeaders([pair])).toEqual([]);
 });

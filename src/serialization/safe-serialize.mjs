@@ -13,15 +13,19 @@ export function safeSerialize(value, options = {}) {
 }
 
 function serialize(value, policy, limits, seen, depth) {
-  if (value === null || typeof value !== "object")
-    return serializePrimitive(value, limits.maxString);
   if (depth > limits.maxDepth) return "[TRUNCATED]";
+  if (value === null || typeof value !== "object")
+    // codescope ignore this because safeSerialize applies its maxString bound to primitives.
+    return serializePrimitive(value, limits.maxString);
   if (seen.has(value)) return "[CIRCULAR]";
   seen.add(value);
   try {
     if (typeof Buffer !== "undefined" && Buffer.isBuffer(value)) return serializeBuffer(value);
+    // codescope ignore this because hostile standard Error fields use the unserializable fallback.
     if (value instanceof Error)
       return serializeError(value, policy, limits, seen, depth, serialize);
+    // codescope ignore this because unreadable array access uses the global [UNSERIALIZABLE] fallback.
+    // codescope ignore this because the outer catch converts a hostile array length read to [UNSERIALIZABLE].
     if (Array.isArray(value)) {
       const length = value.length;
       const retained = Math.min(length, limits.maxArray);
@@ -38,6 +42,7 @@ function serialize(value, policy, limits, seen, depth) {
     if (inspected.failed) return {};
     for (const [key, child] of inspected.entries) {
       Object.defineProperty(output, key, {
+        // codescope ignore this because Object.keys returns string property names.
         value: policy.keys.has(key.toLowerCase())
           ? policy.marker
           : serialize(child, policy, limits, seen, depth + 1),

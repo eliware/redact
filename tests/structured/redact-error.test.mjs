@@ -52,6 +52,18 @@ test("returns an empty object when a custom Error property cannot be read", () =
   expect(redactError(error, normalizePolicy(), (value) => value)).toEqual({});
 });
 
+test("returns an empty object when a standard Error field cannot be read", () => {
+  const error = new Error("failed");
+  Object.defineProperty(error, "name", {
+    configurable: true,
+    get() {
+      throw new Error("blocked");
+    },
+  });
+
+  expect(redactError(error, normalizePolicy(), (value) => value)).toEqual({});
+});
+
 test("counts enumerable standard fields against the key limit and reads them once", () => {
   const error = new Error("failed");
   const reads = { name: 0, message: 0, stack: 0 };
