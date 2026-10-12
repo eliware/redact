@@ -118,6 +118,7 @@ directives:
           - Apply sensitive-key rules to enumerable non-index array properties.
           - Mark omitted array items or properties with `[TRUNCATED]`.
           - If reading a retained own array index fails, return an empty array.
+          - If reading a retained enumerable own non-index array property fails, return an empty array.
           - >-
             If reading any retained enumerable own object property fails, return an empty object rather than a partial
             redaction result.

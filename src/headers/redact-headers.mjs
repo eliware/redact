@@ -8,8 +8,9 @@ export function redactHeaders(headers, options = {}) {
   try {
     const entries = input.entries.map(([key, value]) => {
       const record = {};
-      Object.defineProperty(record, key, { value, enumerable: true });
-      return [key, redactValue(record, options)[key]];
+      const normalizedKey = key.toLowerCase();
+      Object.defineProperty(record, normalizedKey, { value, enumerable: true });
+      return [key, redactValue(record, options)[normalizedKey]];
     });
     if (input.type !== "entries") return entries;
     const byName = new Map();

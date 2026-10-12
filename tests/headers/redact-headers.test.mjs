@@ -52,6 +52,18 @@ test("collapses duplicate names from Headers-like inputs after redacting each va
   expect(redactHeaders(headers)).toEqual({ authorization: "[REDACTED]" });
 });
 
+test("matches configured header names without case sensitivity for iterable input", () => {
+  const headers = {
+    *entries() {
+      yield ["X-Private", "secret"];
+    },
+  };
+
+  expect(redactHeaders(headers, { keys: ["x-private"] })).toEqual({
+    "x-private": "[REDACTED]",
+  });
+});
+
 test("redacts a Headers-like __proto__ name as an own property", () => {
   const headers = {
     *entries() {

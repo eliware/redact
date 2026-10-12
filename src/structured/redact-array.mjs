@@ -3,6 +3,7 @@ export function redactArray(value, policy, limits, redactChild) {
     const length = value.length;
     const retained = Math.min(length, limits.maxArray);
     const extraProperties = [];
+    let extraPropertiesOmitted = false;
     for (const key of Object.keys(value)) {
       const index = Number(key);
       const isArrayIndex =
@@ -20,29 +21,45 @@ export function redactArray(value, policy, limits, redactChild) {
         typeof descriptor.value === "function"
       )
         continue;
-      extraProperties.push(key);
+      if (extraProperties.length < limits.maxKeys) extraProperties.push(key);
+      else extraPropertiesOmitted = true;
     }
     const items = [];
     items.length = retained;
+    let retainedValues = 0;
+    let truncated = length > retained || extraPropertiesOmitted;
     for (let index = 0; index < retained; index++) {
       if (!Object.hasOwn(value, index)) continue;
+      if (retainedValues >= limits.maxKeys) {
+        truncated = true;
+        continue;
+      }
       items[index] = policy.keys.has(String(index).toLowerCase())
         ? policy.marker
         : redactChild(value[index]);
+      retainedValues++;
     }
-    const retainedProperties = Math.min(extraProperties.length, limits.maxKeys);
-    for (let index = 0; index < retainedProperties; index++) {
+    for (let index = 0; index < extraProperties.length; index++) {
+      if (retainedValues >= limits.maxKeys) {
+        truncated = true;
+        break;
+      }
       const key = extraProperties[index];
-      const child = policy.keys.has(key.toLowerCase()) ? policy.marker : redactChild(value[key]);
+      let child;
+      try {
+        child = policy.keys.has(key.toLowerCase()) ? policy.marker : redactChild(value[key]);
+      } catch {
+        return [];
+      }
       Object.defineProperty(items, key, {
         value: child,
         enumerable: true,
         configurable: true,
         writable: true,
       });
+      retainedValues++;
     }
-    if (length > retained || extraProperties.length > retainedProperties)
-      items[items.length] = "[TRUNCATED]";
+    if (truncated) items[items.length] = "[TRUNCATED]";
     return items;
   } catch {
     return [];

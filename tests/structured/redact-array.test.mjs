@@ -54,6 +54,53 @@ test("marks non-index array properties omitted by maxKeys", () => {
   expect(output).toEqual(["[TRUNCATED]"]);
 });
 
+test("applies maxKeys to array items and extra properties together", () => {
+  const input = ["item"];
+  input.label = "extra";
+  const limits = { ...DEFAULT_LIMITS, maxKeys: 1 };
+  const output = redactArray(input, normalizePolicy(), limits, (value) => value);
+
+  expect(output[0]).toBe("item");
+  expect(Object.hasOwn(output, "label")).toBe(false);
+  expect(output[1]).toBe("[TRUNCATED]");
+});
+
+test("marks array items omitted by the shared maxKeys limit", () => {
+  const input = ["first", "second"];
+  const limits = { ...DEFAULT_LIMITS, maxKeys: 1 };
+  const output = redactArray(input, normalizePolicy(), limits, (value) => value);
+
+  expect(output[0]).toBe("first");
+  expect(output[2]).toBe("[TRUNCATED]");
+});
+
+test("returns an empty array when a retained item read fails", () => {
+  const input = [];
+  Object.defineProperty(input, "0", {
+    enumerable: true,
+    configurable: true,
+    get() {
+      throw new Error("blocked");
+    },
+  });
+  const output = redactArray(input, normalizePolicy(), DEFAULT_LIMITS, (value) => value);
+
+  expect(output).toEqual([]);
+});
+
+test("returns an empty array when an extra property read fails", () => {
+  const input = ["item"];
+  Object.defineProperty(input, "extra", {
+    enumerable: true,
+    get() {
+      throw new Error("blocked");
+    },
+  });
+  const output = redactArray(input, normalizePolicy(), DEFAULT_LIMITS, (value) => value);
+
+  expect(output).toEqual([]);
+});
+
 test("adds a truncation marker when an own push property shadows the method", () => {
   const input = ["retained", "omitted"];
   input.push = "value";

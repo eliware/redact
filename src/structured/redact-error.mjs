@@ -12,22 +12,26 @@ export function redactError(error, policy, redactChild, maxKeys = Infinity) {
   } catch {
     return {};
   }
-  for (const [key, value] of fields.fields) {
-    Object.defineProperty(output, key, {
-      value: policy.keys.has(key.toLowerCase()) ? policy.marker : redactChild(value),
-      enumerable: true,
-      configurable: true,
-      writable: true,
-    });
-  }
-  for (const [key, child] of inspected.entries) {
-    if (["name", "message", "stack"].includes(key)) continue;
-    Object.defineProperty(output, key, {
-      value: policy.keys.has(key.toLowerCase()) ? policy.marker : redactChild(child),
-      enumerable: true,
-      configurable: true,
-      writable: true,
-    });
+  try {
+    for (const [key, value] of fields.fields) {
+      Object.defineProperty(output, key, {
+        value: policy.keys.has(key.toLowerCase()) ? policy.marker : redactChild(value),
+        enumerable: true,
+        configurable: true,
+        writable: true,
+      });
+    }
+    for (const [key, child] of inspected.entries) {
+      if (["name", "message", "stack"].includes(key)) continue;
+      Object.defineProperty(output, key, {
+        value: policy.keys.has(key.toLowerCase()) ? policy.marker : redactChild(child),
+        enumerable: true,
+        configurable: true,
+        writable: true,
+      });
+    }
+  } catch {
+    return {};
   }
   if (inspected.truncated || fields.truncated) addTruncationMarker(output);
   return output;

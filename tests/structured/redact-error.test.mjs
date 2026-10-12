@@ -64,6 +64,16 @@ test("returns an empty object when a standard Error field cannot be read", () =>
   expect(redactError(error, normalizePolicy(), (value) => value)).toEqual({});
 });
 
+test("returns an empty object when an Error child redaction fails", () => {
+  const error = Object.assign(new Error("failed"), { detail: {} });
+
+  expect(
+    redactError(error, normalizePolicy(), () => {
+      throw new Error("blocked");
+    }),
+  ).toEqual({});
+});
+
 test("counts enumerable standard fields against the key limit and reads them once", () => {
   const error = new Error("failed");
   const reads = { name: 0, message: 0, stack: 0 };

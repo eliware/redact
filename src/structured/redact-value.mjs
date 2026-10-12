@@ -21,7 +21,7 @@ function redact(value, policy, limits, seen, depth) {
     isArray = Array.isArray(value);
     isError = value instanceof Error;
   } catch {
-    return isArray ? [] : {};
+    return isArray === true ? [] : {};
   }
   if (isError) {
     seen.set(value, true);
