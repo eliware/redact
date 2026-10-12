@@ -41,3 +41,14 @@ test("marks non-index array properties omitted by maxKeys", () => {
 
   expect(output).toEqual(["[TRUNCATED]"]);
 });
+
+test("adds a truncation marker when an own push property shadows the method", () => {
+  const input = ["retained", "omitted"];
+  input.push = "value";
+  const limits = { ...DEFAULT_LIMITS, maxArray: 1 };
+  const output = redactArray(input, normalizePolicy(), limits, (value) => value);
+
+  expect(output[0]).toBe("retained");
+  expect(output[1]).toBe("[TRUNCATED]");
+  expect(output.push).toBe("value");
+});

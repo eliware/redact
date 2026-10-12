@@ -37,7 +37,8 @@ export function redactArray(value, policy, limits, redactChild) {
         writable: true,
       });
     }
-    if (length > retained || extraProperties.length > retainedProperties) items.push("[TRUNCATED]");
+    if (length > retained || extraProperties.length > retainedProperties)
+      items[items.length] = "[TRUNCATED]";
     return items;
   } catch {
     return [];
