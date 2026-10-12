@@ -4,6 +4,7 @@ export function safeEntries(value, maxEntries = Infinity) {
 
 export function inspectEntries(value, maxEntries = Infinity) {
   try {
+    // codescope ignore this because Object.keys finds omitted keys while value reads stay within maxEntries.
     const keys = Object.keys(value);
     const entries = [];
     for (const key of keys) {

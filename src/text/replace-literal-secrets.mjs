@@ -1,6 +1,7 @@
 export function replaceLiteralSecrets(value, secrets, marker = "[REDACTED]") {
   const text = String(value ?? "");
-  const alternatives = [...new Set([...(secrets ?? [])].map(String).filter(Boolean))]
+  const secretValues = typeof secrets === "string" ? [secrets] : [...(secrets ?? [])];
+  const alternatives = [...new Set(secretValues.map(String).filter(Boolean))]
     .map((secret) => secret.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
     .sort((left, right) => right.length - left.length);
   if (alternatives.length === 0) return text;

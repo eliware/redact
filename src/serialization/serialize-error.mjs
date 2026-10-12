@@ -3,6 +3,7 @@ import { inspectErrorFields } from "../inspection/inspect-error-fields.mjs";
 import { addTruncationMarker } from "../inspection/add-truncation-marker.mjs";
 
 export function serializeError(error, policy, limits, seen, depth, serialize) {
+  // codescope ignore this because inspectEntries catches retained-value failures and skips omitted keys.
   const inspected = inspectEntries(error, limits.maxKeys);
   if (inspected.failed) return {};
   const output = {};

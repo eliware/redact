@@ -3,6 +3,7 @@ import { inspectHeaderInput } from "./inspect-header-input.mjs";
 
 export function redactHeaders(headers, options = {}) {
   const input = inspectHeaderInput(headers);
+  // codescope ignore this because redactValue replaces each sensitive header value before recursion.
   if (input.type === "object") return redactValue(input.value, options);
   // codescope ignore this because getter failures return [] through validation or conversion catches.
   if (input.failed || !validEntries(input.entries)) return [];

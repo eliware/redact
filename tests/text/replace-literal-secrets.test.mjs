@@ -37,3 +37,7 @@ test("preserves text when there are no non-empty secrets", () => {
 test("matches configured secrets as literal text", () => {
   expect(replaceLiteralSecrets("value=[secret]", ["[secret]"])).toBe("value=[REDACTED]");
 });
+
+test("treats a string secret option as one literal secret", () => {
+  expect(replaceLiteralSecrets("secret and s", "secret")).toBe("[REDACTED] and s");
+});
