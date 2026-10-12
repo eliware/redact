@@ -4,7 +4,7 @@ test("reads non-enumerable standard fields and omits an empty stack", () => {
   const error = new Error("failed");
   error.stack = "";
 
-  expect(inspectErrorFields(error, [], [])).toEqual([
+  expect(inspectErrorFields(error, [], []).fields).toEqual([
     ["name", "Error"],
     ["message", "failed"],
   ]);
@@ -24,7 +24,7 @@ test("uses inspected values for enumerable fields without reading them again", (
 
   const entries = [["name", error.name]];
 
-  expect(inspectErrorFields(error, entries, ["name"])[0]).toEqual(["name", "CustomError"]);
+  expect(inspectErrorFields(error, entries, ["name"]).fields[0]).toEqual(["name", "CustomError"]);
   expect(reads).toBe(1);
 });
 
@@ -32,7 +32,7 @@ test("omits enumerable fields beyond the inspected key limit", () => {
   const error = new Error("failed");
   Object.defineProperty(error, "name", { value: "CustomError", enumerable: true });
 
-  expect(inspectErrorFields(error, [], ["name"])).toEqual([
+  expect(inspectErrorFields(error, [], ["name"]).fields).toEqual([
     ["message", "failed"],
     ["stack", error.stack],
   ]);

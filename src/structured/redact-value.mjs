@@ -1,6 +1,7 @@
 import { normalizePolicy } from "../policy/normalize-policy.mjs";
 import { inspectEntries } from "../inspection/safe-entries.mjs";
 import { redactError } from "./redact-error.mjs";
+import { redactArray } from "./redact-array.mjs";
 import { addTruncationMarker } from "../inspection/add-truncation-marker.mjs";
 import { normalizeTraversalLimits } from "../limits/normalize-traversal-limits.mjs";
 
@@ -38,31 +39,9 @@ function redact(value, policy, limits, seen, depth) {
   seen.set(value, true);
   try {
     if (isArray) {
-      try {
-        const length = value.length;
-        const retained = Math.min(length, limits.maxArray);
-        const hasOmittedProperties = Object.keys(value).some((key) => {
-          const index = Number(key);
-          const isArrayIndex =
-            Number.isInteger(index) &&
-            index >= 0 &&
-            index < length &&
-            index < 4294967295 &&
-            String(index) === key;
-          if (isArrayIndex) return false;
-          const descriptor = Object.getOwnPropertyDescriptor(value, key);
-          return !descriptor || !("value" in descriptor) || typeof descriptor.value !== "function";
-        });
-        const items = [];
-        items.length = retained;
-        for (let index = 0; index < retained; index++)
-          if (Object.hasOwn(value, index))
-            items[index] = redact(value[index], policy, limits, seen, depth + 1);
-        if (length > retained || hasOmittedProperties) items.push("[TRUNCATED]");
-        return items;
-      } catch {
-        return [];
-      }
+      return redactArray(value, policy, limits, (child) =>
+        redact(child, policy, limits, seen, depth + 1),
+      );
     }
     const output = {};
     const inspected = inspectEntries(value, limits.maxKeys);

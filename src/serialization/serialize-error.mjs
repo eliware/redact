@@ -6,7 +6,8 @@ export function serializeError(error, policy, limits, seen, depth, serialize) {
   const inspected = inspectEntries(error, limits.maxKeys);
   if (inspected.failed) return {};
   const output = {};
-  for (const [key, value] of inspectErrorFields(error, inspected.entries, inspected.keys)) {
+  const errorFields = inspectErrorFields(error, inspected.entries, inspected.keys, limits.maxKeys);
+  for (const [key, value] of errorFields.fields) {
     Object.defineProperty(output, key, {
       value: policy.keys.has(key)
         ? policy.marker
@@ -27,6 +28,6 @@ export function serializeError(error, policy, limits, seen, depth, serialize) {
       writable: true,
     });
   }
-  if (inspected.truncated) addTruncationMarker(output);
+  if (inspected.truncated || errorFields.truncated) addTruncationMarker(output);
   return output;
 }

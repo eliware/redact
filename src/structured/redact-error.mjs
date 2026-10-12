@@ -8,11 +8,11 @@ export function redactError(error, policy, redactChild, maxKeys = Infinity) {
   const output = {};
   let fields;
   try {
-    fields = inspectErrorFields(error, inspected.entries, inspected.keys);
+    fields = inspectErrorFields(error, inspected.entries, inspected.keys, maxKeys);
   } catch {
     return {};
   }
-  for (const [key, value] of fields) {
+  for (const [key, value] of fields.fields) {
     Object.defineProperty(output, key, {
       value: policy.keys.has(key) ? policy.marker : redactChild(value),
       enumerable: true,
@@ -29,6 +29,6 @@ export function redactError(error, policy, redactChild, maxKeys = Infinity) {
       writable: true,
     });
   }
-  if (inspected.truncated) addTruncationMarker(output);
+  if (inspected.truncated || fields.truncated) addTruncationMarker(output);
   return output;
 }

@@ -1,7 +1,9 @@
-export function inspectErrorFields(error, entries, keys) {
+export function inspectErrorFields(error, entries, keys, maxKeys = Infinity) {
   const values = new Map(entries);
   const enumerableKeys = new Set(keys);
   const fields = [];
+  let retained = entries.length;
+  let truncated = false;
 
   for (const key of ["name", "message", "stack"]) {
     let value;
@@ -9,11 +11,16 @@ export function inspectErrorFields(error, entries, keys) {
       if (!values.has(key)) continue;
       value = values.get(key);
     } else {
+      if (retained >= maxKeys) {
+        truncated = true;
+        continue;
+      }
       value = error[key];
+      retained++;
     }
     if (key === "stack" && !value) continue;
     fields.push([key, value]);
   }
 
-  return fields;
+  return { fields, truncated };
 }

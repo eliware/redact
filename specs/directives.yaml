@@ -91,8 +91,8 @@ directives:
           - Read no more than maxKeys property values and perform a key-only lookahead to detect omitted properties.
           - Normalize non-finite maxDepth values to the finite default depth.
           - >-
-            Count enumerable Error name, message, and stack fields within the same maxKeys budget as custom properties,
-            and read each field at most once.
+            Count Error name, message, and stack fields within the same maxKeys budget as custom properties, and read
+            each field at most once.
           - >-
             If reading a retained enumerable own property fails, return an empty object rather than a partial object
             representation.
@@ -113,8 +113,9 @@ directives:
           - >-
             Handle nested objects, arrays, Errors, null-prototype objects, cycles, throwing accessors, and hostile
             objects safely.
-          - Visit only own array indices and preserve sparse holes without reading inherited numeric properties.
-          - Add `[TRUNCATED]` when structured redaction omits enumerable array properties that are not array indices.
+          - Visit own array indices and enumerable non-index array properties; preserve sparse holes without reading inherited numeric properties.
+          - Apply sensitive-key rules to enumerable non-index array properties.
+          - Mark omitted array items or properties with `[TRUNCATED]`.
           - If reading a retained own array index fails, return an empty array.
           - >-
             If reading any retained enumerable own object property fails, return an empty object rather than a partial

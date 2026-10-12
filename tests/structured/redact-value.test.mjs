@@ -175,3 +175,9 @@ test("coordinates Error redaction with recursive child values", () => {
     self: "[CIRCULAR]",
   });
 });
+
+test("bounds non-enumerable standard Error fields with maxKeys", () => {
+  expect(redactValue(new Error("failed"), { maxKeys: 0 })).toEqual({
+    __truncated: "[TRUNCATED]",
+  });
+});

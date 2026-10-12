@@ -93,6 +93,12 @@ test("counts Error standard fields as children for maxDepth", () => {
   });
 });
 
+test("bounds non-enumerable standard Error fields with maxKeys", () => {
+  expect(safeSerialize(new Error("failed"), { maxKeys: 0 })).toEqual({
+    __truncated: "[TRUNCATED]",
+  });
+});
+
 test("normalizes fractional key and array limits", () => {
   expect(safeSerialize({ first: 1, second: 2 }, { maxKeys: 1.9 })).toEqual({
     first: 1,
