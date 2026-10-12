@@ -85,6 +85,8 @@ The function floors finite fractional limits. It changes negative limits to zero
 
 `maxKeys` limits retained object property reads. For arrays, it limits index values and non-index property values together. The runtime still lists all own keys to find the retained keys.
 
+For Errors, `name`, `message`, and `stack` count toward `maxKeys` with custom properties. The function reads each field at most once.
+
 If the function omits array items or array properties, it adds `[TRUNCATED]` to the array. If it omits object keys, it adds a `__truncated` property. If that name exists, it uses a free numeric suffix.
 
 If it cannot read a retained object property, the function returns `{}`. If it cannot read a retained array item or property, it returns `[]`.
