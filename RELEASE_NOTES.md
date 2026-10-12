@@ -1,35 +1,21 @@
 # Release Notes
 
-## 12.0.0 — 2026-10-11
-
-### Changed
-
-- Aligned package metadata, documentation, and specifications with Convention v12.
-- Added the repository specifications to the published package contents.
-
-## 11.0.0 — 2026-10-04
+## 12.0.0 — 2026-10-12
 
 ### Added
 
-- Policy creation with configurable sensitive keys and redaction markers.
-- Non-mutating structured value redaction and HTTP header redaction.
-- Best-effort text redaction and literal-secret replacement.
-- Bounded safe serialization for logging and diagnostic output.
-- Native ESM public exports with TypeScript declarations, documentation, and runnable examples.
+- Create policies with custom sensitive keys and redaction markers.
+- Redact structured values without changing input data.
+- Redact sensitive HTTP header values.
+- Redact common secret patterns and configured secrets in text.
+- Replace literal secrets in text.
+- Serialize values with limits for depth, keys, arrays, and strings.
+- Handle errors, buffers, cycles, and unsupported values.
+- Export native ESM functions with TypeScript declarations.
+- Include API documentation, specifications, and runnable examples.
+- Redaction does not detect every secret.
 
-### Security
+### Changed
 
-Redaction is best-effort and does not guarantee detection of unknown secrets.
-
-- Text redaction now applies configured `keys` and `redactKeys` to matching assignments and query values.
-- Text redaction now caps output at 10,000 characters by default, configurable with `maxOutputLength`.
-- Array truncation in safe serialization now includes an explicit `[TRUNCATED]` marker; structured redaction handles hostile arrays without calling overridable array methods.
-- Structured-redaction truncation markers no longer overwrite a retained `__truncated` property.
-- Truncation markers now preserve retained properties for Error redaction and safe serialization; safe serialization ignores overridden array methods.
-- Non-finite structured-redaction depth limits now fall back to the finite default.
-- Non-finite safe-serialization depth limits now fall back to the finite default.
-- Structured traversal limits now normalize non-finite and fractional values safely; sparse arrays no longer read inherited numeric values, and overlapping configured text secrets are replaced together.
-- Policy key views no longer expose runtime Set mutation methods that could disable default redaction.
-- Safe serialization and structured redaction preserve enumerable own `__proto__` keys as data.
-- Malformed header entry arrays now fail closed with an empty entry array.
-- Structured redaction now bounds depth, object keys, and array items, with configurable limits and truncation markers.
+- Align package metadata, documentation, and specifications with Convention v12.
+- Include repository specifications in the published package.

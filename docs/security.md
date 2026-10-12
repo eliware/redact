@@ -1,7 +1,30 @@
-# Security and Limitations
+# Security and Limits
 
-Redaction helps prevent accidental disclosure in logs and diagnostic output. It is not a security boundary by itself.
+Redaction can reduce accidental disclosure in logs and diagnostic output. It is best effort. It does not provide a security boundary.
 
-Structured redaction uses configured sensitive keys. Text redaction recognizes common credential patterns and configured literal secrets, but it cannot identify every unknown secret. Safe serialization limits output and handles complex values; it does not encrypt or store data securely.
+## What the package does
 
-Callers remain responsible for choosing where to redact, protecting source values, and applying access control, encryption, retention, and transport protections appropriate to their systems. Do not put real credentials in source code, tests, examples, documentation, or issue reports.
+- Structured redaction replaces values under configured sensitive property names.
+- Header redaction applies the same key rules to header names.
+- Text redaction checks common credential patterns and configured key names.
+- Literal-secret replacement checks only the values that you provide.
+- Safe serialization limits output size and replaces some complex values with labels.
+
+## What the package cannot do
+
+The package cannot detect every secret. Text rules can miss unknown formats. They can also redact text that is not secret.
+
+Output limits control size. They do not hide values that the redaction rules do not match.
+
+The package does not encrypt, store, or control access to data. It does not replace access control, encryption, retention rules, or security review.
+
+## Safe use
+
+- Redact values before you send them to logs, storage, transport, or a browser.
+- Add sensitive property names that your application uses.
+- Supply literal secrets when pattern rules do not cover them.
+- Review the output before you share it outside your application.
+- Protect source values with the controls that your system requires.
+- Use fake values in source code, tests, examples, documentation, and issue reports.
+
+Read the [API guide](api.md) for supported rules and limits. Read the [specifications](../specs/README.md) for the full behavior contract.
