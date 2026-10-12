@@ -9,7 +9,7 @@ export function serializeError(error, policy, limits, seen, depth, serialize) {
   const errorFields = inspectErrorFields(error, inspected.entries, inspected.keys, limits.maxKeys);
   for (const [key, value] of errorFields.fields) {
     Object.defineProperty(output, key, {
-      value: policy.keys.has(key)
+      value: policy.keys.has(key.toLowerCase())
         ? policy.marker
         : serialize(value, policy, limits, seen, depth + 1),
       enumerable: true,

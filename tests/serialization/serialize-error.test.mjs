@@ -38,7 +38,7 @@ test("applies configured sensitive keys to Error name and stack", () => {
     name: "sensitive name",
     stack: "sensitive stack",
   });
-  const policy = normalizePolicy({ keys: ["name", "stack"] });
+  const policy = normalizePolicy({ keys: ["NAME", "STACK"] });
   const output = serializeError(error, policy, DEFAULT_LIMITS, new WeakSet(), 0, (value) => value);
 
   expect(output).toMatchObject({

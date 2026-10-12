@@ -114,6 +114,7 @@ directives:
             Handle nested objects, arrays, Errors, null-prototype objects, cycles, throwing accessors, and hostile
             objects safely.
           - Visit own array indices and enumerable non-index array properties; preserve sparse holes without reading inherited numeric properties.
+          - Apply sensitive-key rules to array indices by their decimal property names.
           - Apply sensitive-key rules to enumerable non-index array properties.
           - Mark omitted array items or properties with `[TRUNCATED]`.
           - If reading a retained own array index fails, return an empty array.

@@ -10,6 +10,18 @@ test("redacts sensitive non-index array properties", () => {
   expect(output.token).toBe("[REDACTED]");
 });
 
+test("redacts array indices named by the sensitive-key policy", () => {
+  const input = ["secret"];
+  const output = redactArray(
+    input,
+    normalizePolicy({ keys: ["0"] }),
+    DEFAULT_LIMITS,
+    (value) => value,
+  );
+
+  expect(output[0]).toBe("[REDACTED]");
+});
+
 test("copies safe non-index array properties", () => {
   const input = [];
   input.label = "visible";

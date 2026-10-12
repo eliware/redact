@@ -24,8 +24,12 @@ export function redactArray(value, policy, limits, redactChild) {
     }
     const items = [];
     items.length = retained;
-    for (let index = 0; index < retained; index++)
-      if (Object.hasOwn(value, index)) items[index] = redactChild(value[index]);
+    for (let index = 0; index < retained; index++) {
+      if (!Object.hasOwn(value, index)) continue;
+      items[index] = policy.keys.has(String(index).toLowerCase())
+        ? policy.marker
+        : redactChild(value[index]);
+    }
     const retainedProperties = Math.min(extraProperties.length, limits.maxKeys);
     for (let index = 0; index < retainedProperties; index++) {
       const key = extraProperties[index];

@@ -14,7 +14,7 @@ export function redactError(error, policy, redactChild, maxKeys = Infinity) {
   }
   for (const [key, value] of fields.fields) {
     Object.defineProperty(output, key, {
-      value: policy.keys.has(key) ? policy.marker : redactChild(value),
+      value: policy.keys.has(key.toLowerCase()) ? policy.marker : redactChild(value),
       enumerable: true,
       configurable: true,
       writable: true,
