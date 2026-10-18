@@ -1,139 +1,128 @@
-version: "12.0"
+version: "13.0"
 description: Repository-specific public contract and behavior for @eliware/redact.
 directives:
   - id: E-101.0
     dos:
-      - Maintain a native ESM library for secret redaction and safe serialization on Node.js 26 or later.
-      - Keep the public API limited to exports declared by src/index.mjs and src/index.d.ts.
-      - "Treat redaction as best-effort data handling, not a guarantee that every secret is detected."
+      - Maintain a native ESM redaction and serialization library for Node.js 26 or
+        later.
+      - Export only functions listed in src/index.mjs and src/index.d.ts.
+      - State the limits of redaction. Do not promise full secret detection.
     donts:
-      - Do not expose internal implementation modules as public API without an intentional compatibility decision.
-      - "Do not claim that the package encrypts, stores, or controls access to secrets."
+      - Do not expose internal implementation modules as public API without an
+        intentional compatibility decision.
+      - Do not claim that the package encrypts, stores, or controls access to secrets.
     children:
       - id: E-101.0.0
         dos:
-          - >-
-            Keep production modules under src/ and mirror their hierarchy under tests/ with one focused .test.mjs file
-            per .mjs source.
-          - Give every source and test module one cohesive purpose and one reason to change.
-          - Keep src/index.mjs as a thin public export barrel; internal modules are not public unless exported there.
+          - Keep each source module in src/ and its matching test in the same tests/
+            path.
+          - Give each module one purpose and one purpose and one change trigger.
+          - Keep src/index.mjs as the public export list.
         donts:
           - Do not add a production module without its matching focused test.
-          - >-
-            Do not combine unrelated implementation responsibilities in a module or duplicate module-level assertions in
-            higher-level tests.
+          - Do not combine unrelated implementation responsibilities in a module or
+            duplicate module-level assertions in higher-level tests.
       - id: E-101.0.1
         dos:
-          - Use Node.js 26 and native ESM for the supported runtime.
-          - "Preserve public exports, behavior, markers, and declaration compatibility according to SemVer."
-          - Make breaking public API changes only as an intentional major version change with migration guidance.
+          - Use Node.js 26 and native ESM.
+          - Preserve exports, behavior, markers, and declaration compatibility under
+            SemVer.
+          - Make breaking API changes only in a major release. Add migration guidance.
         donts:
-          - Do not add CommonJS entrypoints or imply compatibility that is not declared and tested.
+          - Do not add CommonJS entrypoints or imply compatibility that is not declared
+            and tested.
       - id: E-101.0.2
         dos:
-          - Redact sensitive HTTP header values while preserving safe header names and values.
-          - Match sensitive header names without case sensitivity and preserve supported input representations.
-          - >-
-            Preserve repeated names for entry-array input; for Headers-like iterable input, redact every occurrence
-            before converting to a lowercase record where the last occurrence for a name is retained.
-          - Return an empty entry array when reading or consuming a Headers-like entries iterable throws.
-          - Return an empty entry array when an entry-array or Headers-like input contains malformed pairs.
+          - Redact sensitive HTTP header values. Keep safe names and values.
+          - Match header names without regard to uppercase or lowercase. Keep supported input forms.
+          - Keep duplicate names in pair arrays. For iterable headers, redact each value
+            before lowercase conversion.
+          - Return an empty array if reading a Headers-like iterable fails.
+          - Return an empty array for malformed pairs.
         donts:
-          - Do not alter safe header values as if they were sensitive.
+          - Keep safe header values unchanged.
       - id: E-101.0.3
         dos:
-          # codescope ignore this because string-size limits apply to serialization and text output as separate API options.
-          - "Bound traversal depth, object keys, array items, string size, and text output size."
-          - >-
-            Normalize maxDepth, maxKeys, and maxArray as nonnegative integers; floor finite fractions and replace
-            non-finite values with defaults.
-          - >-
-            Treat maxKeys as a bound on retained property values and perform only a key-only lookahead; the JavaScript
-            runtime may enumerate all own keys to produce the key list.
-          - Make truncation markers distinguishable from redaction markers.
-          - "Append `[TRUNCATED]` to arrays when maxArray omits one or more items."
-          - Preserve retained `__truncated` properties and use an unused suffixed marker key when needed.
+          - Limit traversal depth, object keys, array items, string length, and text
+            output.
+          - Convert maxDepth, maxKeys, and maxArray to nonnegative integers. Floor
+            finite fractions. Use defaults for non-finite values.
+          - Limit retained property reads with maxKeys. Use key-only lookahead. The
+            runtime can list every own key.
+          - Keep truncation markers distinct from redaction markers.
+          - Append `[TRUNCATED]` when maxArray omits array items.
+          - Keep retained `__truncated` properties. Select a new suffixed marker key
+            when needed.
         donts:
-          - Do not treat output limits as a substitute for confidentiality redaction.
+          - Do not rely on output limits to provide confidentiality.
       - id: E-101.0.4
         dos:
-          - >-
-            Keep HTML sanitization, SQL identifier or query sanitization, filesystem path sanitization, general input
-            validation, encryption, secret storage, secret scanning, access control, authorization, data-loss
-            prevention, and memory or compiler sanitizers outside this package.
+          - Exclude HTML, SQL, path cleanup, input checks, encryption, secret storage,
+            scanning, access control, and sanitizers.
         donts:
-          - Do not present out-of-scope behavior as a capability of @eliware/redact.
+          - Do not describe out-of-scope behavior as a function of @eliware/redact.
       - id: E-101.0.5
         dos:
-          # codescope ignore this because structured keys and text patterns have separate API paths.
-          - Keep redaction policy focused on sensitive structured keys and supported text patterns.
-          - >-
-            Use conservative defaults, case-insensitive key matching, caller-customizable options, and non-mutating
-            transformations.
-          - Expose policy key collections as frozen ReadonlySet views without runtime mutation methods.
+          - Focus policy on sensitive structured keys and supported text patterns.
+          - Use conservative defaults, case-insensitive matching, caller options, and
+            non-mutating changes.
+          - Expose policy keys as frozen ReadonlySet values without mutation methods.
         donts:
-          - Do not use broad default matching that creates unacceptable false positives or mutates caller-owned values.
+          - Do not use broad default matching that creates unacceptable false positives
+            or mutates caller-owned values.
       - id: E-101.0.6
         dos:
-          - >-
-            Describe redaction as an observability and boundary-safety aid, not encryption, secret storage, access
-            control, or a guarantee that unknown secrets are detected.
-          - "Redact values before sending them to logs, persistence, transport, or browser delivery."
+          - Describe redaction as an observability support. Do not promise detection of
+            unknown secrets.
+          - Redact values before sending them to logs, storage, transport, or browsers.
         donts:
-          - Do not claim complete detection of unknown secrets or treat redaction as the sole security control.
+          - Do not claim complete detection of unknown secrets or rely on redaction as the
+            only safeguard.
       - id: E-101.0.7
         dos:
-          - >-
-            Provide bounded, non-throwing safe representations for complex values, including Errors, functions, symbols,
-            BigInts, buffers, cycles, and unserializable properties.
+          - Return bounded safe values for Errors, functions, symbols, BigInts, buffers,
+            cycles, and failed properties.
           - Keep serialization limits separate from secrecy rules.
-          - Serialize enumerable string-keyed object properties only; omit enumerable symbol-keyed properties.
-          - Read no more than maxKeys property values and perform a key-only lookahead to detect omitted properties.
-          - Normalize non-finite maxDepth values to the finite default depth.
-          - >-
-            Count Error name, message, and stack fields within the same maxKeys budget as custom properties, and read
-            each field at most once.
-          - >-
-            If reading a retained enumerable own property fails, return an empty object rather than a partial object
-            representation.
-          - Preserve an enumerable own `__proto__` property as data without changing the output prototype.
-          - "Apply configured sensitive-key policy to Error name, message, and stack fields."
+          - Serialize enumerable string keys. Omit enumerable symbol keys.
+          - Read no more than maxKeys values. Use key-only lookahead for omitted keys.
+          - Use the finite default for non-finite maxDepth.
+          - Count Error name, message, and stack in maxKeys with custom properties. Read
+            each field once.
+          - If a retained property read fails, return an empty object.
+          - Keep own `__proto__` data without changing the output prototype.
+          - Apply sensitive-key policy to Error name, message, and stack.
         donts:
-          - Do not treat successful serialization as proof that data is safe to disclose.
+          - Do not use serialized output as proof that data is safe to disclose.
       - id: E-101.0.8
         dos:
-          - Recursively copy structured values and replace sensitive fields with a stable marker.
-          - >-
-            Bound structured redaction depth, retained object keys, and array items with configurable defaults; mark
-            omitted output with `[TRUNCATED]`.
-          - Normalize non-finite maxDepth values to the finite default depth.
-          - >-
-            Preserve retained input data when selecting an object truncation marker property; use an unused suffixed key
-            if `__truncated` is occupied.
-          - >-
-            Handle nested objects, arrays, Errors, null-prototype objects, cycles, throwing accessors, and hostile
-            objects safely.
-          - Visit own array indices and enumerable non-index array properties; preserve sparse holes without reading inherited numeric properties.
-          - Apply sensitive-key rules to array indices by their decimal property names.
+          - Copy structured values recursively. Replace sensitive values with a stable
+            marker.
+          - Limit depth, object keys, and array items. Mark omitted output with
+            `[TRUNCATED]`.
+          - Use the finite default for non-finite maxDepth.
+          - Keep retained input data when selecting an object marker. Use a new suffix
+            if needed.
+          - Support nested values, Errors, cycles, accessors, and hostile objects.
+          - Visit own array indices and enumerable non-index properties. Keep sparse
+            holes.
+          - Match array index names as decimal property names.
           - Apply sensitive-key rules to enumerable non-index array properties.
-          - Mark omitted array items or properties with `[TRUNCATED]`.
-          - If reading a retained own array index fails, return an empty array.
-          - If reading a retained enumerable own non-index array property fails, return an empty array.
-          - >-
-            If reading any retained enumerable own object property fails, return an empty object rather than a partial
-            redaction result.
-          - Preserve an enumerable own `__proto__` property as data without changing the output prototype.
-          - "Apply configured sensitive-key policy to Error name, message, and stack fields."
+          - Mark omitted array values or properties with `[TRUNCATED]`.
+          - If a retained array read fails, return an empty array.
+          - If a retained object read fails, return an empty object.
+          - Keep own `__proto__` data without changing the output prototype.
+          - Apply sensitive-key policy to Error name, message, and stack.
         donts:
           - Do not mutate input values while redacting them.
       - id: E-101.0.9
         dos:
-          - >-
-            Document text redaction as best-effort and cover common authorization and bearer values, named assignments,
-            query secrets, provider tokens, JWTs, key material, and configured literal secrets.
-          - Apply configured sensitive keys from keys or redactKeys to matching text assignments and query values.
-          - Merge overlapping configured literal-secret matches so no fragment of a covered secret remains exposed.
-          - Bound redactText output length with a configurable maximum and a truncation marker.
-          - Document supported patterns and limitations so callers can decide whether additional policy is needed.
+          - Document best-effort text redaction for authorization, bearer values,
+            assignments, query secrets, provider tokens, JWTs, keys, and configured
+            secrets.
+          - Apply configured keys to matching text assignments and query values.
+          - Merge overlapping literal-secret matches. Do not expose covered secret
+            fragments.
+          - Limit redactText output with a configurable maximum and truncation marker.
+          - Document supported patterns and limits. Help callers select more policy.
         donts:
           - Do not claim that text redaction detects arbitrary unknown secrets.

@@ -1,4 +1,4 @@
-import { redactValue } from "../structured/redact-value.mjs";
+import { redactValue } from "../structured/redact/value.mjs";
 import { inspectHeaderInput } from "./inspect-header-input.mjs";
 
 export function redactHeaders(headers, options = {}) {

@@ -1,4 +1,4 @@
-import { defaultPolicy } from "./default-policy.mjs";
+import { defaultPolicy } from "./default/policy.mjs";
 
 export function normalizePolicy(options = {}) {
   const keys = options.keys ?? options.redactKeys ?? defaultPolicy.keys;

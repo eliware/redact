@@ -2,7 +2,7 @@
 
 ## @eliware/redact [![npm](https://img.shields.io/npm/v/@eliware/redact)](https://www.npmjs.com/package/@eliware/redact) [![License](https://img.shields.io/github/license/eliware/redact)](https://github.com/eliware/redact/blob/main/LICENSE) [![CI](https://github.com/eliware/redact/actions/workflows/ci.yaml/badge.svg)](https://github.com/eliware/redact/actions/workflows/ci.yaml)
 
-Reusable secret-redaction and safe-serialization utilities for Node.js 26.
+Secret-redaction and safe-serialization utilities for Node.js 26.
 
 ## Table of Contents
 
@@ -60,11 +60,11 @@ Run `npm test` for aggregate validation, Jest coverage, package checks, and type
 
 ## Troubleshooting
 
-Use Node.js 26 or later and npm 12 or later. If validation fails, fix the reported issue, then run `npm test` again. When you change a public export, update its declaration, tests, documentation, examples, and release notes.
+Use Node.js 26 or later and npm 12 or later. If validation fails, repair the reported issue, then run `npm test` again. When you change a public export, update its declaration, tests, documentation, examples, and release notes.
 
 ## Security
 
-Redaction is best-effort. It cannot guarantee detection of unknown secrets. It does not replace encryption, secret storage, access control, or application-specific security review. Redact values before you send them to logs, persistence, or transport. Do not include real credentials in examples or issue reports.
+Redaction is best-effort. It cannot guarantee detection of unknown secrets. It does not replace encryption, secret storage, access control, or application-specific inspection. Redact values before you send them to logs, persistence, or transport. Do not include actual credentials in examples or issue reports.
 
 ## API
 
@@ -74,7 +74,7 @@ The public exports are `createPolicy`, `defaultPolicy`, `redactValue`, `redactHe
 
 The package files are `src/`, `docs/`, `README.md`, `AGENTS.md`, `LICENSE`, `RELEASE_NOTES.md`, `examples/`, and `specs/`. Run `npm run pack` to check the packed contents. The check compares the package with required paths and exclusions.
 
-Public publication uses npm Trusted Publishing with provenance and a version tag that matches `package.json`. Validate the package on Ubuntu before release consideration. Check npm for the exact published version. A matching tag and successful validation do not authorize publication. Use the Eliware Operations release handoff.
+Public publication uses npm Trusted Publishing with provenance and a version tag that matches `package.json`. Validate the package on Ubuntu before release consideration. Check npm for the exact published version. A matching tag and passing validation do not authorize publication. Use the Eliware Operations release handoff.
 
 ## Examples
 

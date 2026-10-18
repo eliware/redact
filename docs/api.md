@@ -29,7 +29,7 @@ Use these options:
 
 Use `keys` when you want to replace the default list. Use `[...defaultPolicy.keys, "sessionId"]` when you want to add a name.
 
-Pass a policy to any redaction function that accepts policy options:
+Pass a policy to each redaction function that accepts policy options:
 
 ```js
 const policy = createPolicy({
@@ -41,7 +41,7 @@ const clean = redactValue({ sessionId: "example-value" }, policy);
 
 The output contains `[HIDDEN]` for `sessionId`.
 
-The rules ignore letter case. They keep punctuation and spaces in key names.
+The rules match names without regard to uppercase or lowercase. They preserve punctuation and spaces in key names.
 
 The default sensitive names are:
 
@@ -61,7 +61,7 @@ redactValue({ user: "alex", token: "secret" });
 // { user: "alex", token: "[REDACTED]" }
 ```
 
-For objects, the function reads own string-keyed properties with an enumerable flag. It omits symbol-keyed properties. It preserves an own `__proto__` property as data.
+For objects, the function reads enumerable own string-keyed properties. It omits symbol-keyed properties. It preserves an own `__proto__` property as data.
 
 For arrays, the function visits own index values and enumerable non-index properties. It preserves sparse holes and does not read inherited index values. It applies sensitive-key rules to index names such as `0` and to non-index property names. It omits non-sensitive function properties.
 
@@ -79,17 +79,17 @@ Structured redaction supports these options:
 | `maxKeys`  |   1,000 | Limits retained property values. |
 | `maxArray` |   1,000 | Limits retained array items.     |
 
-The root value starts at depth zero. A child past `maxDepth` becomes `[TRUNCATED]`.
+The root value starts at depth zero. A child at a depth greater than `maxDepth` becomes `[TRUNCATED]`.
 
 The function floors finite fractional limits. It changes negative limits to zero. It uses the default for a non-finite limit.
 
-`maxKeys` limits retained object property reads. For arrays, it limits index values and non-index property values together. The runtime still lists all own keys to find the retained keys.
+`maxKeys` limits retained object property reads. For arrays, it limits index values and non-index property values together. The runtime lists all own keys to find retained keys.
 
-For Errors, `name`, `message`, and `stack` count toward `maxKeys` with custom properties. The function reads each field at most once.
+For Errors, `name`, `message`, and `stack` count with `maxKeys` with custom properties. The function reads each field at most once.
 
-If the function omits array items or array properties, it adds `[TRUNCATED]` to the array. If it omits object keys, it adds a `__truncated` property. If that name exists, it uses a free numeric suffix.
+If the function omits array items or array properties, it adds `[TRUNCATED]` to the array. If it omits object keys, it adds a `__truncated` property. If that name exists, it uses an available numeric suffix.
 
-If it cannot read a retained object property, the function returns `{}`. If it cannot read a retained array item or property, it returns `[]`.
+If it cannot read a retained object property, the function returns `{}`. If it cannot read a retained array value or property, it returns `[]`.
 
 ## HTTP headers
 
@@ -102,9 +102,9 @@ redactHeaders({ Authorization: "Bearer secret", Accept: "application/json" });
 
 The function keeps header names from plain objects. It keeps duplicate names in array input. It returns an array for array input.
 
-For `entries()` input, the function returns a lowercase object. It redacts each value before it combines duplicate names. The last value for a name wins.
+For `entries()` input, the function returns a lowercase object. It redacts each value before it combines duplicate names. The final value for a name wins.
 
-Header names match without regard to letter case. The function returns `[]` for malformed pairs. It also returns `[]` if it cannot access the entries or read all pairs.
+Header names match without regard to uppercase or lowercase. The function returns `[]` for malformed pairs. It also returns `[]` if it cannot access the entries or read every pair.
 
 ## Text
 
@@ -118,7 +118,7 @@ Built-in rules cover:
 - JSON Web Token-like strings with three dot-separated parts and an `eyJ` start.
 - Text blocks between `-----BEGIN ...-----` and `-----END ...-----` delimiters.
 
-Use `keys` or `redactKeys` to add names. These names apply to assignment keys and query parameters. The option replaces the default key list for this rule. The built-in rules still apply.
+Use `keys` or `redactKeys` to add names. These names apply to assignment keys and query parameters. The option replaces the default key list for this rule. The built-in rules remain active.
 
 ```js
 redactText("sessionId=example-value", {
@@ -163,7 +163,7 @@ The function floors finite fractional values for `maxDepth`, `maxKeys`, and `max
 
 It preserves sparse array holes and does not read inherited index values. It omits enumerable symbol-keyed object properties. It preserves an own `__proto__` property as data.
 
-The function adds `[TRUNCATED]` when it omits array items. It adds a `__truncated` property when it omits object keys. It uses a free numeric suffix if `__truncated` exists.
+The function adds `[TRUNCATED]` when it omits array items. It adds a `__truncated` property when it omits object keys. It uses an available numeric suffix if `__truncated` exists.
 
 Error fields `name`, `message`, and `stack` count against `maxKeys` with custom properties. The function reads each field at most once. A falsy `stack` value does not appear in the result.
 
@@ -173,4 +173,4 @@ The function maps cycles to `[CIRCULAR]`. It cuts long strings and labels, then 
 
 If it cannot read a retained enumerable own object property, it returns `{}`. Other serialization failures can return `[UNSERIALIZABLE]`.
 
-The function does not prove that output is safe to share. Read [Security and limits](security.md) before you send output to another system.
+The function does not prove that output is safe to share. Read [Safe use](security.md) before you send output to a different system.

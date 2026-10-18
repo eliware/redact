@@ -1,10 +1,10 @@
-import { replaceLiteralSecrets } from "./replace-literal-secrets.mjs";
+import { replaceLiteralSecrets } from "./replace-literal/secrets.mjs";
 import { normalizePolicy } from "../policy/normalize-policy.mjs";
-import { redactAuthorization } from "./rules/redact-authorization.mjs";
-import { redactJwt } from "./rules/redact-jwt.mjs";
-import { redactKeyMaterial } from "./rules/redact-key-material.mjs";
-import { redactConfiguredKeyValues, redactKeyValues } from "./rules/redact-key-values.mjs";
-import { redactProviderToken } from "./rules/redact-provider-token.mjs";
+import { redactAuthorization } from "./rules/redact/authorization.mjs";
+import { redactJwt } from "./rules/redact/jwt.mjs";
+import { redactKeyMaterial } from "./rules/redact/key/material.mjs";
+import { redactConfiguredKeyValues, redactKeyValues } from "./rules/redact/key/values.mjs";
+import { redactProviderToken } from "./rules/redact/provider-token.mjs";
 import { DEFAULT_LIMITS } from "../limits/default-limits.mjs";
 
 const builtInRules = [

@@ -1,4 +1,4 @@
-# Get Started
+# Start Here
 
 Use Node.js 26 or later and npm 12 or later. Use a project with native ESM support.
 
@@ -42,7 +42,7 @@ The output contains `[REDACTED]` for `sessionId`.
 
 ## Redact text
 
-Use `redactText` for common credential patterns and configured literal secrets:
+Use `redactText` for known credential patterns and configured literal secrets:
 
 ```js
 import { redactText } from "@eliware/redact";
@@ -57,4 +57,4 @@ The output is `Authorization: [REDACTED]`.
 
 Import from `@eliware/redact`. The package provides declarations for its public functions and options.
 
-Read the [API guide](api.md) for all options and output rules. Run the [basic example](../examples/README.md) for another complete example.
+Read the [API guide](api.md) for all options and output rules. Run the [basic example](../examples/README.md) for one more complete example.
