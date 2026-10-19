@@ -49,6 +49,23 @@ test("marks retained array items omitted by maxKeys", () => {
   expect(output[2]).toBe("[TRUNCATED]");
 });
 
+test("shares maxKeys between retained indices and extra properties", () => {
+  const input = ["first", "second", "third"];
+  input.label = "extra";
+  const output = redactArray(
+    input,
+    normalizePolicy(),
+    { ...DEFAULT_LIMITS, maxKeys: 2 },
+    redactChild,
+  );
+
+  expect(output[0]).toBe("first");
+  expect(output[1]).toBe("second");
+  expect(Object.hasOwn(output, 2)).toBe(false);
+  expect(output.label).toBeUndefined();
+  expect(output[3]).toBe("[TRUNCATED]");
+});
+
 test("does not call overridable array methods", () => {
   const input = ["value"];
   input.slice = () => {
