@@ -54,7 +54,7 @@ signature, tlskey, tlscert
 
 ## Structured values
 
-`redactValue(value, options)` returns a redacted copy. It does not change the input. It checks property names and does not scan text inside string values.
+`redactValue(value, options)` returns a redacted copy of structured values. It returns primitive values as given. It does not change the input. It checks property names and does not scan text inside string values.
 
 ```js
 redactValue({ user: "alex", token: "secret" });
@@ -85,7 +85,7 @@ The function floors finite fractional limits. It changes negative limits to zero
 
 `maxKeys` limits retained object property reads. For arrays, it limits index values and non-index property values together. The runtime lists all own keys to find retained keys.
 
-For Errors, `name`, `message`, and `stack` count with `maxKeys` with custom properties. The function reads each field at most once.
+For Errors, `name`, `message`, and `stack` share the `maxKeys` limit with custom properties. The function reads each field at most once.
 
 If the function omits array items or array properties, it adds `[TRUNCATED]` to the array. If it omits object keys, it adds a `__truncated` property. If that name exists, it uses an available numeric suffix.
 
@@ -104,7 +104,7 @@ The function keeps header names from plain objects. It keeps duplicate names in 
 
 For `entries()` input, the function returns a lowercase object. It redacts each value before it combines duplicate names. The final value for a name wins.
 
-Header names match without regard to uppercase or lowercase. The function returns `[]` for malformed pairs. It also returns `[]` if it cannot access the entries or read every pair.
+Header names match without regard to uppercase or lowercase. An array pair must contain two strings. The function returns `[]` for malformed pairs or unreadable entries.
 
 ## Text
 
@@ -118,7 +118,7 @@ Built-in rules cover:
 - JSON Web Token-like strings with three dot-separated parts and an `eyJ` start.
 - Text blocks between `-----BEGIN ...-----` and `-----END ...-----` delimiters.
 
-Use `keys` or `redactKeys` to add names. These names apply to assignment keys and query parameters. The option replaces the default key list for this rule. The built-in rules remain active.
+Use `keys` or `redactKeys` to set the sensitive names for assignment keys and query parameters. This option replaces the default key list for those patterns. The built-in patterns remain active.
 
 ```js
 redactText("sessionId=example-value", {
@@ -131,7 +131,7 @@ redactText("value=example-secret", { secrets: ["example-secret"] });
 // "value=[REDACTED]"
 ```
 
-Use `secrets` to supply literal strings for replacement. The function merges secret matches that share characters. Use `replaceLiteralSecret(value, secret, marker)` to replace one literal secret. Its default marker is `[REDACTED]`.
+Use `secrets` to supply literal strings for replacement. You can pass one string or an iterable of strings. The function merges matches when they overlap. Use `replaceLiteralSecret(value, secret, marker)` to replace one literal secret. Its default marker is `[REDACTED]`.
 
 ```js
 replaceLiteralSecret("token=example-secret", "example-secret");
@@ -161,15 +161,17 @@ Use `keys`, `redactKeys`, and `marker` to set policy rules. Safe serialization a
 
 The function floors finite fractional values for `maxDepth`, `maxKeys`, and `maxArray`. It changes negative values to zero. It uses the default for non-finite values.
 
-It preserves sparse array holes and does not read inherited index values. It omits enumerable symbol-keyed object properties. It preserves an own `__proto__` property as data.
+It preserves sparse array holes and does not read inherited index values. It omits custom array properties and enumerable symbol-keyed object properties. It preserves an own `__proto__` property as data.
 
 The function adds `[TRUNCATED]` when it omits array items. It adds a `__truncated` property when it omits object keys. It uses an available numeric suffix if `__truncated` exists.
 
 Error fields `name`, `message`, and `stack` count against `maxKeys` with custom properties. The function reads each field at most once. A falsy `stack` value does not appear in the result.
 
-The function maps `undefined` to `[Undefined]`. It maps functions to `[Function: name]` and symbols to `[Symbol: description]`. It maps BigInts to text with an `n` suffix. It maps buffers to `[Buffer length=N]`.
+The function keeps null, Boolean, and number values. It maps `undefined` to `[Undefined]`. It maps functions to `[Function: name]` and symbols to `[Symbol: description]`. It maps BigInts to text with an `n` suffix. It maps buffers to `[Buffer length=N]`.
 
-The function maps cycles to `[CIRCULAR]`. It cuts long strings and labels, then adds `...[TRUNCATED]`. The `maxString` limit caps the source text. The suffix can make the result longer than that limit.
+The function maps cycles to `[CIRCULAR]`. It cuts long strings, function labels, and symbol labels, then adds `...[TRUNCATED]`. The `maxString` limit caps the source text. The suffix can make the result longer than that limit. Buffer labels do not use this limit.
+
+`maxString` limits each string value and primitive label. The other limits bound depth, retained object properties, and array items. The result has no single total character limit.
 
 If it cannot read a retained enumerable own object property, it returns `{}`. Other serialization failures can return `[UNSERIALIZABLE]`.
 

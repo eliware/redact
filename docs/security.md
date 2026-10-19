@@ -8,13 +8,13 @@ Redaction can lower accidental disclosure in logs and diagnostic output. It prov
 - Header redaction applies the same key rules to header names.
 - Text redaction checks known credential patterns and configured key names.
 - Literal-secret replacement checks only the values that you provide.
-- Safe serialization limits output length and replaces some complex values with labels.
+- Safe serialization limits depth and retained values. It maps some complex values to labels.
 
 ## What the package cannot do
 
 The package may miss secrets. Text rules may not find unknown formats. They can also redact text that is not secret.
 
-Output limits control output length. They do not hide values that the redaction rules do not match.
+Depth, key, and array limits control traversal. The text limit applies to each text value. These settings do not hide values that redaction rules miss.
 
 The package does not encrypt, store, or control access to data. It does not replace access control, encryption, retention rules, or inspection by your team.
 
