@@ -1,4 +1,4 @@
-import { applyTextRules } from "../../../apply-text-rules.mjs";
+import { applyTextRules } from "../../../apply/text-rules.mjs";
 
 const rules = [[/-----BEGIN [^-]+-----[\s\S]*?-----END [^-]+-----/gu, "[REDACTED]"]];
 

@@ -1,4 +1,4 @@
-import { applyTextRules } from "../../src/text/apply-text-rules.mjs";
+import { applyTextRules } from "../../../src/text/apply/text-rules.mjs";
 
 test("applies text rules in order", () => {
   expect(

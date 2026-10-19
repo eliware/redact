@@ -1,4 +1,4 @@
-import { applyTextRules } from "../../../apply-text-rules.mjs";
+import { applyTextRules } from "../../../apply/text-rules.mjs";
 import { SECRET_KEY_PATTERN } from "../../../patterns/secret-key-patterns.mjs";
 
 const rules = [
