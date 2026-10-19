@@ -25,3 +25,4 @@
 - Array redaction omits non-sensitive function properties and getters that return functions.
 - Array redaction keeps later values when it omits a getter that returns a function.
 - Safe serialization limits strings and labels to the `maxString` value.
+- The published directives remove duplicated wording and state the header prohibition clearly.

@@ -16,7 +16,7 @@ directives:
         dos:
           - Keep each source module in src/ and its matching test in the same tests/
             path.
-          - Give each module one purpose and one purpose and one change trigger.
+          - Give each module one purpose and one change trigger.
           - Keep src/index.mjs as the public export list.
         donts:
           - Do not add a production module without its matching focused test.
@@ -40,7 +40,7 @@ directives:
           - Return an empty array if reading a Headers-like iterable fails.
           - Return an empty array for malformed pairs.
         donts:
-          - Keep safe header values unchanged.
+          - Do not alter safe header values.
       - id: E-101.0.3
         dos:
           - Limit traversal depth, object keys, array items, string length, and text
