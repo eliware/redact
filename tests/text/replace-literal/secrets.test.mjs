@@ -39,3 +39,11 @@ test("matches configured secrets as literal text", () => {
 test("treats a string secret option as one literal secret", () => {
   expect(replaceLiteralSecrets("secret and s", "secret")).toBe("[REDACTED] and s");
 });
+
+test("matches the longest secret at each position from a trie", () => {
+  const secrets = Array.from({ length: 100 }, (_, index) => `unused-${index}`);
+  secrets.push("abc", "abcdef");
+
+  expect(replaceLiteralSecrets("abcdef", secrets)).toBe("[REDACTED]");
+  expect(replaceLiteralSecrets("🙂 secret", ["🙂"])).toBe("[REDACTED] secret");
+});

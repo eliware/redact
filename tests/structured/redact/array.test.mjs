@@ -105,14 +105,19 @@ test("returns an empty array when an array item read fails", () => {
   expect(redactArray(input, normalizePolicy(), DEFAULT_LIMITS, redactChild)).toEqual([]);
 });
 
-test("returns an empty array when a retained sensitive property read fails", () => {
+test("redacts a sensitive property without reading its getter", () => {
+  let reads = 0;
   const input = [];
   Object.defineProperty(input, "token", {
     enumerable: true,
     get() {
-      throw new Error("blocked");
+      reads++;
+      throw new Error("should not read a sensitive value");
     },
   });
 
-  expect(redactArray(input, normalizePolicy(), DEFAULT_LIMITS, redactChild)).toEqual([]);
+  expect(redactArray(input, normalizePolicy(), DEFAULT_LIMITS, redactChild).token).toBe(
+    "[REDACTED]",
+  );
+  expect(reads).toBe(0);
 });
