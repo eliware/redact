@@ -1,5 +1,6 @@
 import { redactValue } from "../structured/redact/value.mjs";
 import { inspectHeaderInput } from "./inspect-header-input.mjs";
+import { validEntries } from "./valid-entries.mjs";
 
 export function redactHeaders(headers, options = {}) {
   const input = inspectHeaderInput(headers);
@@ -18,19 +19,5 @@ export function redactHeaders(headers, options = {}) {
     return Object.fromEntries(byName);
   } catch {
     return [];
-  }
-}
-
-function validEntries(entries) {
-  try {
-    return entries.every(
-      (entry) =>
-        Array.isArray(entry) &&
-        entry.length === 2 &&
-        typeof entry[0] === "string" &&
-        typeof entry[1] === "string",
-    );
-  } catch {
-    return false;
   }
 }

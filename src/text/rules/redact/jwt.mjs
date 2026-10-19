@@ -1,6 +1,7 @@
 import { applyTextRules } from "../../apply-text-rules.mjs";
+import { JWT_PATTERN } from "./jwt/pattern.mjs";
 
-const rules = [[/\beyJ[A-Za-z0-9_-]{5,}\.[A-Za-z0-9_-]{5,}\.[A-Za-z0-9_-]{5,}\b/gu, "[REDACTED]"]];
+const rules = [[JWT_PATTERN, "[REDACTED]"]];
 
 export function redactJwt(value) {
   return applyTextRules(value, rules);

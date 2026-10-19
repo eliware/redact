@@ -1,9 +1,11 @@
+import { isArrayIndexName } from "./array/index-name.mjs";
+
 export function redactArrayProperties(value, output, policy, limits, retainedValues, redactChild) {
   let truncated = false;
   const properties = [];
 
   for (const key of Object.keys(value)) {
-    if (isArrayIndex(key, value.length)) continue;
+    if (isArrayIndexName(key, value.length)) continue;
     const descriptor = Object.getOwnPropertyDescriptor(value, key);
     if (!descriptor) continue;
     if (
@@ -32,15 +34,4 @@ export function redactArrayProperties(value, output, policy, limits, retainedVal
   }
 
   return { truncated };
-}
-
-function isArrayIndex(key, length) {
-  const index = Number(key);
-  return (
-    Number.isInteger(index) &&
-    index >= 0 &&
-    index < length &&
-    index < 4294967295 &&
-    String(index) === key
-  );
 }
