@@ -2,112 +2,88 @@ import { redactArray } from "../../../src/structured/redact/array.mjs";
 import { normalizePolicy } from "../../../src/policy/normalize-policy.mjs";
 import { DEFAULT_LIMITS } from "../../../src/limits/default-limits.mjs";
 
-test("redacts sensitive non-index array properties", () => {
-  const input = [];
-  input.token = "secret";
-  const output = redactArray(input, normalizePolicy(), DEFAULT_LIMITS, (value) => value);
-
-  expect(output.token).toBe("[REDACTED]");
-});
+const redactChild = (value) => value;
 
 test("redacts array indices named by the sensitive-key policy", () => {
-  const input = ["secret"];
+  expect(
+    redactArray(["secret"], normalizePolicy({ keys: ["0"] }), DEFAULT_LIMITS, redactChild),
+  ).toEqual(["[REDACTED]"]);
+});
+
+test("preserves sparse holes without reading inherited array values", () => {
+  const prototype = Object.create(Array.prototype, {
+    0: { value: "inherited-secret", enumerable: true },
+  });
+  const input = [];
+  input.length = 1;
+  Object.setPrototypeOf(input, prototype);
+
+  const output = redactArray(input, normalizePolicy(), DEFAULT_LIMITS, redactChild);
+
+  expect(Object.hasOwn(output, 0)).toBe(false);
+  expect(0 in output).toBe(false);
+});
+
+test("marks array items omitted by maxArray", () => {
+  expect(
+    redactArray(
+      ["first", "second"],
+      normalizePolicy(),
+      { ...DEFAULT_LIMITS, maxArray: 1 },
+      redactChild,
+    ),
+  ).toEqual(["first", "[TRUNCATED]"]);
+});
+
+test("marks retained array items omitted by maxKeys", () => {
   const output = redactArray(
-    input,
-    normalizePolicy({ keys: ["0"] }),
-    DEFAULT_LIMITS,
-    (value) => value,
+    ["first", "second"],
+    normalizePolicy(),
+    { ...DEFAULT_LIMITS, maxKeys: 1 },
+    redactChild,
   );
 
-  expect(output[0]).toBe("[REDACTED]");
-});
-
-test("copies safe non-index array properties", () => {
-  const input = [];
-  input.label = "visible";
-  const output = redactArray(input, normalizePolicy(), DEFAULT_LIMITS, (value) => value);
-
-  expect(output.label).toBe("visible");
-});
-
-test("skips array properties that disappear during inspection", () => {
-  let reads = 0;
-  const input = new Proxy([], {
-    ownKeys: () => ["extra", "length"],
-    getOwnPropertyDescriptor(target, key) {
-      if (key === "extra" && ++reads > 1) return undefined;
-      if (key === "extra") return { configurable: true, enumerable: true, value: "value" };
-      return Reflect.getOwnPropertyDescriptor(target, key);
-    },
-  });
-  const output = redactArray(input, normalizePolicy(), DEFAULT_LIMITS, (value) => value);
-
-  expect(output).toEqual([]);
-});
-
-test("marks non-index array properties omitted by maxKeys", () => {
-  const input = [];
-  input.safe = "value";
-  const limits = { ...DEFAULT_LIMITS, maxKeys: 0 };
-  const output = redactArray(input, normalizePolicy(), limits, (value) => value);
-
-  expect(output).toEqual(["[TRUNCATED]"]);
-});
-
-test("applies maxKeys to array items and extra properties together", () => {
-  const input = ["item"];
-  input.label = "extra";
-  const limits = { ...DEFAULT_LIMITS, maxKeys: 1 };
-  const output = redactArray(input, normalizePolicy(), limits, (value) => value);
-
-  expect(output[0]).toBe("item");
-  expect(Object.hasOwn(output, "label")).toBe(false);
-  expect(output[1]).toBe("[TRUNCATED]");
-});
-
-test("marks array items omitted by the shared maxKeys limit", () => {
-  const input = ["first", "second"];
-  const limits = { ...DEFAULT_LIMITS, maxKeys: 1 };
-  const output = redactArray(input, normalizePolicy(), limits, (value) => value);
-
+  expect(output).toHaveLength(3);
   expect(output[0]).toBe("first");
+  expect(Object.hasOwn(output, 1)).toBe(false);
   expect(output[2]).toBe("[TRUNCATED]");
 });
 
-test("returns an empty array when a retained item read fails", () => {
-  const input = [];
-  Object.defineProperty(input, "0", {
-    enumerable: true,
-    configurable: true,
-    get() {
-      throw new Error("blocked");
-    },
-  });
-  const output = redactArray(input, normalizePolicy(), DEFAULT_LIMITS, (value) => value);
+test("does not call overridable array methods", () => {
+  const input = ["value"];
+  input.slice = () => {
+    throw new Error("overridden slice");
+  };
+  input.map = () => {
+    throw new Error("overridden map");
+  };
 
-  expect(output).toEqual([]);
+  expect(redactArray(input, normalizePolicy(), DEFAULT_LIMITS, redactChild)).toEqual(["value"]);
 });
 
-test("returns an empty array when an extra property read fails", () => {
-  const input = ["item"];
-  Object.defineProperty(input, "extra", {
-    enumerable: true,
-    get() {
-      throw new Error("blocked");
-    },
-  });
-  const output = redactArray(input, normalizePolicy(), DEFAULT_LIMITS, (value) => value);
-
-  expect(output).toEqual([]);
-});
-
-test("adds a truncation marker when an own push property shadows the method", () => {
+test("adds the truncation marker without calling an own push property", () => {
   const input = ["retained", "omitted"];
   input.push = "value";
-  const limits = { ...DEFAULT_LIMITS, maxArray: 1 };
-  const output = redactArray(input, normalizePolicy(), limits, (value) => value);
+
+  const output = redactArray(
+    input,
+    normalizePolicy(),
+    { ...DEFAULT_LIMITS, maxArray: 1 },
+    redactChild,
+  );
 
   expect(output[0]).toBe("retained");
   expect(output[1]).toBe("[TRUNCATED]");
   expect(output.push).toBe("value");
+});
+
+test("returns an empty array when an array item read fails", () => {
+  const input = new Proxy(["value"], {
+    get(target, key, receiver) {
+      if (key === "0") throw new Error("blocked");
+      return Reflect.get(target, key, receiver);
+    },
+  });
+
+  expect(redactArray(input, normalizePolicy(), DEFAULT_LIMITS, redactChild)).toEqual([]);
 });

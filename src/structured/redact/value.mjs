@@ -1,8 +1,7 @@
 import { normalizePolicy } from "../../policy/normalize-policy.mjs";
-import { inspectEntries } from "../../inspection/safe-entries.mjs";
 import { redactError } from "./error.mjs";
 import { redactArray } from "./array.mjs";
-import { addTruncationMarker } from "../../inspection/add-truncation-marker.mjs";
+import { redactObject } from "./object.mjs";
 import { normalizeTraversalLimits } from "../../limits/normalize-traversal-limits.mjs";
 
 export function redactValue(value, options = {}) {
@@ -43,22 +42,9 @@ function redact(value, policy, limits, seen, depth) {
         redact(child, policy, limits, seen, depth + 1),
       );
     }
-    const output = {};
-    const inspected = inspectEntries(value, limits.maxKeys);
-    if (inspected.failed) return {};
-    for (const [key, child] of inspected.entries) {
-      const redactedChild = policy.keys.has(key.toLowerCase())
-        ? policy.marker
-        : redact(child, policy, limits, seen, depth + 1);
-      Object.defineProperty(output, key, {
-        value: redactedChild,
-        enumerable: true,
-        configurable: true,
-        writable: true,
-      });
-    }
-    if (inspected.truncated) addTruncationMarker(output);
-    return output;
+    return redactObject(value, policy, limits, (child) =>
+      redact(child, policy, limits, seen, depth + 1),
+    );
   } finally {
     seen.delete(value);
   }
