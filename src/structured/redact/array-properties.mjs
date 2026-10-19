@@ -8,25 +8,30 @@ export function redactArrayProperties(value, output, policy, limits, retainedVal
     if (isArrayIndexName(key, value.length)) continue;
     const descriptor = Object.getOwnPropertyDescriptor(value, key);
     if (!descriptor) continue;
-    if (
-      !policy.keys.has(key.toLowerCase()) &&
-      "value" in descriptor &&
-      typeof descriptor.value === "function"
-    )
-      continue;
-    if (properties.length < limits.maxKeys) properties.push(key);
-    else truncated = true;
+    const sensitive = policy.keys.has(key.toLowerCase());
+    const hasValue = !sensitive && !("value" in descriptor);
+    let propertyValue;
+    if (!sensitive && "value" in descriptor && typeof descriptor.value === "function") continue;
+    if (hasValue) {
+      if (retainedValues + properties.length >= limits.maxKeys) {
+        truncated = true;
+        continue;
+      }
+      propertyValue = value[key];
+      if (typeof propertyValue === "function") continue;
+    }
+    if (retainedValues + properties.length < limits.maxKeys) {
+      properties.push({ key, propertyValue, hasValue });
+    } else {
+      truncated = true;
+    }
   }
 
-  for (const key of properties) {
-    if (retainedValues >= limits.maxKeys) {
-      truncated = true;
-      break;
-    }
+  for (const property of properties) {
+    const { key, propertyValue, hasValue } = property;
     const sensitive = policy.keys.has(key.toLowerCase());
-    const propertyValue = value[key];
-    if (!sensitive && typeof propertyValue === "function") continue;
-    const child = sensitive ? policy.marker : redactChild(propertyValue);
+    const childValue = sensitive || !hasValue ? value[key] : propertyValue;
+    const child = sensitive ? policy.marker : redactChild(childValue);
     Object.defineProperty(output, key, {
       value: child,
       enumerable: true,

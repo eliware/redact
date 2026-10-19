@@ -73,6 +73,70 @@ test("omits non-sensitive getter properties that return functions", () => {
   expect(output).toEqual([]);
 });
 
+test("retains later values when a getter returns an omitted function", () => {
+  const input = [];
+  Object.defineProperty(input, "method", {
+    enumerable: true,
+    get() {
+      return () => {};
+    },
+  });
+  input.label = "visible";
+  const output = [];
+  const limits = { ...DEFAULT_LIMITS, maxKeys: 1 };
+
+  const result = redactArrayProperties(
+    input,
+    output,
+    normalizePolicy(),
+    limits,
+    0,
+    (value) => value,
+  );
+
+  expect(output.label).toBe("visible");
+  expect(result.truncated).toBe(false);
+});
+
+test("copies a getter value once when it returns a non-function", () => {
+  let reads = 0;
+  const input = [];
+  Object.defineProperty(input, "label", {
+    enumerable: true,
+    get() {
+      reads++;
+      return "visible";
+    },
+  });
+  const output = [];
+
+  redactArrayProperties(input, output, normalizePolicy(), DEFAULT_LIMITS, 0, (value) => value);
+
+  expect(output.label).toBe("visible");
+  expect(reads).toBe(1);
+});
+
+test("marks an accessor omitted by a zero key limit without reading it", () => {
+  const input = [];
+  Object.defineProperty(input, "label", {
+    enumerable: true,
+    get() {
+      throw new Error("should not read an omitted value");
+    },
+  });
+
+  const result = redactArrayProperties(
+    input,
+    [],
+    normalizePolicy(),
+    { ...DEFAULT_LIMITS, maxKeys: 0 },
+    0,
+    (value) => value,
+  );
+
+  expect(result.truncated).toBe(true);
+});
+
 test("shares maxKeys between array items and extra properties", () => {
   const input = ["item"];
   input.label = "extra";
