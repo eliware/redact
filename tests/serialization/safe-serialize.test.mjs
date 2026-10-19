@@ -76,6 +76,15 @@ test("coordinates depth, key, and array limits", () => {
   expect(safeSerialize({ deep: { value: 1 } }, { maxDepth: 0 }).deep).toBe("[TRUNCATED]");
 });
 
+test("preserves a retained truncation key and adds a suffixed marker", () => {
+  const input = { __truncated: "kept", omitted: "value" };
+
+  expect(safeSerialize(input, { maxKeys: 1 })).toEqual({
+    __truncated: "kept",
+    __truncated_1: "[TRUNCATED]",
+  });
+});
+
 test("truncates primitive children beyond the depth limit", () => {
   expect(safeSerialize({ value: "visible" }, { maxDepth: 0 })).toEqual({ value: "[TRUNCATED]" });
 });

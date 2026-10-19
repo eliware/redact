@@ -24,7 +24,7 @@ export function redactArrayProperties(value, output, policy, limits, retainedVal
       break;
     }
     const sensitive = policy.keys.has(key.toLowerCase());
-    const propertyValue = sensitive ? undefined : value[key];
+    const propertyValue = value[key];
     if (!sensitive && typeof propertyValue === "function") continue;
     const child = sensitive ? policy.marker : redactChild(propertyValue);
     Object.defineProperty(output, key, {
