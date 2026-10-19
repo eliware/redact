@@ -60,8 +60,8 @@ test("handles complex values and limits", () => {
   expect(safeSerialize(value, { maxString: 3 })).toMatchObject({
     buffer: "[Buffer length=3]",
     error: {
-      name: "Err...[TRUNCATED]",
-      message: "fai...[TRUNCATED]",
+      name: "…",
+      message: "…",
       token: "[REDACTED]",
     },
     self: "[CIRCULAR]",

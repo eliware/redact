@@ -9,7 +9,7 @@ test("represents primitive values for safe serialization", () => {
 });
 
 test("bounds strings and labels functions and symbols", () => {
-  expect(serializePrimitive("abcdef", 3)).toBe("abc...[TRUNCATED]");
+  expect(serializePrimitive("abcdef", 3)).toBe("…");
   expect(serializePrimitive("ok", 3)).toBe("ok");
   expect(serializePrimitive(function named() {}, 100)).toBe("[Function: named]");
   expect(serializePrimitive(() => {}, 100)).toBe("[Function: anonymous]");
@@ -20,7 +20,13 @@ test("bounds strings and labels functions and symbols", () => {
 test("bounds string representations of BigInts, functions, and symbols", () => {
   const named = Object.defineProperty(function value() {}, "name", { value: "long-name" });
 
-  expect(serializePrimitive(123456n, 3)).toBe("123...[TRUNCATED]");
-  expect(serializePrimitive(named, 3)).toBe("[Fu...[TRUNCATED]");
-  expect(serializePrimitive(Symbol("long-description"), 3)).toBe("[Sy...[TRUNCATED]");
+  expect(serializePrimitive(123456n, 3)).toBe("…");
+  expect(serializePrimitive(named, 3)).toBe("…");
+  expect(serializePrimitive(Symbol("long-description"), 3)).toBe("…");
+});
+
+test("keeps truncated primitive text within maxString", () => {
+  expect(serializePrimitive("a very long value", 0)).toBe("");
+  expect(serializePrimitive("a very long value", 1)).toBe("…");
+  expect(serializePrimitive("a very long value", 15)).toBe("a...[TRUNCATED]");
 });

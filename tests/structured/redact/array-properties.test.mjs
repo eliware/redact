@@ -58,6 +58,21 @@ test("omits non-sensitive function properties", () => {
   expect(output).toEqual([]);
 });
 
+test("omits non-sensitive getter properties that return functions", () => {
+  const input = [];
+  Object.defineProperty(input, "method", {
+    enumerable: true,
+    get() {
+      return () => {};
+    },
+  });
+  const output = [];
+
+  redactArrayProperties(input, output, normalizePolicy(), DEFAULT_LIMITS, 0, (value) => value);
+
+  expect(output).toEqual([]);
+});
+
 test("shares maxKeys between array items and extra properties", () => {
   const input = ["item"];
   input.label = "extra";

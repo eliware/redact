@@ -169,7 +169,7 @@ Error fields `name`, `message`, and `stack` count against `maxKeys` with custom 
 
 The function keeps null, Boolean, and number values. It maps `undefined` to `[Undefined]`. It maps functions to `[Function: name]` and symbols to `[Symbol: description]`. It maps BigInts to text with an `n` suffix. It maps buffers to `[Buffer length=N]`.
 
-The function maps cycles to `[CIRCULAR]`. It cuts long strings, function labels, and symbol labels, then adds `...[TRUNCATED]`. The `maxString` limit caps the source text. The suffix can make the result longer than that limit. Buffer labels do not use this limit.
+The function maps cycles to `[CIRCULAR]`. It limits strings, function labels, and symbol labels to `maxString` characters. It uses `...[TRUNCATED]` when that marker fits. It uses `…` when the limit is shorter. Buffer labels do not use this limit.
 
 `maxString` limits each string value and primitive label. The other limits bound depth, retained object properties, and array items. The result has no single total character limit.
 
