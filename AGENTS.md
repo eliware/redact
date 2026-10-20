@@ -2,11 +2,19 @@
 
 ## Project
 
+Maintain `@eliware/redact`, a Node.js library that redacts sensitive values.
+
 ## Scope and boundaries
+
+Keep public behavior in `specs/directives.yaml` and user guidance in `docs/`.
 
 ## Layout
 
+Use `src/` for public modules, `tests/` for tests, and `docs/` for user guides.
+
 ## Development
+
+Keep each source and test module focused on one purpose.
 
 ## Validation
 
@@ -21,7 +29,11 @@ Run `npm run format:check` to check formatting.
 
 ## Security
 
+Keep credentials, secret values, private data, and runtime state out of Git.
+
 ## Changes
+
+Update the specifications and user documentation when public behavior changes.
 
 ## Library
 
@@ -32,3 +44,5 @@ Prevent repeated full-suite runs during development.
 Run the full `npm test` suite for final validation before a commit, milestone, or release.
 
 ## npm publication
+
+Use the approved release process for npm publication.

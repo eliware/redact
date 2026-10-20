@@ -1,6 +1,6 @@
 {
   "name": "@eliware/redact",
-  "version": "13.0.0",
+  "version": "14.0.0",
   "type": "module",
   "description": "Secret-redaction and safe-serialization utilities for Node.js 26.",
   "keywords": [

@@ -1,4 +1,4 @@
-version: "13.0"
+version: "14.0"
 description: Repository-specific public contract and behavior for @eliware/redact.
 directives:
   - id: E-101.0
