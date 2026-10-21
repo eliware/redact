@@ -45,7 +45,7 @@ console.log(redactValue({ token: "example-token", safe: true }));
 console.log(safeSerialize({ token: "example-token", nested: { value: 1 } }));
 ```
 
-Read the [getting started guide](docs/getting-started.md) for setup steps. Read the [release notes](RELEASE_NOTES.md) for version changes.
+Read the [documentation index](docs/README.md) to find user guides. Read the [release notes](RELEASE_NOTES.md) for version changes.
 
 ## Development
 

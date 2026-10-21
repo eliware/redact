@@ -1,5 +1,12 @@
 # Release Notes
 
+## 15.0.0 — 2026-10-21
+
+### Changed
+
+- Update package release metadata to version 15.0.0.
+- Update repository validation to Eliware Test v15.
+
 ## 14.0.0 — 2026-10-21
 
 ### Changed
