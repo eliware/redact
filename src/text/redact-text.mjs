@@ -28,7 +28,7 @@ export function redactText(value, options = {}) {
     typeof options.secrets === "string"
       ? [options.secrets]
       : [...(options.secrets ?? [])].map(String);
-  const lookahead = Math.max(0, ...secrets.map((secret) => secret.length - 1));
+  const lookahead = Math.max(0, ...secrets.map((secret) => secret.length));
   const processingLimit = maxLength + lookahead;
   let output = inputTruncated ? input.slice(0, processingLimit) : input;
   for (const rule of builtInRules) output = rule(output);

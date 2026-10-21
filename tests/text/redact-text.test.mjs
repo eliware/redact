@@ -70,6 +70,16 @@ test("redacts configured secrets that cross the input limit", () => {
   expect(output).toHaveLength(50);
 });
 
+test("keeps complete configured secrets after built-in rules shorten the prefix", () => {
+  const secret = "SECRET_VALUE_12345";
+  const keyMaterial = "-----BEGIN PRIVATE KEY-----x-----END PRIVATE KEY-----";
+  const input = `${keyMaterial}${"x".repeat(60 - keyMaterial.length)}${secret}`;
+  const output = redactText(input, { maxOutputLength: 60, secrets: [secret] });
+
+  expect(output).not.toContain("SECRET");
+  expect(output).toContain("[REDACTED]");
+});
+
 test("redacts key material when a bounded input cuts off its closing delimiter", () => {
   const input = `-----BEGIN PRIVATE KEY-----${"secret".repeat(20)}`;
 
