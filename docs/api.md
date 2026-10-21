@@ -108,7 +108,7 @@ Header names match without regard to uppercase or lowercase. An array pair must 
 
 ## Text
 
-`redactText(value, options)` converts the input to text, applies built-in rules, then applies configured key names and literal secrets.
+`redactText(value, options)` converts the input to text, applies built-in rules, then applies configured key names and literal secrets. It converts `null` and `undefined` to an empty string.
 
 Built-in rules cover:
 
@@ -131,7 +131,9 @@ redactText("value=example-secret", { secrets: ["example-secret"] });
 // "value=[REDACTED]"
 ```
 
-Use `secrets` to supply literal strings for replacement. You can pass one string or an iterable of strings. The function merges matches when they overlap. Use `replaceLiteralSecret(value, secret, marker)` to replace one literal secret. Its default marker is `[REDACTED]`.
+Use `secrets` to supply literal strings for replacement. You can pass one string or an iterable of strings. Matching uses exact, case-sensitive text. The function merges matches when they overlap.
+
+Use `replaceLiteralSecret(value, secret, marker)` to replace one literal secret. It replaces every exact, case-sensitive occurrence. An empty secret leaves the text unchanged. It converts `null` and `undefined` values to an empty string. Its default marker is `[REDACTED]`.
 
 ```js
 replaceLiteralSecret("token=example-secret", "example-secret");
