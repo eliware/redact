@@ -4,8 +4,18 @@
 
 ### Changed
 
-- Update package release metadata to version 15.0.0.
-- Update repository validation to Eliware Test v15.
+- Update package metadata and repository rules for Eliware Test v15.
+- Limit text input before redaction and keep a bounded lookahead for configured secrets.
+- Stop array index checks after `maxKeys` while preserving sensitive index markers.
+- Document truncation markers, `maxKeys`, and text output limits.
+- Link the documentation index from the root README and document the updated limits.
+
+### Fixed
+
+- Redact configured secrets that cross the input truncation boundary.
+- Redact incomplete key material blocks when bounded input ends before the closing delimiter.
+- Continue redaction when a configured key cannot convert safely to text.
+- Preserve array property behavior while inspecting own keys without reading omitted values.
 
 ## 14.0.0 — 2026-10-21
 
