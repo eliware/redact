@@ -105,6 +105,19 @@ test("returns an empty array when an array item read fails", () => {
   expect(redactArray(input, normalizePolicy(), DEFAULT_LIMITS, redactChild)).toEqual([]);
 });
 
+test("keeps retained indices when extra-property enumeration fails", () => {
+  const input = new Proxy(["retained"], {
+    ownKeys() {
+      throw new Error("blocked");
+    },
+  });
+
+  expect(redactArray(input, normalizePolicy(), DEFAULT_LIMITS, redactChild)).toEqual([
+    "retained",
+    "[TRUNCATED]",
+  ]);
+});
+
 test("redacts a sensitive property without reading its getter", () => {
   let reads = 0;
   const input = [];

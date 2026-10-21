@@ -3,34 +3,48 @@ import { isArrayIndexName } from "./index-name.mjs";
 export function redactArrayProperties(value, output, policy, limits, retainedValues, redactChild) {
   let truncated = false;
   const properties = [];
+  let keys;
 
-  for (const key of Object.keys(value)) {
+  try {
+    keys = Object.keys(value);
+  } catch {
+    return { truncated: true };
+  }
+
+  for (const key of keys) {
     if (isArrayIndexName(key, value.length)) continue;
-    const descriptor = Object.getOwnPropertyDescriptor(value, key);
+    let descriptor;
+    try {
+      descriptor = Object.getOwnPropertyDescriptor(value, key);
+    } catch {
+      truncated = true;
+      break;
+    }
     if (!descriptor) continue;
     const sensitive = policy.keys.has(key.toLowerCase());
-    const hasValue = !sensitive && !("value" in descriptor);
     let propertyValue;
-    if (!sensitive && "value" in descriptor && typeof descriptor.value === "function") continue;
-    if (hasValue) {
+    if (!sensitive && !("value" in descriptor)) {
       if (retainedValues + properties.length >= limits.maxKeys) {
         truncated = true;
         continue;
       }
       propertyValue = value[key];
       if (typeof propertyValue === "function") continue;
+    } else if (!sensitive) {
+      propertyValue = descriptor.value;
+      if (typeof propertyValue === "function") continue;
     }
     if (retainedValues + properties.length < limits.maxKeys) {
-      properties.push({ key, propertyValue, hasValue });
+      properties.push({ key, propertyValue });
     } else {
       truncated = true;
     }
   }
 
   for (const property of properties) {
-    const { key, propertyValue, hasValue } = property;
+    const { key, propertyValue } = property;
     const sensitive = policy.keys.has(key.toLowerCase());
-    const child = sensitive ? policy.marker : redactChild(hasValue ? propertyValue : value[key]);
+    const child = sensitive ? policy.marker : redactChild(propertyValue);
     Object.defineProperty(output, key, {
       value: child,
       enumerable: true,

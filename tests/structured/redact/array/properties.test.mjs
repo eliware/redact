@@ -116,6 +116,21 @@ test("copies a getter value once when it returns a non-function", () => {
   expect(reads).toBe(1);
 });
 
+test("uses the inspected data value without reading through a proxy", () => {
+  const input = new Proxy([], {
+    get(target, key, receiver) {
+      if (key === "label") return "uninspected";
+      return Reflect.get(target, key, receiver);
+    },
+  });
+  input.label = "inspected";
+  const output = [];
+
+  redactArrayProperties(input, output, normalizePolicy(), DEFAULT_LIMITS, 0, (value) => value);
+
+  expect(output.label).toBe("inspected");
+});
+
 test("marks an accessor omitted by a zero key limit without reading it", () => {
   const input = [];
   Object.defineProperty(input, "label", {
@@ -189,4 +204,32 @@ test("returns a failure through the caller when an extra property read throws", 
   expect(() =>
     redactArrayProperties(input, [], normalizePolicy(), DEFAULT_LIMITS, 0, (value) => value),
   ).toThrow("blocked");
+});
+
+test("marks extra properties truncated when key enumeration fails", () => {
+  const input = new Proxy([], {
+    ownKeys() {
+      throw new Error("blocked");
+    },
+  });
+
+  expect(
+    redactArrayProperties(input, [], normalizePolicy(), DEFAULT_LIMITS, 0, (value) => value),
+  ).toEqual({ truncated: true });
+});
+
+test("marks extra properties truncated when descriptor inspection fails", () => {
+  const target = [];
+  target.label = "visible";
+  let reads = 0;
+  const input = new Proxy(target, {
+    getOwnPropertyDescriptor(object, key) {
+      if (key === "label" && ++reads > 1) throw new Error("blocked");
+      return Reflect.getOwnPropertyDescriptor(object, key);
+    },
+  });
+
+  expect(
+    redactArrayProperties(input, [], normalizePolicy(), DEFAULT_LIMITS, 0, (value) => value),
+  ).toEqual({ truncated: true });
 });
