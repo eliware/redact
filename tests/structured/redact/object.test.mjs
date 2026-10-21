@@ -24,17 +24,6 @@ test("marks object properties omitted by maxKeys", () => {
   expect(output).toEqual({ first: "one", __truncated: "[TRUNCATED]" });
 });
 
-test("marks properties omitted by a maxKeys limit", () => {
-  const output = redactObject(
-    { first: "one", second: "two" },
-    normalizePolicy(),
-    { ...DEFAULT_LIMITS, maxKeys: 1 },
-    (value) => value,
-  );
-
-  expect(output).toEqual({ first: "one", __truncated: "[TRUNCATED]" });
-});
-
 test("preserves a retained truncation key and uses a new marker key", () => {
   const output = redactObject(
     { __truncated: "kept", omitted: "value" },

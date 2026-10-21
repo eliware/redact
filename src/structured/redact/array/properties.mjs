@@ -1,4 +1,4 @@
-import { isArrayIndexName } from "./array/index-name.mjs";
+import { isArrayIndexName } from "./index-name.mjs";
 
 export function redactArrayProperties(value, output, policy, limits, retainedValues, redactChild) {
   let truncated = false;

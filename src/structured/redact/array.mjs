@@ -1,4 +1,4 @@
-import { redactArrayProperties } from "./array-properties.mjs";
+import { redactArrayProperties } from "./array/properties.mjs";
 
 export function redactArray(value, policy, limits, redactChild) {
   try {

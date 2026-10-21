@@ -1,6 +1,6 @@
-import { redactArrayProperties } from "../../../src/structured/redact/array-properties.mjs";
-import { normalizePolicy } from "../../../src/policy/normalize-policy.mjs";
-import { DEFAULT_LIMITS } from "../../../src/limits/default-limits.mjs";
+import { redactArrayProperties } from "../../../../src/structured/redact/array/properties.mjs";
+import { normalizePolicy } from "../../../../src/policy/normalize-policy.mjs";
+import { DEFAULT_LIMITS } from "../../../../src/limits/default-limits.mjs";
 
 test("redacts sensitive extra properties and copies safe properties", () => {
   const input = ["index"];
