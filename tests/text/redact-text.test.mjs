@@ -83,6 +83,17 @@ test("redacts a JWT that crosses a custom text limit", () => {
   expect(output.length).toBeLessThanOrEqual(64);
 });
 
+test.each([9, 11, 20])("keeps JWT boundary output within a %i-character limit", (limit) => {
+  const output = redactText("eyJabcde.payload.signature", { maxOutputLength: limit });
+
+  expect(output.length).toBeLessThanOrEqual(limit);
+  expect(output).not.toContain("eyJabcde");
+  expect(output).not.toContain("payload");
+  expect(output).not.toContain("signature");
+  if (limit === 9) expect(output).toBe("…");
+  if (limit >= 11) expect(output).toContain("[TRUNCATED]");
+});
+
 test("redacts a complete JWT before the text limit", () => {
   const output = redactText(`jwt=eyJhbGci.eyJzdWIg.ZXhhbXBsZQ${"x".repeat(100)}`, {
     maxOutputLength: 64,

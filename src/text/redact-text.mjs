@@ -56,7 +56,10 @@ export function redactText(value, options = {}) {
   if (boundaryResult.redacted) {
     const marker = "[REDACTED][TRUNCATED]";
     const prefix = output.slice(0, output.indexOf(boundedJwtMarker));
-    return `${prefix.slice(0, Math.max(0, maxLength - marker.length))}${marker}`;
+    return limitOutput(
+      `${prefix.slice(0, Math.max(0, maxLength - marker.length))}${marker}`,
+      options.maxOutputLength,
+    );
   }
   return limitOutput(inputTruncated ? `${output}[TRUNCATED]` : output, options.maxOutputLength);
 }
