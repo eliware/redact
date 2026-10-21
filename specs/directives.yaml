@@ -49,6 +49,7 @@ directives:
             finite fractions. Use defaults for non-finite values.
           - Limit retained property reads with maxKeys. Use key-only lookahead. The
             runtime can list every own key.
+          - Keep the truncation marker outside the maxKeys count.
           - Keep truncation markers distinct from redaction markers.
           - Append `[TRUNCATED]` when maxArray omits array items.
           - Keep retained `__truncated` properties. Select a new suffixed marker key
@@ -125,6 +126,7 @@ directives:
           - Merge overlapping literal-secret matches. Do not expose covered secret
             fragments.
           - Limit redactText output with a configurable maximum and truncation marker.
+          - Bound input text before applying redaction rules.
           - Document supported patterns and limits. Help callers select more policy.
         donts:
           - Do not claim that text redaction detects arbitrary unknown secrets.

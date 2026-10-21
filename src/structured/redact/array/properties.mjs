@@ -6,19 +6,16 @@ export function redactArrayProperties(value, output, policy, limits, retainedVal
   let keys;
 
   try {
-    keys = Object.keys(value);
+    keys = Reflect.ownKeys(value);
   } catch {
     return { truncated: true };
   }
 
   let retained = retainedValues;
   for (const key of keys) {
-    if (isArrayIndexName(key, value.length)) continue;
-    const sensitive = policy.keys.has(key.toLowerCase());
-    if (!sensitive && retained >= limits.maxKeys) {
-      truncated = true;
+    if (typeof key !== "string" || key === "length" || isArrayIndexName(key, value.length))
       continue;
-    }
+    const sensitive = policy.keys.has(key.toLowerCase());
     let descriptor;
     try {
       descriptor = Object.getOwnPropertyDescriptor(value, key);
@@ -26,7 +23,11 @@ export function redactArrayProperties(value, output, policy, limits, retainedVal
       truncated = true;
       break;
     }
-    if (!descriptor) continue;
+    if (!descriptor || !descriptor.enumerable) continue;
+    if (!sensitive && retained >= limits.maxKeys) {
+      truncated = true;
+      continue;
+    }
     let propertyValue;
     if (!sensitive && !("value" in descriptor)) {
       propertyValue = value[key];

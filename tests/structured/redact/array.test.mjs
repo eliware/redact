@@ -49,6 +49,28 @@ test("marks retained array items omitted by maxKeys", () => {
   expect(output[2]).toBe("[TRUNCATED]");
 });
 
+test("stops checking later indices after maxKeys and redacts configured indices", () => {
+  let checked = 0;
+  const input = new Proxy(["first", "omitted", "secret"], {
+    getOwnPropertyDescriptor(target, key) {
+      if (key === "1") checked++;
+      if (key === "2") checked++;
+      return Reflect.getOwnPropertyDescriptor(target, key);
+    },
+  });
+  const output = redactArray(
+    input,
+    normalizePolicy({ keys: ["2"] }),
+    { ...DEFAULT_LIMITS, maxKeys: 1 },
+    redactChild,
+  );
+
+  expect(output[0]).toBe("first");
+  expect(Object.hasOwn(output, 1)).toBe(false);
+  expect(output[2]).toBe("[REDACTED]");
+  expect(checked).toBe(0);
+});
+
 test("shares maxKeys between retained indices and extra properties", () => {
   const input = ["first", "second", "third"];
   input.label = "extra";
@@ -114,6 +136,42 @@ test("keeps retained indices when extra-property enumeration fails", () => {
 
   expect(redactArray(input, normalizePolicy(), DEFAULT_LIMITS, redactChild)).toEqual([
     "retained",
+    "[TRUNCATED]",
+  ]);
+});
+
+test("keeps retained indices when key lookahead fails", () => {
+  const input = new Proxy(["retained", "omitted"], {
+    ownKeys() {
+      throw new Error("blocked");
+    },
+  });
+
+  const output = redactArray(
+    input,
+    normalizePolicy(),
+    { ...DEFAULT_LIMITS, maxKeys: 1 },
+    redactChild,
+  );
+
+  expect(output).toHaveLength(3);
+  expect(output[0]).toBe("retained");
+  expect(Object.hasOwn(output, 1)).toBe(false);
+  expect(output[2]).toBe("[TRUNCATED]");
+});
+
+test("marks array properties truncated when their descriptor cannot be read", () => {
+  const input = new Proxy([], {
+    ownKeys() {
+      return ["length", "label"];
+    },
+    getOwnPropertyDescriptor(target, key) {
+      if (key === "length") return Reflect.getOwnPropertyDescriptor(target, key);
+      throw new Error("blocked");
+    },
+  });
+
+  expect(redactArray(input, normalizePolicy(), DEFAULT_LIMITS, redactChild)).toEqual([
     "[TRUNCATED]",
   ]);
 });

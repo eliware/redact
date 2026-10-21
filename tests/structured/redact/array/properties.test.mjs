@@ -24,12 +24,10 @@ test("redacts sensitive extra properties and copies safe properties", () => {
 });
 
 test("skips properties that disappear during inspection", () => {
-  let reads = 0;
   const input = new Proxy([], {
     ownKeys: () => ["extra", "length"],
     getOwnPropertyDescriptor(target, key) {
-      if (key === "extra" && ++reads > 1) return undefined;
-      if (key === "extra") return { configurable: true, enumerable: true, value: "value" };
+      if (key === "extra") return undefined;
       return Reflect.getOwnPropertyDescriptor(target, key);
     },
   });
@@ -56,6 +54,24 @@ test("omits non-sensitive function properties", () => {
   redactArrayProperties(input, output, normalizePolicy(), DEFAULT_LIMITS, 0, (value) => value);
 
   expect(output).toEqual([]);
+});
+
+test("omits non-enumerable properties without marking output truncated", () => {
+  const input = [];
+  Object.defineProperty(input, "hidden", { value: "private" });
+  const output = [];
+
+  const result = redactArrayProperties(
+    input,
+    output,
+    normalizePolicy(),
+    DEFAULT_LIMITS,
+    0,
+    (value) => value,
+  );
+
+  expect(output).toEqual([]);
+  expect(result.truncated).toBe(false);
 });
 
 test("omits non-sensitive getter properties that return functions", () => {
@@ -242,7 +258,7 @@ test("marks extra properties truncated when descriptor inspection fails", () => 
   let reads = 0;
   const input = new Proxy(target, {
     getOwnPropertyDescriptor(object, key) {
-      if (key === "label" && ++reads > 1) throw new Error("blocked");
+      if (key === "label" && ++reads > 0) throw new Error("blocked");
       return Reflect.getOwnPropertyDescriptor(object, key);
     },
   });

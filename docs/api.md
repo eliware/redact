@@ -83,7 +83,7 @@ The root value starts at depth zero. A child at a depth greater than `maxDepth` 
 
 The function floors finite fractional limits. It changes negative limits to zero. It uses the default for a non-finite limit.
 
-`maxKeys` limits retained object property reads. For arrays, it limits non-sensitive index and non-index property values together. Sensitive array properties return markers without reading values or using this limit.
+`maxKeys` limits retained object property reads. A truncation marker adds one output property and does not count against this limit. For arrays, it limits non-sensitive index and non-index property values together. Sensitive array properties return markers without reading values or using this limit.
 
 For Errors, `name`, `message`, and `stack` share the `maxKeys` limit with custom properties. The function reads each field at most once.
 
@@ -142,7 +142,7 @@ replaceLiteralSecret("token=example-secret", "example-secret");
 
 Built-in text rules use `[REDACTED]`. The `marker` option applies to configured key names and literal secrets.
 
-The default output limit is 10,000 characters. Set `maxOutputLength` to change it. The function floors finite fractions and changes negative values to zero. It uses the default for non-finite values.
+The default output limit is 10,000 characters. Set `maxOutputLength` to change it. The function limits input text before it applies redaction rules. It floors finite fractions and changes negative values to zero. It uses the default for non-finite values.
 
 When the function cuts output, it adds `[TRUNCATED]`. If the limit is shorter than that marker, it returns `…`. A zero limit returns an empty string.
 
@@ -167,7 +167,7 @@ It preserves sparse array holes and does not read inherited index values. It omi
 
 The function adds `[TRUNCATED]` when it omits array items. It adds a `__truncated` property when it omits object keys. It uses an available numeric suffix if `__truncated` exists.
 
-Error fields `name`, `message`, and `stack` count against `maxKeys` with custom properties. The function reads each field at most once. A falsy `stack` value does not appear in the result.
+Error fields `name`, `message`, and `stack` count against `maxKeys` with custom properties. A truncation marker adds one output property and does not count against this limit. The function reads each field at most once. A falsy `stack` value does not appear in the result.
 
 The function keeps null, Boolean, and number values. It maps `undefined` to `[Undefined]`. It maps functions to `[Function: name]` and symbols to `[Symbol: description]`. It maps BigInts to text with an `n` suffix. It maps buffers to `[Buffer length=N]`.
 

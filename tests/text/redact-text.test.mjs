@@ -11,6 +11,7 @@ test("applies configured literal secrets after built-in rules", () => {
     "note: <hidden>",
   );
   expect(redactText("note: known", { secrets: ["known"] })).toBe("note: [REDACTED]");
+  expect(redactText("note: known", { secrets: "known" })).toBe("note: [REDACTED]");
 });
 
 test("applies configured sensitive keys to text assignments", () => {
@@ -46,4 +47,31 @@ test.each([
 test("converts nullish input to empty text", () => {
   expect(redactText()).toBe("");
   expect(redactText(null)).toBe("");
+});
+
+test("limits input before applying redaction rules", () => {
+  expect(
+    redactText(`${"x".repeat(100)}-----BEGIN PRIVATE KEY-----secret`, { maxOutputLength: 20 }),
+  ).toBe("xxxxxxxxx[TRUNCATED]");
+});
+
+test("uses the default input bound for non-finite output limits", () => {
+  expect(redactText("x".repeat(10_001), { maxOutputLength: Number.NaN })).toHaveLength(10_000);
+});
+
+test("redacts configured secrets that cross the input limit", () => {
+  const secret = "SECRET_VALUE_12345";
+  const output = redactText(`${"x".repeat(35)}${secret}`, {
+    maxOutputLength: 50,
+    secrets: [secret],
+  });
+
+  expect(output).not.toContain("SECRET");
+  expect(output).toHaveLength(50);
+});
+
+test("redacts key material when a bounded input cuts off its closing delimiter", () => {
+  const input = `-----BEGIN PRIVATE KEY-----${"secret".repeat(20)}`;
+
+  expect(redactText(input, { maxOutputLength: 40 })).toBe("[REDACTED][TRUNCATED]");
 });
