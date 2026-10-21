@@ -27,11 +27,11 @@ Secret-redaction and safe-serialization utilities for Node.js 26.
 
 ## Requirements
 
-Use Node.js 26 or later with native ESM support. No runtime variables or configuration files are required.
+Use Node.js 26 or later. The package uses native ESM.
 
 ## Setup
 
-Install the package with `npm install @eliware/redact`. The public JavaScript entrypoint is `src/index.mjs`. TypeScript declarations are in `src/index.d.ts`.
+Install the package with `npm install @eliware/redact`. The JavaScript entrypoint is `src/index.mjs`. TypeScript declarations are in `src/index.d.ts`.
 
 ## Usage
 
@@ -45,25 +45,24 @@ console.log(redactValue({ token: "example-token", safe: true }));
 console.log(safeSerialize({ token: "example-token", nested: { value: 1 } }));
 ```
 
-The default marker is `[REDACTED]`. Read the [getting started guide](docs/getting-started.md) for setup steps. Read the [release notes](RELEASE_NOTES.md) for version changes.
+Read the [getting started guide](docs/getting-started.md) for setup steps. Read the [release notes](RELEASE_NOTES.md) for version changes.
 
 ## Development
 
-Source files use native ESM. Tests are in `tests/`.
+Read the [specifications](specs/README.md) before you change public behavior.
 
 ## Testing
 
-<!-- codescope ignore this because the installed eliware-test aggregate runs Jest, pack, and typecheck. -->
-
-Run `npm test` for aggregate validation. Run `npm run lint`, `npm run audit`, `npm run format:check`, `npm run typecheck`, or `npm run pack` for a focused check.
+Run `npm test` for aggregate validation. Run `npm run lint`, `npm run audit`, and `npm run format` for focused checks.
+Run `npm run format:check`, `npm run typecheck`, and `npm run pack` for focused checks.
 
 ## Troubleshooting
 
-If a check fails, follow its report and run `npm test` again.
+Read the error output to identify a failed check.
 
 ## Security
 
-Redaction is best-effort. It cannot guarantee detection of unknown secrets. It does not replace encryption, secret storage, or access control. Redact values before you send them to logs, persistence, or transport. Use fake values in examples and issue reports.
+Redaction is best-effort. It cannot guarantee detection of unknown secrets. It does not replace encryption, secret storage, or access control. Redact values before you send them to logs, storage, or transport.
 
 ## API
 
@@ -73,11 +72,11 @@ The public functions are `createPolicy`, `defaultPolicy`, `redactValue`, `redact
 
 The package contains `src/`, `docs/`, `examples/`, and `specs/`, plus `README.md`, `AGENTS.md`, `LICENSE`, and `RELEASE_NOTES.md`. Run `npm run pack` to check package contents.
 
-Publication uses npm Trusted Publishing with provenance and a version tag that matches `package.json`. Validation and a matching tag do not authorize publication. Use the Eliware Operations release handoff.
+Publication uses npm Trusted Publishing with provenance and a version tag that matches `package.json`. Validation and a matching tag do not authorize publication. Follow the Eliware Operations release handoff.
 
 ## Examples
 
-Run the [native ESM example](examples/README.md) for a complete command and expected output.
+See the [example guide](examples/README.md) for the command and expected output.
 
 ## Support
 

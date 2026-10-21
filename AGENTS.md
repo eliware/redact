@@ -2,7 +2,7 @@
 
 ## Project
 
-Maintain `@eliware/redact`, a Node.js library that redacts sensitive values.
+Maintain `@eliware/redact` for Eliware. The package redacts sensitive values in Node.js.
 
 ## Scope and boundaries
 
@@ -10,7 +10,7 @@ Keep public behavior in `specs/directives.yaml` and user guidance in `docs/`.
 
 ## Layout
 
-Use `src/` for public modules, `tests/` for tests, and `docs/` for user guides.
+Use `src/` for implementation modules, `tests/` for tests, and `docs/` for user guides.
 
 ## Development
 
@@ -18,7 +18,7 @@ Keep each source and test module focused on one purpose.
 
 ## Validation
 
-Use Node.js 26 or later and npm 12 or later.
+Use Node.js 26 or later.
 Use native ESM for maintained JavaScript modules.
 Run `npm test` for aggregate validation.
 Run `npm run lint` for lint checks.
