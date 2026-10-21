@@ -11,10 +11,11 @@ export function redactArrayProperties(value, output, policy, limits, retainedVal
     return { truncated: true };
   }
 
+  let retained = retainedValues;
   for (const key of keys) {
     if (isArrayIndexName(key, value.length)) continue;
     const sensitive = policy.keys.has(key.toLowerCase());
-    if (sensitive && retainedValues + properties.length >= limits.maxKeys) {
+    if (!sensitive && retained >= limits.maxKeys) {
       truncated = true;
       continue;
     }
@@ -28,21 +29,14 @@ export function redactArrayProperties(value, output, policy, limits, retainedVal
     if (!descriptor) continue;
     let propertyValue;
     if (!sensitive && !("value" in descriptor)) {
-      if (retainedValues + properties.length >= limits.maxKeys) {
-        truncated = true;
-        continue;
-      }
       propertyValue = value[key];
       if (typeof propertyValue === "function") continue;
     } else if (!sensitive) {
       propertyValue = descriptor.value;
       if (typeof propertyValue === "function") continue;
     }
-    if (retainedValues + properties.length < limits.maxKeys) {
-      properties.push({ key, propertyValue });
-    } else {
-      truncated = true;
-    }
+    properties.push({ key, propertyValue });
+    if (!sensitive) retained++;
   }
 
   for (const property of properties) {
@@ -55,7 +49,6 @@ export function redactArrayProperties(value, output, policy, limits, retainedVal
       configurable: true,
       writable: true,
     });
-    retainedValues++;
   }
 
   return { truncated };

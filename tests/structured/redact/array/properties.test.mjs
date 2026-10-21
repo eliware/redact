@@ -171,6 +171,24 @@ test("shares maxKeys between array items and extra properties", () => {
   expect(result.truncated).toBe(true);
 });
 
+test("retains sensitive markers after the value-read limit is reached", () => {
+  const input = [];
+  input.token = "secret";
+  const output = [];
+
+  const result = redactArrayProperties(
+    input,
+    output,
+    normalizePolicy(),
+    { ...DEFAULT_LIMITS, maxKeys: 0 },
+    0,
+    (value) => value,
+  );
+
+  expect(output.token).toBe("[REDACTED]");
+  expect(result.truncated).toBe(false);
+});
+
 test("marks extra properties omitted by maxKeys", () => {
   const input = [];
   input.first = "one";

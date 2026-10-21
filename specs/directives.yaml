@@ -107,6 +107,8 @@ directives:
             holes.
           - Match array index names as decimal property names.
           - Apply sensitive-key rules to enumerable non-index array properties.
+          - Redact sensitive array properties with markers without reading values or counting them
+            against maxKeys.
           - Mark omitted array values or properties with `[TRUNCATED]`.
           - If a retained array read fails, return an empty array.
           - If a retained object read fails, return an empty object.

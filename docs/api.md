@@ -83,7 +83,7 @@ The root value starts at depth zero. A child at a depth greater than `maxDepth` 
 
 The function floors finite fractional limits. It changes negative limits to zero. It uses the default for a non-finite limit.
 
-`maxKeys` limits retained object property reads. For arrays, it limits index values and non-index property values together. The runtime lists all own keys to find retained keys.
+`maxKeys` limits retained object property reads. For arrays, it limits non-sensitive index and non-index property values together. Sensitive array properties return markers without reading values or using this limit.
 
 For Errors, `name`, `message`, and `stack` share the `maxKeys` limit with custom properties. The function reads each field at most once.
 

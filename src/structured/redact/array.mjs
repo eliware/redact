@@ -11,14 +11,13 @@ export function redactArray(value, policy, limits, redactChild) {
 
     for (let index = 0; index < retained; index++) {
       if (!Object.hasOwn(value, index)) continue;
-      if (retainedValues >= limits.maxKeys) {
+      const sensitive = policy.keys.has(String(index).toLowerCase());
+      if (!sensitive && retainedValues >= limits.maxKeys) {
         truncated = true;
         continue;
       }
-      items[index] = policy.keys.has(String(index).toLowerCase())
-        ? policy.marker
-        : redactChild(value[index]);
-      retainedValues++;
+      items[index] = sensitive ? policy.marker : redactChild(value[index]);
+      if (!sensitive) retainedValues++;
     }
 
     const properties = redactArrayProperties(

@@ -135,7 +135,7 @@ test("redacts a sensitive property without reading its getter", () => {
   expect(reads).toBe(0);
 });
 
-test("does not read an omitted sensitive getter when maxKeys is exhausted", () => {
+test("redacts a sensitive getter without reading it when maxKeys is exhausted", () => {
   let reads = 0;
   const input = [];
   Object.defineProperty(input, "token", {
@@ -146,8 +146,30 @@ test("does not read an omitted sensitive getter when maxKeys is exhausted", () =
     },
   });
 
-  expect(
-    redactArray(input, normalizePolicy(), { ...DEFAULT_LIMITS, maxKeys: 0 }, redactChild),
-  ).toEqual(["[TRUNCATED]"]);
+  const output = redactArray(
+    input,
+    normalizePolicy(),
+    { ...DEFAULT_LIMITS, maxKeys: 0 },
+    redactChild,
+  );
+
+  expect(output.token).toBe("[REDACTED]");
+  expect(output).toHaveLength(0);
   expect(reads).toBe(0);
+});
+
+test("redacts sensitive extra properties after retained indices reach maxKeys", () => {
+  const input = ["visible"];
+  input.token = "secret";
+
+  const output = redactArray(
+    input,
+    normalizePolicy(),
+    { ...DEFAULT_LIMITS, maxKeys: 1 },
+    redactChild,
+  );
+
+  expect(output[0]).toBe("visible");
+  expect(output.token).toBe("[REDACTED]");
+  expect(output).toHaveLength(1);
 });
