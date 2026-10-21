@@ -59,6 +59,51 @@ test("uses the default input bound for non-finite output limits", () => {
   expect(redactText("x".repeat(10_001), { maxOutputLength: Number.NaN })).toHaveLength(10_000);
 });
 
+test("redacts a JWT that crosses the default text limit", () => {
+  const token = `eyJabcde.${"payload".repeat(20)}.signature`;
+  const input = `${"x".repeat(9_979)} ${token}`;
+  const output = redactText(input);
+
+  expect(output).not.toContain("eyJabcde");
+  expect(output).not.toContain("payload");
+  expect(output).toContain("[REDACTED]");
+  expect(output).toContain("[TRUNCATED]");
+  expect(output).toHaveLength(10_000);
+});
+
+test("redacts a JWT that crosses a custom text limit", () => {
+  const token = `eyJabcde.${"payload".repeat(20)}.signature`;
+  const input = `${"x".repeat(39)} ${token}`;
+  const output = redactText(input, { maxOutputLength: 64 });
+
+  expect(output).not.toContain("eyJabcde");
+  expect(output).not.toContain("payload");
+  expect(output).toContain("[REDACTED]");
+  expect(output).toContain("[TRUNCATED]");
+  expect(output.length).toBeLessThanOrEqual(64);
+});
+
+test("redacts a complete JWT before the text limit", () => {
+  const output = redactText(`jwt=eyJhbGci.eyJzdWIg.ZXhhbXBsZQ${"x".repeat(100)}`, {
+    maxOutputLength: 64,
+  });
+
+  expect(output).toContain("jwt=[REDACTED]");
+  expect(output).toContain("[TRUNCATED]");
+  expect(output.length).toBeLessThanOrEqual(64);
+});
+
+test("does not treat a JWT beyond the text limit as a boundary crossing", () => {
+  const token = "eyJabcde.payload.signature";
+  const output = redactText(`${"x".repeat(64)} ${token}${"S".repeat(40)}`, {
+    maxOutputLength: 64,
+    secrets: ["S".repeat(40)],
+  });
+
+  expect(output).not.toContain("eyJabcde");
+  expect(output).toContain("[TRUNCATED]");
+});
+
 test("redacts configured secrets that cross the input limit", () => {
   const secret = "SECRET_VALUE_12345";
   const output = redactText(`${"x".repeat(35)}${secret}`, {

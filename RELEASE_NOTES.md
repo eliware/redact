@@ -12,6 +12,7 @@
 
 ### Fixed
 
+- Redact JWT fragments that cross the bounded text input limit.
 - Redact configured secrets that cross the input truncation boundary.
 - Redact incomplete key material blocks when bounded input ends before the closing delimiter.
 - Continue redaction when a configured key cannot convert safely to text.
