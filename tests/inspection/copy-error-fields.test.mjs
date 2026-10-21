@@ -16,3 +16,22 @@ test("marks standard Error fields that exceed maxKeys", () => {
 
   expect(output).toEqual({ __truncated: "[TRUNCATED]" });
 });
+
+test("does not read an enumerable Error field beyond maxKeys", () => {
+  const error = new Error("failed");
+  let reads = 0;
+  delete error.message;
+  Object.defineProperty(error, "name", { value: "CustomError", enumerable: true });
+  Object.defineProperty(error, "message", {
+    enumerable: true,
+    get() {
+      reads++;
+      throw new Error("should not read an omitted field");
+    },
+  });
+
+  const output = copyErrorFields(error, 1, (_key, value) => value);
+
+  expect(output).toEqual({ name: "CustomError", __truncated: "[TRUNCATED]" });
+  expect(reads).toBe(0);
+});

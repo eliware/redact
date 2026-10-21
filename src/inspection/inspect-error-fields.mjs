@@ -8,7 +8,10 @@ export function inspectErrorFields(error, entries, keys, maxKeys = Infinity) {
   for (const key of ["name", "message", "stack"]) {
     let value;
     if (enumerableKeys.has(key)) {
-      if (!values.has(key)) continue;
+      if (!values.has(key)) {
+        truncated = true;
+        continue;
+      }
       value = values.get(key);
     } else {
       if (retained >= maxKeys) {
