@@ -134,3 +134,20 @@ test("redacts a sensitive property without reading its getter", () => {
   );
   expect(reads).toBe(0);
 });
+
+test("does not read an omitted sensitive getter when maxKeys is exhausted", () => {
+  let reads = 0;
+  const input = [];
+  Object.defineProperty(input, "token", {
+    enumerable: true,
+    get() {
+      reads++;
+      throw new Error("should not read an omitted value");
+    },
+  });
+
+  expect(
+    redactArray(input, normalizePolicy(), { ...DEFAULT_LIMITS, maxKeys: 0 }, redactChild),
+  ).toEqual(["[TRUNCATED]"]);
+  expect(reads).toBe(0);
+});
