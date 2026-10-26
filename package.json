@@ -1,6 +1,6 @@
 {
   "name": "@eliware/redact",
-  "version": "15.0.0",
+  "version": "15.0.1",
   "type": "module",
   "description": "Secret-redaction and safe-serialization utilities for Node.js 26.",
   "keywords": [
@@ -38,7 +38,7 @@
     "node": ">=26"
   },
   "devDependencies": {
-    "@eliware/test": "^15.0.0",
+    "@eliware/test": "^15.0.1",
     "typescript": "^7.0.2"
   },
   "jest": {
