@@ -6,7 +6,10 @@
 
 - Set the package version to 15.0.1.
 - Update `@eliware/test` to 15.0.1 and refresh compatible development dependencies.
-- Keep runtime behavior unchanged from 15.0.0.
+
+### Fixed
+
+- Redact an Authorization bearer credential with one marker.
 
 ## 15.0.0 — 2026-10-21
 

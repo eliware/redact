@@ -2,7 +2,7 @@ import { redactAuthorization } from "../../../../src/text/rules/redact/authoriza
 
 test("redacts authorization header and bearer values", () => {
   expect(redactAuthorization("Authorization: Bearer example-token")).toBe(
-    "Authorization: Bearer [REDACTED]",
+    "Authorization: [REDACTED]",
   );
   expect(redactAuthorization("Bearer example-token")).toBe("Bearer [REDACTED]");
 });

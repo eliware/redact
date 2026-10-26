@@ -37,6 +37,11 @@ test("replaces overlapping configured secrets without exposing fragments", () =>
 });
 
 test.each([
+  [
+    "Authorization bearer values",
+    "Authorization: Bearer example-token",
+    "Authorization: [REDACTED]",
+  ],
   ["query secrets", "request ?api_key=query-secret", "request ?api_key=[REDACTED]"],
   ["provider tokens", "github token ghp_Example123", "github token [REDACTED]"],
   ["JWTs", "jwt=eyJhbGci.eyJzdWIg.ZXhhbXBsZQ", "jwt=[REDACTED]"],
